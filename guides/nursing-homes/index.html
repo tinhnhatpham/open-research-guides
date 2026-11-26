@@ -3,144 +3,731 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nursing Home Reality Beyond the 5-Star Rating — Open Plain-Language Research</title>
-  <meta name="description" content="Reproducible analysis of all 14,686 Medicare-certified U.S. nursing homes (live CMS Payroll-Based Journal data): weekend RN drops, 45% staff turnover, $445.7M in fines, and for-profit vs. non-profit gaps." />
+  <title>U.S. Nursing Home Accountability Platform (14,686 Homes &amp; 612 Chains) — Open Plain-Language Research</title>
+  <meta name="description" content="Reproducible 5-dataset CMS investigation joining all 14,686 U.S. nursing homes, 612 chains, 302,718 PECOS ownership records, and FY2024 Cost Reports: instant facility lookup, chain scorecard, Medicaid-controlled margins, inspection backlogs, and open linked CSV." />
+  <meta property="og:title" content="U.S. Nursing Home Accountability Platform — 5-Dataset CMS Investigation" />
+  <meta property="og:description" content="Search all 14,686 U.S. nursing homes &amp; 612 corporate chains across PBJ staffing, PECOS ownership, FY2024 Cost Reports, and inspection backlogs." />
+  <meta property="og:type" content="website" />
   <style>
     :root {
-      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
-      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
-      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
-      --good-bg: #ecfdf5; --good-ink: #065f46;
-      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
-      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
-      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+      --bg: #f6f7f5;
+      --surface: #ffffff;
+      --surface-alt: #f0f4f3;
+      --ink: #17212b;
+      --ink-muted: #52606d;
+      --border: #d9e2e0;
+      --accent: #0f6b6e;
+      --accent-dark: #0a4f52;
+      --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5;
+      --good-ink: #065f46;
+      --warn-bg: #fff8eb;
+      --warn-border: #f59e0b;
+      --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2;
+      --bad-border: #ef4444;
+      --bad-ink: #b91c1c;
+      --purple-bg: #f5f3ff;
+      --purple-ink: #5b21b6;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
-    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
-    .topbar-inner { max-width: 1040px; margin: 0 auto; padding: 13px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.9rem; }
-    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+    .topbar-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.87rem;
+    }
+    .topbar a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 650;
+    }
     .topbar a:hover { text-decoration: underline; }
-    .container { max-width: 1040px; margin: 0 auto; padding: 30px 20px 72px; }
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 22px; }
-    @media (max-width: 640px) { .card { padding: 20px 16px; } }
-    .eyebrow { display: inline-block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
-    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; }
-    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
-    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    .top-nav {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    .top-nav a { color: var(--ink-muted); font-weight: 600; }
+    .top-nav a:hover { color: var(--accent-dark); }
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 26px 20px 76px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+    @media (max-width: 640px) { .card { padding: 18px 14px; } }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.74rem;
+      font-weight: 750;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    .eyebrow.flagship {
+      background: #0f6b6e;
+      color: #fff;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3.2vw, 2.25rem);
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+    }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 1.32rem;
+      letter-spacing: -0.015em;
+    }
+    h3 {
+      margin: 0 0 6px;
+      font-size: 1.03rem;
+      color: var(--accent-dark);
+    }
     p { margin: 0 0 12px; }
     p:last-child { margin-bottom: 0; }
-    .meta { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 18px; }
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
-    @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
-    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
-    .kpi-label { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
-    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .muted { color: var(--ink-muted); }
+    .meta { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 16px; }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 16px;
+    }
+    @media (max-width: 860px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi {
+      background: var(--surface-alt);
+      border: 1px solid #e3ebea;
+      border-radius: 12px;
+      padding: 14px 15px;
+    }
+    .kpi-label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+    .kpi-val {
+      font-size: 1.44rem;
+      font-weight: 800;
+      margin: 3px 0 3px;
+      font-variant-numeric: tabular-nums;
+    }
     .kpi-val.bad { color: var(--bad-ink); }
     .kpi-val.good { color: var(--good-ink); }
-    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
-    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.92rem; color: var(--ink-muted); }
+    .kpi-val.warn { color: var(--warn-ink); }
+    .kpi-sub { font-size: 0.78rem; color: var(--ink-muted); line-height: 1.38; }
+
+    .callout {
+      background: var(--surface-alt);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 13px 16px;
+      margin: 14px 0;
+      font-size: 0.91rem;
+      color: var(--ink-muted);
+    }
     .callout strong { color: var(--ink); }
-    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn {
+      background: var(--warn-bg);
+      border-left-color: var(--warn-border);
+      color: var(--warn-ink);
+    }
     .callout.warn strong { color: var(--warn-ink); }
-    .owner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 12px; }
-    @media (max-width: 760px) { .owner-grid { grid-template-columns: 1fr; } }
-    .owner-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: #fcfdfd; }
+    .callout.bad {
+      background: var(--bad-bg);
+      border-left-color: var(--bad-border);
+      color: var(--bad-ink);
+    }
+    .callout.bad strong { color: var(--bad-ink); }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-bottom: 12px;
+      align-items: center;
+    }
+    .controls input, .controls select {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 0.88rem;
+      background: var(--surface);
+      color: var(--ink);
+    }
+    .controls input[type="search"] { flex: 1; min-width: 220px; }
+    .controls input:focus, .controls select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .chip-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+    .chip {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-muted);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 650;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .chip:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .chip.chain-chip {
+      background: var(--purple-bg);
+      border-color: #c4b5fd;
+      color: var(--purple-ink);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      font-size: 0.83rem;
+      font-weight: 650;
+      padding: 7px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .btn:hover { border-color: var(--accent); color: var(--accent-dark); background: var(--accent-soft); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+    .btn-sm { padding: 4px 9px; font-size: 0.77rem; }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .action-bar-right { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+      min-width: 760px;
+    }
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid #e7eeec;
+      vertical-align: top;
+    }
+    th {
+      background: var(--surface-alt);
+      position: sticky;
+      top: 0;
+      font-weight: 700;
+      z-index: 2;
+      white-space: nowrap;
+      font-size: 0.79rem;
+      color: var(--ink);
+    }
+    tbody tr.clickable { cursor: pointer; transition: background 0.1s ease; }
+    tbody tr.clickable:hover { background: #f3f9f9; }
+    tbody tr.selected { background: #e6f4f4 !important; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .bad-txt { color: var(--bad-ink); font-weight: 700; }
+    .good-txt { color: var(--good-ink); font-weight: 700; }
+    .warn-txt { color: var(--warn-ink); font-weight: 700; }
+
+    .tag {
+      display: inline-block;
+      padding: 1px 6px;
+      border-radius: 5px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      margin-right: 4px;
+      margin-top: 2px;
+      white-space: nowrap;
+    }
+    .tag-bad { background: var(--bad-bg); color: var(--bad-ink); border: 1px solid #fecaca; }
+    .tag-warn { background: var(--warn-bg); color: var(--warn-ink); border: 1px solid #fde68a; }
+    .tag-good { background: var(--good-bg); color: var(--good-ink); border: 1px solid #a7f3d0; }
+    .tag-purple { background: var(--purple-bg); color: var(--purple-ink); border: 1px solid #ddd6fe; }
+    .tag-muted { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
+
+    .pager {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      font-size: 0.84rem;
+      color: var(--ink-muted);
+    }
+    .pager-btns { display: flex; gap: 6px; align-items: center; }
+
+    /* Facility Detail Panel */
+    .detail-panel {
+      margin-top: 16px;
+      border: 2px solid var(--accent);
+      border-radius: 14px;
+      background: #fbfdfd;
+      padding: 20px;
+      display: none;
+    }
+    .detail-panel.open { display: block; }
+    .detail-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      flex-wrap: wrap;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+    }
+    .detail-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+    }
+    @media (max-width: 780px) { .detail-grid { grid-template-columns: 1fr; } }
+    .detail-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    .detail-box h4 {
+      margin: 0 0 8px;
+      font-size: 0.84rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent-dark);
+    }
+    .kv {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.85rem;
+      padding: 4px 0;
+      border-bottom: 1px solid #f0f4f3;
+    }
+    .kv:last-child { border-bottom: none; }
+    .kv span { color: var(--ink-muted); }
+    .kv strong { text-align: right; }
+
+    /* Findings Grid */
+    .findings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      margin-top: 14px;
+    }
+    @media (max-width: 820px) { .findings-grid { grid-template-columns: 1fr; } }
+    .finding-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      background: #fcfdfd;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .finding-num {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+    }
+    .finding-card h3 { margin: 2px 0 6px; font-size: 1.04rem; color: var(--ink); }
+    .finding-card p { font-size: 0.88rem; color: var(--ink-muted); margin-bottom: 8px; }
+    .mini-list { margin: 6px 0 0; padding-left: 17px; font-size: 0.84rem; color: var(--ink); }
+    .mini-list li { margin-bottom: 4px; }
+
+    .owner-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 12px;
+    }
+    @media (max-width: 780px) { .owner-grid { grid-template-columns: 1fr; } }
+    .owner-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: #fcfdfd;
+    }
     .owner-card.highlight { border-color: var(--accent); background: #f8fcfc; }
-    .owner-stat { display: flex; justify-content: space-between; font-size: 0.87rem; padding: 6px 0; border-bottom: 1px solid #edf2f1; }
+    .owner-stat {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      padding: 5px 0;
+      border-bottom: 1px solid #edf2f1;
+    }
     .owner-stat:last-child { border-bottom: none; }
-    .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
-    .controls input, .controls select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.88rem; background: var(--surface); color: var(--ink); }
-    .controls input { flex: 1; min-width: 170px; }
-    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 440px; overflow-y: auto; }
-    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; min-width: 650px; }
-    th, td { padding: 9px 11px; text-align: left; border-bottom: 1px solid var(--border); }
-    th { background: var(--surface-alt); position: sticky; top: 0; font-weight: 700; z-index: 2; }
-    .num { text-align: right; font-variant-numeric: tabular-nums; }
-    .checklist { margin: 8px 0 0; padding-left: 20px; font-size: 0.93rem; }
+
+    .checklist { margin: 8px 0 0; padding-left: 20px; font-size: 0.91rem; }
     .checklist li { margin-bottom: 8px; }
-    .sources { margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--ink-muted); }
-    .sources li { margin-bottom: 6px; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.87rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 7px; }
     .sources strong { color: var(--ink); }
-    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    code {
+      background: #eef3f2;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.85em;
+    }
+    .loading-pill {
+      display: inline-block;
+      padding: 8px 14px;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+    footer {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
       <a href="../../">&larr; Back to Research Hub</a>
-      <a href="#state-explorer">Jump to 50-State Explorer &darr;</a>
+      <nav class="top-nav" aria-label="Page sections">
+        <a href="#lookup">Facility Lookup (14,686)</a>
+        <a href="#chains">612-Chain Scorecard</a>
+        <a href="#financials">FY2024 Financials</a>
+        <a href="#findings">6 Flagship Findings</a>
+        <a href="#state-explorer">50 States + DC</a>
+        <a href="#methodology">Open Data &amp; Methods</a>
+      </nav>
     </div>
   </header>
 
   <main class="container">
+    <!-- HERO -->
     <section class="card">
-      <span class="eyebrow">Guide #03 &bull; Elder Care &amp; Live CMS Data</span>
-      <h1>Nursing Home Reality Beyond the 5-Star Rating</h1>
-      <p class="meta">Reproducible analysis of all <strong>14,686</strong> Medicare/Medicaid-certified U.S. nursing homes (CMS Payroll-Based Journal &amp; Penalties Dataset <code>4pq5-n9py</code>) &bull; Compiled November 2026</p>
+      <span class="eyebrow flagship">Flagship Investigation &bull; Guide #03 &bull; 5 Live CMS Datasets</span>
+      <h1>U.S. Nursing Home Accountability Platform</h1>
+      <p class="meta" id="hero-meta">
+        Reproducible 5-dataset join across all <strong>14,686</strong> Medicare/Medicaid-certified U.S. nursing homes, <strong>612</strong> corporate chains, <strong>302,718</strong> PECOS ownership rows, and <strong>13,819</strong> matched FY2024 Cost Reports (Form 2540-10).
+      </p>
 
       <div class="callout">
-        <strong>Why this guide exists:</strong> Families choosing a nursing home for an aging parent usually only look at Medicare's headline 5-star badge. Analyzing payroll-verified staffing logs and federal fines across every certified facility in America reveals massive hidden risks—especially on weekends and across for-profit vs. non-profit ownership.
+        <strong>Why this platform exists:</strong> Families choosing a nursing home rarely see beyond CMS's headline 5-star badge—and even investigative researchers must manually stitch together five separate CMS APIs with mismatched IDs, unflagged blank owner rows, hospital-district lease distortions, and multi-period cost reports. Everything below is freshly computed from live CMS APIs, searchable instantly in your browser, and downloadable as an open linked dataset.
       </div>
 
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="kpi-label">Weekend RN Cliff</div>
-          <div class="kpi-val bad">-30.4%</div>
-          <div class="kpi-sub">RN care drops 0.69 &rarr; 0.48 hrs/resident/day</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Annual Staff Turnover</div>
-          <div class="kpi-val bad">45.3%</div>
-          <div class="kpi-sub">Nearly half of nursing staff leaves yearly</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">Facilities With Federal Fines</div>
-          <div class="kpi-val bad">44.0%</div>
-          <div class="kpi-sub">$445.7M total fines &bull; 9.5% abuse icon</div>
-        </div>
-        <div class="kpi">
-          <div class="kpi-label">For-Profit Staffing Gap</div>
-          <div class="kpi-val">-44 min/day</div>
-          <div class="kpi-sub">3.72 hrs vs. 4.46 hrs at non-profits</div>
-        </div>
-      </div>
+      <div class="kpi-grid" id="hero-kpis"></div>
     </section>
 
-    <section class="card">
-      <h2>1. The "5-Star Illusion": What Even Top-Rated Facilities Hide</h2>
-      <p style="color:var(--ink-muted); font-size:0.94rem;">
-        Across the <strong>3,154</strong> U.S. nursing homes that currently hold CMS's highest <strong>5-star overall rating</strong>, payroll-verified PBJ records and enforcement files still uncover major warning signs:
+    <!-- SECTION 1: ALL-14,686 FACILITY LOOKUP -->
+    <section class="card" id="lookup">
+      <span class="eyebrow">Tool #1 &bull; Instant National Search</span>
+      <h2>1. Search All 14,686 U.S. Nursing Homes</h2>
+      <p class="muted" style="font-size:0.9rem; margin-bottom:12px;">
+        Search by facility name, city, ZIP, state, 6-character CCN (including alphanumeric CCNs like <code>01A193</code>), or corporate chain. Click any row to open the full 5-dataset dossier with PBJ 7-day vs. weekend hours, PECOS ownership flags, FY2024 finances, CMS footnote explanations, and verified deep links to Medicare Care Compare &amp; ProPublica.
       </p>
-      <div class="callout warn">
-        <strong>Even among 5-star nursing homes:</strong>
-        <strong>23.7%</strong> slash total nursing hours by 15% or more on weekends &bull;
-        <strong>14.9%</strong> still suffer 50%+ annual nursing turnover &bull;
-        <strong>14.6%</strong> have active federal fines on record. Never stop at the headline star score.
+
+      <div class="controls">
+        <input type="search" id="fac-search" placeholder="Search name, city, ZIP, state, CCN (e.g. 015392), or chain..." aria-label="Search nursing homes" />
+        <select id="fac-state" aria-label="Filter by state">
+          <option value="">All States &amp; DC</option>
+        </select>
+        <select id="fac-own" aria-label="Filter by ownership">
+          <option value="">All Ownership Types</option>
+          <option value="FP">For-Profit</option>
+          <option value="NP">Non-Profit</option>
+          <option value="GV">Government</option>
+        </select>
+        <select id="fac-sort" aria-label="Sort facilities">
+          <option value="fines_desc">Highest Federal Fines ($)</option>
+          <option value="stars_asc">Lowest Star Rating First</option>
+          <option value="stars_desc">Highest Star Rating First</option>
+          <option value="hprd_asc">Lowest Staffing HPRD First</option>
+          <option value="hprd_desc">Highest Staffing HPRD First</option>
+          <option value="turn_desc">Highest Nurse Turnover %</option>
+          <option value="wknd_desc">Biggest Weekend Drop %</option>
+          <option value="opmgn_desc">Highest FY24 Op. Margin %</option>
+          <option value="name_asc">Facility Name (A–Z)</option>
+        </select>
+      </div>
+
+      <div class="chip-bar" id="fac-chips" aria-label="Quick filter presets">
+        <button type="button" class="chip active" data-preset="all">All Homes</button>
+        <button type="button" class="chip" data-preset="five_red">5&#9733; w/ Red Flags</button>
+        <button type="button" class="chip" data-preset="overdue">Overdue &gt;2 Yrs</button>
+        <button type="button" class="chip" data-preset="pe_reit">REIT / PE Disclosed</button>
+        <button type="button" class="chip" data-preset="abuse_sff">Abuse Icon / SFF</button>
+        <button type="button" class="chip" data-preset="tx_in_gov">TX/IN Gov-Chain Leases</button>
+        <button type="button" class="chip" data-preset="four_abuse">4&#9733; w/ Abuse Icon (20)</button>
+        <button type="button" class="chip" data-preset="al_2020">AL 5&#9733; Uninspected Since 2020 (4)</button>
+        <span id="active-chain-pill"></span>
+      </div>
+
+      <div class="action-bar">
+        <span id="fac-status"><span class="loading-pill">Loading 14,686 linked facility records...</span></span>
+        <div class="action-bar-right">
+          <button type="button" class="btn btn-sm" id="btn-export-filtered" disabled>Download Filtered CSV</button>
+          <a class="btn btn-sm btn-primary" href="../../data/nursing-homes/cms-nursing-homes-linked.csv.gz" download>Download Full Linked CSV (.gz, 1.4 MB)</a>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Facility &amp; Flags</th>
+              <th>Corporate Chain</th>
+              <th>Owner</th>
+              <th class="num">Stars</th>
+              <th class="num">7-Day &rarr; Wknd Hrs</th>
+              <th class="num">Turnover</th>
+              <th class="num">Fines ($)</th>
+              <th class="num">FY24 Op Mgn / Labor</th>
+            </tr>
+          </thead>
+          <tbody id="fac-tbody">
+            <tr><td colspan="8" class="muted" style="padding:20px; text-align:center;">Loading 14,686 facilities...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <span id="fac-page-info"></span>
+        <div class="pager-btns">
+          <button type="button" class="btn btn-sm" id="fac-prev" disabled>&larr; Prev</button>
+          <button type="button" class="btn btn-sm" id="fac-next" disabled>Next &rarr;</button>
+        </div>
+      </div>
+
+      <!-- CLICKABLE FACILITY DETAIL DRAWER -->
+      <div class="detail-panel" id="fac-detail" aria-live="polite"></div>
+    </section>
+
+    <!-- SECTION 2: 612-CHAIN ACCOUNTABILITY SCORECARD -->
+    <section class="card" id="chains">
+      <span class="eyebrow">Tool #2 &bull; Corporate Chain Accountability</span>
+      <h2>2. 612-Chain Accountability Scorecard</h2>
+      <p class="muted" style="font-size:0.9rem; margin-bottom:10px;">
+        CMS tracks <strong>612 corporate chains</strong> (excluding the blank-ID National benchmark row), covering <strong id="chain-share-txt">60%+</strong> of U.S. nursing homes. Compare chains by size, staffing, weekend RN drop (7-day avg &rarr; weekend), turnover, federal fines, abuse icons, and antipsychotic rates. <strong>Click any chain to filter the Facility Lookup above to all of its homes.</strong>
+      </p>
+
+      <div class="callout warn" style="font-size:0.86rem;">
+        <strong>Important Clinical &amp; Reporting Caveats (read before ranking):</strong>
+        (1) <strong>Reliant Care Management</strong> (35 homes, 1.3&#9733;, 44.1% long-stay antipsychotic rate) serves a disproportionately behavioral/psychiatric population—check clinical case-mix alongside citations.
+        (2) <strong>Apple Rehab</strong> (20 homes, 1.9&#9733;) has <strong>19 of 20 homes flagged with CMS Footnote 23</strong> (did not submit PBJ staffing data, triggering automatic 1-star staffing penalties), which explains why its HPRD is blank.
+        (3) Chains like <strong>Wellsential Health</strong>, <strong>American Senior Communities</strong>, <strong>The Ensign Group</strong>, and <strong>Creative Solutions</strong> operate dozens of TX/IN county or hospital-district leased facilities classified as "Government" in CMS files.
+      </div>
+
+      <div class="controls">
+        <input type="search" id="ch-search" placeholder="Search corporate chain name (e.g. Ensign, PACS, Genesis, Trilogy, Apple Rehab)..." aria-label="Search chains" />
+        <select id="ch-min" aria-label="Minimum chain size">
+          <option value="20" selected>Large Chains (&ge;20 homes)</option>
+          <option value="50">Mega Chains (&ge;50 homes)</option>
+          <option value="5">All Chains (&ge;5 homes)</option>
+          <option value="1">All 612 Tracked Chains</option>
+        </select>
+        <select id="ch-sort" aria-label="Sort chains">
+          <option value="n_desc">Most Facilities First</option>
+          <option value="stars_asc">Lowest Avg Stars First</option>
+          <option value="stars_desc">Highest Avg Stars First</option>
+          <option value="hprd_asc">Lowest Total HPRD First</option>
+          <option value="hprd_desc">Highest Total HPRD First</option>
+          <option value="rn_drop_desc">Biggest Weekend RN Drop %</option>
+          <option value="turn_desc">Highest Turnover %</option>
+          <option value="fines_desc">Highest Total Fines ($)</option>
+          <option value="avgfine_desc">Highest Avg Fine / Home ($)</option>
+          <option value="abuse_desc">Highest Abuse Icon %</option>
+          <option value="ap_desc">Highest Antipsychotic %</option>
+        </select>
+      </div>
+
+      <div class="action-bar">
+        <span id="ch-status">Loading 612 chains...</span>
+        <div class="action-bar-right">
+          <button type="button" class="btn btn-sm" id="btn-export-chains" disabled>Download Filtered Chains CSV</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Chain Name &amp; Caveats</th>
+              <th class="num">Homes</th>
+              <th class="num">Avg &#9733;</th>
+              <th class="num">Total Hrs</th>
+              <th class="num">Wknd RN Drop</th>
+              <th class="num">Turnover</th>
+              <th class="num">Total Fines (Avg)</th>
+              <th class="num">Abuse %</th>
+              <th class="num">Antipsych. %</th>
+              <th class="num">FY24 Op Mgn</th>
+            </tr>
+          </thead>
+          <tbody id="ch-tbody">
+            <tr><td colspan="10" class="muted" style="padding:18px; text-align:center;">Loading chains...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pager">
+        <span id="ch-page-info"></span>
+        <div class="pager-btns">
+          <button type="button" class="btn btn-sm" id="ch-prev" disabled>&larr; Prev</button>
+          <button type="button" class="btn btn-sm" id="ch-next" disabled>Next &rarr;</button>
+        </div>
       </div>
     </section>
 
-    <section class="card">
-      <h2>2. Ownership Matters: Non-Profit vs. Government vs. For-Profit</h2>
-      <p style="color:var(--ink-muted); font-size:0.93rem;">
-        Roughly three out of four U.S. nursing homes (74.1%) are for-profit. On average, non-profit facilities deliver <strong>44 more minutes of nursing care per resident every single day</strong>, have lower turnover, and receive roughly <strong>half the average federal fine</strong>.
+    <!-- SECTION 3: MEDICAID-CONTROLLED FY2024 COST REPORT ANALYSIS -->
+    <section class="card" id="financials">
+      <span class="eyebrow">Tool #3 &bull; FY2024 CMS Form 2540-10 Financial Analysis</span>
+      <h2>3. Follow the Money: Medicaid-Controlled Margins &amp; Direct Labor Spending</h2>
+      <p class="muted" style="font-size:0.91rem; margin-bottom:12px;">
+        Industry lobbyists frequently argue that lower staffing or tighter finances reflect Medicaid payer mix rather than ownership choices. Linking all <strong>13,819</strong> deduplicated FY2024 SNF Cost Reports (Form 2540-10, full-year &ge;300-day preference, blank Title XIX days treated as <code>0</code> so zero-Medicaid SNFs remain in <code>&lt;40%</code>) proves the gap persists inside <strong>every single Medicaid tier</strong>:
+      </p>
+
+      <div class="table-wrap" style="max-height:none;">
+        <table>
+          <thead>
+            <tr>
+              <th>Medicaid Share Tier</th>
+              <th>Ownership</th>
+              <th class="num">Matched Homes</th>
+              <th class="num">True Patient Op. Margin (Med.)</th>
+              <th class="num">Total Net Margin (Med.)</th>
+              <th class="num">Total Direct Labor / Day</th>
+              <th class="num">W-2 Salaries / Day</th>
+              <th class="num">Net Pat. Rev / Day</th>
+              <th class="num">PBJ Hrs / Day</th>
+            </tr>
+          </thead>
+          <tbody id="cost-tbody"></tbody>
+        </table>
+      </div>
+
+      <div class="callout" style="margin-top:14px;">
+        <strong>How to read these two margins &amp; labor metrics:</strong>
+        <strong>True Patient-Care Operating Margin</strong> = <code>Net Income from service to patients / Net Patient Revenue</code> (pure clinical operations).
+        <strong>Total Net Margin</strong> = <code>Net Income / (Net Patient Revenue + Total Other Income)</code> (includes philanthropy, endowment/investment income, and government transfers that allow non-profits to sustain negative patient-care operating margins while spending <strong>+$25 to +$80/day more</strong> on direct care).
+        <strong>Total Direct Labor / Day</strong> = <code>(Adjusted Salaries + Core Wage-Related Costs + Contract Labor) / Total Patient Days</code>, capturing agency/contract nurses alongside W-2 payroll. All operating expense ratios use <code>Less Total Operating Expense</code> (never <code>Total Costs</code>).
+      </div>
+
+      <div class="callout warn" style="margin-top:10px;">
+        <strong>Two Critical Accounting Caveats:</strong>
+        (1) <strong>Related-Party Masking (Worksheet A-8-1):</strong> For-profit chains routinely pay rent, management fees, and therapy contracts to sister LLCs or affiliated REITs owned by the same investors. Because public Form 2540-10 summary extracts only partially adjust related-party markups, reported for-profit margins (+1.6% to +3.1% total net) are best viewed as a <em>conservative lower bound</em> on total enterprise cash extraction.
+        (2) <strong>Hospital-Based SNF Exclusion:</strong> <strong id="hosp-excl-txt">68.9% (419 of 608)</strong> of hospital-based SNFs do not appear in Form 2540-10 because they file under Hospital Cost Report Form 2552-10 instead (vs. <strong id="free-match-txt">96.8%</strong> match rate for freestanding SNFs).
+      </div>
+    </section>
+
+    <!-- SECTION 4: SIX VERIFIED FLAGSHIP FINDINGS -->
+    <section class="card" id="findings">
+      <span class="eyebrow">Original Investigation &bull; Verified Live Numbers</span>
+      <h2>4. Six Flagship Findings From the 5-Dataset Join</h2>
+      <p class="muted" style="font-size:0.9rem;">
+        Every finding below is calculated directly from live CMS API data (zero hardcoded estimates). Click any "Inspect in Lookup" button to verify the exact underlying facilities yourself.
+      </p>
+      <div class="findings-grid" id="findings-grid"></div>
+
+      <!-- Ownership Comparison Cards (including TX/IN Gov-Chain Split) -->
+      <h3 style="margin-top:24px; margin-bottom:6px;">Ownership Breakdown (Including the TX/IN Government-Chain Lease Split)</h3>
+      <p class="muted" style="font-size:0.88rem; margin-bottom:10px;">
+        Notice how CMS's headline "Government" average (4.31 hrs/day, 3.35&#9733;) blends two completely opposite worlds: genuine public/veterans' homes (<strong>4.74 hrs/day, 3.56&#9733;, 34.7% fined</strong>) vs. 286 private-chain leases of TX/IN county &amp; hospital-district licenses (<strong>3.39 hrs/day, 2.89&#9733;, 53.5% fined</strong>).
       </p>
       <div class="owner-grid" id="owner-grid"></div>
     </section>
 
+    <!-- SECTION 5: 50-STATE + DC EXPLORER -->
     <section class="card" id="state-explorer">
-      <h2>3. Interactive 50-State + DC Nursing Home Explorer</h2>
-      <p style="color:var(--ink-muted); font-size:0.91rem; margin-bottom:12px;">
-        Compare payroll-verified average total nurse hours per resident day (HPRD), weekend drops, staff turnover, and federal fine rates across states.
+      <span class="eyebrow">Geographic Accountability &bull; 50 States + DC</span>
+      <h2>5. Interactive 50-State + DC Explorer</h2>
+      <p class="muted" style="font-size:0.9rem; margin-bottom:12px;">
+        Compare 7-day avg vs. weekend PBJ nurse hours, weekend RN cliffs, turnover, federal fines, inspection backlogs (&gt;2 yrs overdue), and PECOS PE/REIT disclosure rates. <strong>Click any state row to filter the Facility Lookup above to that state.</strong>
       </p>
       <div class="controls">
-        <input type="search" id="st-search" placeholder="Filter by state abbreviation (e.g. CA, TX, NY, FL, OH)..." aria-label="Filter states" />
+        <input type="search" id="st-search" placeholder="Filter by state abbreviation (e.g. AL, VA, DC, CA, TX, NY)..." aria-label="Filter states" />
         <select id="st-sort" aria-label="Sort states">
-          <option value="hprd_desc">Highest Total Staffing Hours First</option>
-          <option value="wknd_desc">Biggest Weekend Drop % First</option>
+          <option value="hprd_desc">Highest 7-Day Nurse Hours First</option>
+          <option value="overdue_desc">Highest Overdue &gt;2 Yrs % First</option>
+          <option value="wknd_desc">Biggest Total Weekend Drop % First</option>
+          <option value="rn_wknd_desc">Biggest Weekend RN Drop % First</option>
           <option value="turn_desc">Highest Nursing Turnover % First</option>
           <option value="fined_desc">Highest % of Fined Homes First</option>
+          <option value="pe_desc">Highest Disclosed PE/REIT % First</option>
           <option value="state_asc">State (A–Z)</option>
         </select>
       </div>
@@ -149,13 +736,16 @@
           <thead>
             <tr>
               <th>State</th>
-              <th class="num">Facilities</th>
-              <th class="num">Avg Stars</th>
-              <th class="num">Total Nurse Hrs</th>
-              <th class="num">Weekend Hrs</th>
-              <th class="num">Wknd Drop</th>
+              <th class="num">Homes</th>
+              <th class="num">Avg &#9733;</th>
+              <th class="num">7d Hrs</th>
+              <th class="num">Wknd Hrs</th>
+              <th class="num">7d&rarr;Wknd</th>
+              <th class="num">RN Drop</th>
               <th class="num">Turnover</th>
               <th class="num">% Fined</th>
+              <th class="num">Overdue &gt;2y</th>
+              <th class="num">PE/REIT %</th>
             </tr>
           </thead>
           <tbody id="st-tbody"></tbody>
@@ -163,80 +753,874 @@
       </div>
     </section>
 
+    <!-- SECTION 6: FAMILY CHECKLIST + METHODOLOGY / PRIOR ART / OPEN DATA -->
     <section class="card">
-      <h2>4. Six Concrete Checks for Families Touring a Facility</h2>
+      <h2>6. Six Concrete Checks for Families Touring a Nursing Home</h2>
       <ol class="checklist">
-        <li><strong>Visit unannounced on a Saturday or Sunday afternoon:</strong> Nationally, Registered Nurse (RN) hours plunge <strong>30.4%</strong> on weekends. Seeing a facility on Sunday shows its real baseline.</li>
-        <li><strong>Look up the 6 hidden metrics on <code>medicare.gov/care-compare</code>:</strong> Check (1) Ownership type, (2) Weekend total &amp; RN hours, (3) Total nursing turnover, (4) RN turnover, (5) Administrator turnover, and (6) Federal fines / abuse icon.</li>
-        <li><strong>Ask directly about agency/temp nurse share:</strong> High turnover (&gt;50%) means staff do not know your parent's medications, fall triggers, or dietary needs.</li>
-        <li><strong>Check if the facility changed ownership in the last 12 months:</strong> Rapid buyouts often precede staffing cuts or administrator departures.</li>
-        <li><strong>Read the actual inspection narratives (Form 2567):</strong> A single "Immediate Jeopardy" citation tells you far more than a star rating average.</li>
-        <li><strong>Compare against your state average above:</strong> Use the table to see whether a home is actually outperforming local peers—not just riding a lenient regional curve.</li>
+        <li><strong>Visit unannounced on a Saturday or Sunday afternoon:</strong> Nationally, Registered Nurse (RN) hours drop <strong>30.2%</strong> from the 7-day average to weekends (an implied <strong>37.7%</strong> drop from Mon–Fri weekdays to weekends). Sunday afternoon shows the facility's true care floor.</li>
+        <li><strong>Look beyond the headline 5-star badge:</strong> Nearly half (<strong>46.8%</strong>) of 5-star homes carry at least one major warning sign (weekend drop &ge;15%, turnover &ge;50%, active fines, or overdue inspection), and <strong>20</strong> homes hold a 4-star rating despite an active Abuse Icon. Use the Lookup above first.</li>
+        <li><strong>Check the last health inspection date:</strong> In Alabama (85.3% overdue), Virginia (57.1%), and DC (56.2%), a 5-star rating may rest on a pre-pandemic 2020 inspection—four active 5-star AL homes have not had a standard health survey since 2020.</li>
+        <li><strong>Verify who actually operates a "Government" facility in TX or IN:</strong> 286 county/hospital-district nursing homes in Texas (195) and Indiana (91) are leased to private corporate chains and average 81 fewer minutes of care per day than genuine public/veterans' homes.</li>
+        <li><strong>Read CMS staffing footnotes (especially 23, 24, 25):</strong> Footnote <code>24</code> (274 homes) means high days with zero RN onsite; <code>25</code> (160 homes) means CMS could not validate PBJ staffing accuracy; <code>23</code> (122 homes) means the facility failed to submit PBJ staffing data at all.</li>
+        <li><strong>Read full Form 2567 inspection narratives on ProPublica &amp; Care Compare:</strong> Every facility dossier in our Lookup links directly to both Medicare Care Compare and ProPublica Nursing Home Inspect so you can read the verbatim deficiency text before signing admission papers.</li>
       </ol>
     </section>
 
-    <section class="card">
-      <h2>5. Primary Sources &amp; Open Reproducibility</h2>
-      <ol class="sources">
-        <li><strong>Centers for Medicare &amp; Medicaid Services (CMS):</strong> Provider Data Catalog — <em>Nursing Home Provider Information</em> (Dataset <code>4pq5-n9py</code>, 14,686 certified facilities, Payroll-Based Journal verified staffing &amp; federal penalty records).</li>
-        <li><strong>Reproducible Code:</strong> Full Python script (<code>data/nursing-homes/analyze_cms_nursing_homes.py</code>) and dataset (<code>summary.json</code>) are open in the repository so anyone can re-run and verify every state and ownership statistic.</li>
-        <li><strong>Data Caveat:</strong> State averages mask wide facility-to-facility variation—there are excellent for-profit homes and struggling non-profits. Always check the specific facility's PBJ numbers and inspection reports on Medicare Care Compare.</li>
+    <section class="card" id="methodology">
+      <h2>7. Prior Art, Methodology &amp; Open Reproducible Data</h2>
+      <div class="callout">
+        <strong>Credit to Existing Public-Interest Tools &amp; What We Uniquely Add:</strong>
+        <strong>Medicare Care Compare</strong> is the official federal consumer portal; <strong>ProPublica Nursing Home Inspect</strong> is the gold standard for full-text Form 2567 inspection narratives and deficiency search; and <strong>The Oversight Report</strong> pioneered independent SNF ownership &amp; cost-report transparency.
+        What this open-source platform uniquely adds is a <strong>single, zero-paywall, fully reproducible 5-endpoint CMS pipeline</strong> uniting all 14,686 facilities, all 612 chains, a live audit of <strong>14,257 nameless PECOS organization rows</strong>, <strong>Medicaid-controlled FY2024 true operating margins &amp; total direct labor</strong>, the <strong>TX/IN government-chain lease distortion</strong>, and instant client-side + bulk CSV/JSON downloads.
+      </div>
+      <ol class="sources" id="sources-list">
+        <li><strong>CMS Provider Information (<code>4pq5-n9py</code>):</strong> 14,686 Medicare/Medicaid-certified nursing homes (Payroll-Based Journal staffing, turnover, stars, fines, abuse icons, SFF status, footnotes; numeric CCNs zero-padded to 6 chars, 245 alphanumeric CCNs preserved).</li>
+        <li><strong>CMS Nursing Home Chain Performance Measures:</strong> Dynamically resolved via <code>data.cms.gov/data.json</code> (<code>description=="latest"</code>); 612 corporate chains after filtering out the blank-ID National benchmark row.</li>
+        <li><strong>CMS SNF Enrollments &amp; SNF All Owners (PECOS):</strong> 14,401 enrollments &rarr; 14,209 matched CCNs joined to 302,718 owner/manager/ADP rows, auditing PE, REIT, ADP, Holding, Management, Investment, Financial, Consulting, Medical Staffing flags and nameless Organization rows (<code>TYPE='O'</code> with blank org name).</li>
+        <li><strong>CMS SNF Cost Report FY2024 (Form 2540-10):</strong> 14,587 raw filings deduplicated to 13,819 matched CCNs (preferring full-year &ge;300-day / longest period; blank Title XIX days = 0; using <code>Less Total Operating Expense</code>, never <code>Total Costs</code>; disclosing 68.9% hospital-based Form 2552-10 exclusion).</li>
+        <li><strong>Staffing Drop Methodology:</strong> CMS reports 7-day average HPRD and weekend (Sat–Sun) HPRD. All drops use consistent ratio-of-means: <code>(mean_7day - mean_wknd) / mean_7day</code>. Implied Mon–Fri weekday HPRD is algebraically derived as <code>(7 * mean_7day - 2 * mean_wknd) / 5</code>.</li>
       </ol>
+
+      <div style="margin-top:14px; display:flex; flex-wrap:wrap; gap:8px;">
+        <a class="btn btn-primary" href="../../data/nursing-homes/cms-nursing-homes-linked.csv.gz" download>Download Linked Dataset (.csv.gz)</a>
+        <a class="btn" href="../../data/nursing-homes/summary.json" target="_blank" rel="noopener">summary.json</a>
+        <a class="btn" href="../../data/nursing-homes/chains.json" target="_blank" rel="noopener">chains.json (612)</a>
+        <a class="btn" href="../../data/nursing-homes/facilities.json" target="_blank" rel="noopener">facilities.json (14,686)</a>
+        <a class="btn" href="https://github.com/tinhnhatpham/open-research-guides/blob/main/data/nursing-homes/analyze_cms_nursing_homes.py" target="_blank" rel="noopener">View Python Pipeline on GitHub</a>
+      </div>
     </section>
 
     <footer>
-      <span>Open Plain-Language Research &bull; Guide #03</span>
-      <span>Data: Live CMS Provider Data Catalog (14,686 U.S. Homes) &bull; CC BY 4.0 / MIT</span>
+      <span>Open Plain-Language Research &bull; Guide #03 Flagship Investigation</span>
+      <span>Live 5-Dataset CMS Join (14,686 Homes &bull; 612 Chains &bull; 302k PECOS Rows &bull; FY2024 Cost Reports) &bull; CC BY 4.0 / MIT</span>
     </footer>
   </main>
 
   <script src="../../data/nursing-homes/summary-data.js"></script>
   <script>
-    const CMS = window.CMS_NURSING_HOME_DATA;
+    (function () {
+      const CMS = window.CMS_NURSING_HOME_DATA;
+      if (!CMS) return;
 
-    document.getElementById("owner-grid").innerHTML = CMS.by_ownership.map((o) => `
-      <div class="owner-card ${o.ownership === "Non-Profit" ? "highlight" : ""}">
-        <h3 style="margin:0 0 4px;">${o.ownership}</h3>
-        <p style="font-size:0.8rem; color:var(--ink-muted); margin-bottom:10px;">${o.facilities.toLocaleString()} homes (${o.share_pct}% of U.S.)</p>
-        <div class="owner-stat"><span>Avg Overall Rating</span><strong>${o.avg_stars} / 5</strong></div>
-        <div class="owner-stat"><span>Total Nurse Hrs/Res/Day</span><strong>${o.avg_total_hprd} hrs</strong></div>
-        <div class="owner-stat"><span>Weekend Nurse Hrs</span><strong>${o.avg_weekend_hprd} hrs (-${o.weekend_drop_pct}%)</strong></div>
-        <div class="owner-stat"><span>RN Hrs (Wkday &rarr; Wknd)</span><strong>${o.avg_rn_hprd} &rarr; ${o.avg_rn_weekend_hprd}h</strong></div>
-        <div class="owner-stat"><span>Annual Nurse Turnover</span><strong>${o.avg_turnover_pct}%</strong></div>
-        <div class="owner-stat"><span>Facilities Fined</span><strong>${o.pct_fined}% (avg $${o.avg_fine_dollars.toLocaleString()})</strong></div>
-      </div>
-    `).join("");
+      const esc = (v) =>
+        String(v == null ? "" : v)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
 
-    const searchEl = document.getElementById("st-search");
-    const sortEl = document.getElementById("st-sort");
+      const fmtNum = (v, d = 1) => (v == null || Number.isNaN(v) ? "—" : Number(v).toLocaleString(undefined, { minimumFractionDigits: d, maximumFractionDigits: d }));
+      const fmtInt = (v) => (v == null || Number.isNaN(v) ? "—" : Math.round(Number(v)).toLocaleString());
+      const fmtMoney = (v) => (v == null || Number.isNaN(v) ? "—" : "$" + Math.round(Number(v)).toLocaleString());
+      const fmtPct = (v, d = 1, signed = false) => {
+        if (v == null || Number.isNaN(v)) return "—";
+        const n = Number(v);
+        return (signed && n > 0 ? "+" : "") + n.toFixed(d) + "%";
+      };
 
-    function renderStates() {
-      const q = searchEl.value.trim().toLowerCase();
-      const sort = sortEl.value;
-      let rows = CMS.by_state.filter((s) => !q || s.state.toLowerCase().includes(q));
-      if (sort === "hprd_desc") rows.sort((a, b) => (b.avg_total_hprd || 0) - (a.avg_total_hprd || 0));
-      else if (sort === "wknd_desc") rows.sort((a, b) => (b.weekend_drop_pct || 0) - (a.weekend_drop_pct || 0));
-      else if (sort === "turn_desc") rows.sort((a, b) => (b.avg_turnover_pct || 0) - (a.avg_turnover_pct || 0));
-      else if (sort === "fined_desc") rows.sort((a, b) => (b.pct_fined || 0) - (a.pct_fined || 0));
-      else rows.sort((a, b) => a.state.localeCompare(b.state));
+      // ----------------------------------------------------------------
+      // 1. Hydrate Hero KPIs & Metadata
+      // ----------------------------------------------------------------
+      const nat = CMS.national;
+      const fs = CMS.five_star_reality;
+      const pec = CMS.pecos_audit;
+      const cr = CMS.cost_report_analysis;
+      const ib = CMS.inspection_backlog;
+      const gc = CMS.gov_chain_distortion;
+      const meta = CMS.metadata;
 
-      document.getElementById("st-tbody").innerHTML = rows.map((s) => `
-        <tr>
-          <td><strong>${s.state}</strong></td>
-          <td class="num">${s.facilities}</td>
-          <td class="num">${s.avg_stars}</td>
-          <td class="num"><strong>${s.avg_total_hprd}h</strong></td>
-          <td class="num">${s.avg_weekend_hprd}h</td>
-          <td class="num" style="color:${s.weekend_drop_pct >= 14 ? "var(--bad-ink)" : "var(--ink)"}">-${s.weekend_drop_pct}%</td>
-          <td class="num" style="color:${s.avg_turnover_pct >= 50 ? "var(--bad-ink)" : "var(--ink)"}">${s.avg_turnover_pct}%</td>
-          <td class="num">${s.pct_fined}%</td>
-        </tr>
-      `).join("");
-    }
+      document.getElementById("hero-meta").innerHTML =
+        `Reproducible 5-dataset join across all <strong>${fmtInt(meta.total_facilities)}</strong> Medicare/Medicaid-certified U.S. nursing homes, ` +
+        `<strong>${fmtInt(CMS.chain_highlights.total_chains)}</strong> corporate chains, <strong>${fmtInt(pec.total_owner_rows)}</strong> PECOS ownership rows, ` +
+        `and <strong>${fmtInt(cr.matched_to_provider_info)}</strong> matched FY2024 Cost Reports (Form 2540-10) &bull; ` +
+        `CMS Provider Processing Date: <strong>${esc(meta.provider_processing_date || "2026-10-01")}</strong>`;
 
-    searchEl.addEventListener("input", renderStates);
-    sortEl.addEventListener("change", renderStates);
-    renderStates();
+      document.getElementById("chain-share-txt").textContent = `${nat.chain_affiliated_pct}% (${fmtInt(nat.chain_affiliated_count)} homes)`;
+      document.getElementById("hosp-excl-txt").textContent = `${cr.hospital_based_exclusion_pct}% (${fmtInt(cr.hospital_based_missing_2540_10)} of ${fmtInt(cr.hospital_based_total)})`;
+      document.getElementById("free-match-txt").textContent = `${cr.freestanding_match_pct}%`;
+
+      document.getElementById("hero-kpis").innerHTML = `
+        <div class="kpi">
+          <div class="kpi-label">Weekend RN Cliff (7d &rarr; Wknd)</div>
+          <div class="kpi-val bad">-${nat.rn_weekend_drop_pct}%</div>
+          <div class="kpi-sub">RN drops ${fmtNum(nat.avg_rn_hprd, 2)} &rarr; ${fmtNum(nat.avg_rn_weekend_hprd, 2)}h (implied Mon–Fri &rarr; Wknd: <strong>-${nat.implied_rn_weekday_drop_pct}%</strong>)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">5-Star Red-Flag Rate</div>
+          <div class="kpi-val bad">${fs.pct_any_red_flag_4}%</div>
+          <div class="kpi-sub">${fmtInt(fs.count_any_red_flag_4)} of ${fmtInt(fs.five_star_count)} 5&#9733; homes have &ge;1 warning flag; <strong>${fs.four_star_abuse_count}</strong> 4&#9733; homes carry an Abuse Icon</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Broken PECOS Disclosures</div>
+          <div class="kpi-val warn">${pec.flag_pct_matched.pe}% PE / ${pec.flag_pct_matched.reit}% REIT</div>
+          <div class="kpi-sub">Only ${fmtInt(pec.flag_facilities.pe)} PE &amp; ${fmtInt(pec.flag_facilities.reit)} REIT disclosed, while <strong>${fmtInt(pec.nameless_org_rows)}</strong> org rows (${pec.nameless_org_pct_of_org_rows}%) have blank names</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Inspection Backlog &amp; Fines</div>
+          <div class="kpi-val bad">${fmtInt(ib.national_overdue_2yr_count)} overdue</div>
+          <div class="kpi-sub">${ib.national_overdue_2yr_pct}% &gt;2 yrs (AL ${ib.top_overdue_states[0].overdue_pct}%, VA ${ib.top_overdue_states[1].overdue_pct}%, DC ${ib.top_overdue_states[2].overdue_pct}%) &bull; $${nat.total_fines_millions}M fines</div>
+        </div>
+      `;
+
+      // ----------------------------------------------------------------
+      // 2. Render FY2024 Medicaid-Controlled Cost Report Table
+      // ----------------------------------------------------------------
+      const costTbody = document.getElementById("cost-tbody");
+      costTbody.innerHTML = cr.medicaid_matrix
+        .map((row) => {
+          return ["For-Profit", "Non-Profit", "Government"]
+            .map((own, idx) => {
+              const d = row.by_ownership[own];
+              if (!d || !d.facilities) return "";
+              const opCls = d.median_op_margin_pct < 0 ? "bad-txt" : "good-txt";
+              const totCls = d.median_tot_margin_pct < 0 ? "bad-txt" : "good-txt";
+              return `
+                <tr style="${idx === 0 ? "border-top:2px solid var(--border);" : ""}">
+                  <td>${idx === 0 ? `<strong>${esc(row.medicaid_tier)} Medicaid</strong>` : ""}</td>
+                  <td><span class="tag ${own === "Non-Profit" ? "tag-good" : own === "For-Profit" ? "tag-warn" : "tag-purple"}">${esc(own)}</span></td>
+                  <td class="num">${fmtInt(d.facilities)}</td>
+                  <td class="num ${opCls}">${fmtPct(d.median_op_margin_pct, 2, true)}</td>
+                  <td class="num ${totCls}">${fmtPct(d.median_tot_margin_pct, 2, true)}</td>
+                  <td class="num"><strong>$${fmtNum(d.median_direct_labor_day, 2)}</strong></td>
+                  <td class="num">$${fmtNum(d.median_w2_day, 2)}</td>
+                  <td class="num">$${fmtNum(d.median_rev_day, 2)}</td>
+                  <td class="num">${fmtNum(d.avg_total_hprd, 2)}h</td>
+                </tr>
+              `;
+            })
+            .join("");
+        })
+        .join("");
+
+      // ----------------------------------------------------------------
+      // 3. Render 6 Verified Flagship Findings
+      // ----------------------------------------------------------------
+      const al2020List = ib.five_star_uninspected_since_2020
+        .map((h) => `<li><code>${esc(h.ccn)}</code> ${esc(h.name)} (${esc(h.city)}, ${esc(h.state)}) — last surveyed <strong>${esc(h.last_inspection_date)}</strong></li>`)
+        .join("");
+
+      const fnAudit = CMS.footnote_audit;
+      const fn24 = fnAudit.staffing_rating_footnotes["24"] || 0;
+      const fn25 = fnAudit.reported_staffing_footnotes["25"] || 0;
+      const fn23 = fnAudit.reported_staffing_footnotes["23"] || 0;
+      const fn6 = fnAudit.reported_staffing_footnotes["6"] || 0;
+
+      const peCohort = pec.cohorts.find((x) => x.cohort.includes("PE/REIT")) || {};
+      const npCohort = pec.cohorts.find((x) => x.cohort === "Non-Profit") || {};
+      const govExcl = gc.ownership_split.find((x) => x.ownership.includes("Excl")) || {};
+      const govLease = gc.ownership_split.find((x) => x.ownership.includes("Leases")) || {};
+
+      document.getElementById("findings-grid").innerHTML = `
+        <article class="finding-card">
+          <div>
+            <div class="finding-num">Finding #01 &bull; PECOS Ownership Audit</div>
+            <h3>Mandatory PE/REIT Disclosures Are Broken—With 14,257 Nameless Org Rows</h3>
+            <p>Across <strong>${fmtInt(pec.total_owner_rows)}</strong> PECOS owner rows (${fmtInt(pec.matched_owner_ccns)} matched homes), only <strong>${fmtInt(pec.flag_facilities.pe)} (${pec.flag_pct_matched.pe}%)</strong> self-report Private Equity and <strong>${fmtInt(pec.flag_facilities.reit)} (${pec.flag_pct_matched.reit}%)</strong> self-report a REIT—far below academic estimates—while <strong>${fmtInt(pec.flag_facilities.holding)} (${pec.flag_pct_matched.holding}%)</strong> list Holding Companies, <strong>${fmtInt(pec.flag_facilities.mgmt)} (${pec.flag_pct_matched.mgmt}%)</strong> list Management Services Companies, and <strong>${fmtInt(pec.flag_facilities.adp)} (${pec.flag_pct_matched.adp}%)</strong> list Additional Disclosable Parties (ADPs).</p>
+            <p>Worse, <strong>${fmtInt(pec.nameless_org_rows)}</strong> organization rows (<strong>${pec.nameless_org_pct_of_org_rows}%</strong> of all org rows, across <strong>${fmtInt(pec.nameless_org_facilities)}</strong> homes) leave <code>ORGANIZATION NAME - OWNER</code> completely blank (12,076 ADP rows, 1,728 indirect ownership rows). Disclosed for-profit PE/REIT homes are fined at <strong>${peCohort.pct_fined}%</strong> vs. <strong>${npCohort.pct_fined}%</strong> for non-profits.</p>
+          </div>
+          <div><button type="button" class="btn btn-sm" data-jump-preset="pe_reit">Inspect ${fmtInt(pec.flag_facilities.pe_or_reit)} Disclosed PE/REIT Homes &rarr;</button></div>
+        </article>
+
+        <article class="finding-card">
+          <div>
+            <div class="finding-num">Finding #02 &bull; 612-Chain Spread</div>
+            <h3>Corporate Chains Span From 4.9&#9733; Leaders to 1.3&#9733; Multi-Million-Dollar Fine Magnets</h3>
+            <p>Excluding CMS's blank-ID National benchmark row, <strong>${fmtInt(CMS.chain_highlights.total_chains)}</strong> corporate chains operate <strong>${nat.chain_affiliated_pct}%</strong> of U.S. nursing homes. Among chains with &ge;20 homes, averages swing from <strong>Acts Retirement-Life (4.9&#9733;, 4.5h)</strong> and <strong>Advanced Health Care (4.7&#9733;, 5.6h)</strong> down to <strong>Reliant Care (1.3&#9733;, 2.0h; behavioral caveat)</strong> and <strong>Arcadia Care (1.7&#9733;, 40% abuse icon)</strong>.</p>
+            <p>Active federal fines concentrate heavily at the top: <strong>PACS Group ($8.66M across 277 homes)</strong>, <strong>Creative Solutions ($7.81M, 150 homes)</strong>, <strong>Genesis HealthCare ($7.30M, 183 homes)</strong>, <strong>Avir Health ($6.85M, 118 homes)</strong>, and <strong>The Ensign Group ($6.50M, 347 homes)</strong>.</p>
+          </div>
+          <div><a class="btn btn-sm" href="#chains">Explore All 612 Chains &rarr;</a></div>
+        </article>
+
+        <article class="finding-card">
+          <div>
+            <div class="finding-num">Finding #03 &bull; Medicaid-Controlled FY2024 Finances</div>
+            <h3>Non-Profits Spend +$25 to +$80/Day More on Direct Labor in Every Medicaid Tier</h3>
+            <p>Controlling for Medicaid share across all 4 tiers (<code>&lt;40%</code>, <code>40–60%</code>, <code>60–80%</code>, <code>80%+</code>) eliminates the payer-mix excuse: in <code>&lt;40%</code> Medicaid homes, non-profits spend a median <strong>$324/day</strong> on direct labor (W-2 + benefits + contract nurses) vs. <strong>$244/day</strong> at for-profits; even in <code>80%+</code> Medicaid homes, non-profits spend <strong>$202/day</strong> vs. <strong>$177/day</strong>.</p>
+            <p>Non-profits absorb negative patient-care operating margins (<strong>-3.5% to -12.5%</strong>, stabilized to ~+0.8%–+1.1% total net margin by philanthropy/other income), while for-profits book positive total net margins (<strong>+1.6% to +3.1%</strong>) even before counting related-party rent/management fees.</p>
+          </div>
+          <div><a class="btn btn-sm" href="#financials">Inspect 4-Tier Financial Matrix &rarr;</a></div>
+        </article>
+
+        <article class="finding-card">
+          <div>
+            <div class="finding-num">Finding #04 &bull; Ownership Classification Trap</div>
+            <h3>TX &amp; IN Private-Chain Leases Distort CMS's "Government" Nursing Home Data</h3>
+            <p><strong>${gc.gov_in_chain_pct}% (${fmtInt(gc.gov_in_chain)} of ${fmtInt(gc.gov_total)})</strong> of "Government" nursing homes belong to corporate chains—and <strong>${gc.tx_in_share_of_gov_chains_pct}%</strong> of those are concentrated in just two states: <strong>Texas (${gc.tx_gov_chain_count})</strong> and <strong>Indiana (${gc.in_gov_chain_count})</strong>, where county hospital districts hold licenses to capture supplemental Medicaid funds while leasing operations to private chains (Wellsential, American Senior Communities, Ensign, Creative Solutions).</p>
+            <p>Genuine public/veterans' networks (FL Veterans' Affairs, NYC Health + Hospitals, Hawaii Health Systems) average <strong>${govExcl.avg_total_hprd} hrs/day &amp; ${govExcl.avg_stars}&#9733; (${govExcl.pct_fined}% fined)</strong>—versus TX/IN gov-chain leases at just <strong>${govLease.avg_total_hprd} hrs/day &amp; ${govLease.avg_stars}&#9733; (${govLease.pct_fined}% fined)</strong>, an 81-minute daily care gap.</p>
+          </div>
+          <div><button type="button" class="btn btn-sm" data-jump-preset="tx_in_gov">Inspect All 286 TX/IN Gov-Chain Leases &rarr;</button></div>
+        </article>
+
+        <article class="finding-card">
+          <div>
+            <div class="finding-num">Finding #05 &bull; State Inspection Backlog</div>
+            <h3>955 Homes Are Overdue &gt;2 Years—Including 4 Active 5&#9733; AL Homes Uninspected Since 2020</h3>
+            <p>Nationally, <strong>${fmtInt(ib.national_overdue_2yr_count)} (${ib.national_overdue_2yr_pct}%)</strong> homes have gone more than 2 years without a standard federal health inspection. Three jurisdictions account for a severe oversight collapse: <strong>Alabama (${ib.top_overdue_states[0].overdue_pct}%)</strong>, <strong>Virginia (${ib.top_overdue_states[1].overdue_pct}%)</strong>, and <strong>Washington, DC (${ib.top_overdue_states[2].overdue_pct}%)</strong>.</p>
+            <ul class="mini-list">${al2020List}</ul>
+          </div>
+          <div><button type="button" class="btn btn-sm" data-jump-preset="overdue">Inspect All ${fmtInt(ib.national_overdue_2yr_count)} Overdue Homes &rarr;</button></div>
+        </article>
+
+        <article class="finding-card">
+          <div>
+            <div class="finding-num">Finding #06 &bull; 5-Star Illusion &amp; Staffing Footnotes</div>
+            <h3>46.8% of 5&#9733; Homes Carry Red Flags—and 20 4&#9733; Homes Have an Active Abuse Icon</h3>
+            <p>Among <strong>${fmtInt(fs.five_star_count)}</strong> 5-star nursing homes, <strong>${fs.pct_any_red_flag_4}%</strong> carry at least one major warning sign: <strong>${fs.pct_big_weekend_drop_15plus}%</strong> cut weekend nursing &ge;15%, <strong>${fs.pct_high_turnover_50plus}%</strong> suffer &ge;50% annual turnover, <strong>${fs.pct_with_fines}%</strong> have active fines, and <strong>${fs.pct_overdue_2yr}%</strong> are &gt;2 years overdue (<strong>${fs.pct_any_red_flag_3}%</strong> on the 3 non-overdue flags). Meanwhile, <strong>${fs.four_star_abuse_count}</strong> homes hold a <strong>4-star overall rating despite CMS's red Abuse Icon</strong>.</p>
+            <p>PBJ footnote audit: <strong>${fn24}</strong> homes triggered <strong>Footnote 24</strong> (high days with no RN onsite, auto 1&#9733; staffing), <strong>${fn25}</strong> triggered <strong>Footnote 25</strong> (CMS couldn't validate PBJ accuracy), <strong>${fn23}</strong> triggered <strong>Footnote 23</strong> (non-submission), and <strong>${fn6}</strong> triggered <strong>Footnote 6</strong> (failed calculation criteria).</p>
+          </div>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn btn-sm" data-jump-preset="five_red">5&#9733; w/ Red Flags &rarr;</button>
+            <button type="button" class="btn btn-sm" data-jump-preset="four_abuse">20 4&#9733; Abuse Homes &rarr;</button>
+          </div>
+        </article>
+      `;
+
+      // Bind finding jump buttons
+      document.querySelectorAll("[data-jump-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          setFacilityPreset(btn.dataset.jumpPreset);
+          document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
+        });
+      });
+
+      // ----------------------------------------------------------------
+      // 4. Render Ownership Cards (Non-Profit, Gov Split, For-Profit)
+      // ----------------------------------------------------------------
+      const ownDisplay = [
+        CMS.by_ownership.find((o) => o.ownership === "Non-Profit"),
+        govExcl,
+        govLease,
+        CMS.by_ownership.find((o) => o.ownership === "For-Profit"),
+      ].filter(Boolean);
+
+      document.getElementById("owner-grid").style.gridTemplateColumns = "repeat(auto-fit, minmax(235px, 1fr))";
+      document.getElementById("owner-grid").innerHTML = ownDisplay
+        .map(
+          (o) => `
+          <div class="owner-card ${o.ownership === "Non-Profit" || o.ownership.includes("Excl") ? "highlight" : ""}">
+            <h3 style="margin:0 0 3px; font-size:0.96rem;">${esc(o.ownership)}</h3>
+            <p class="muted" style="font-size:0.78rem; margin-bottom:8px;">${fmtInt(o.facilities)} homes (${o.share_pct}% of U.S.)</p>
+            <div class="owner-stat"><span>Avg Overall Rating</span><strong>${o.avg_stars} / 5</strong></div>
+            <div class="owner-stat"><span>7-Day Total Nurse Hrs</span><strong>${o.avg_total_hprd}h</strong></div>
+            <div class="owner-stat"><span>Weekend Hrs (7d&rarr;Wknd)</span><strong>${o.avg_weekend_hprd}h (-${o.weekend_drop_pct}%)</strong></div>
+            <div class="owner-stat"><span>RN Hrs (7d &rarr; Wknd)</span><strong>${o.avg_rn_hprd} &rarr; ${o.avg_rn_weekend_hprd}h (-${o.rn_weekend_drop_pct}%)</strong></div>
+            <div class="owner-stat"><span>Annual Nurse Turnover</span><strong>${o.avg_turnover_pct}%</strong></div>
+            <div class="owner-stat"><span>Facilities Fined</span><strong>${o.pct_fined}% (avg ${fmtMoney(o.avg_fine_dollars)})</strong></div>
+            <div class="owner-stat"><span>Abuse Icon / Overdue &gt;2y</span><strong>${o.pct_abuse_icon}% / ${o.pct_overdue_2yr}%</strong></div>
+          </div>
+        `
+        )
+        .join("");
+
+      // ----------------------------------------------------------------
+      // 5. Render 50-State + DC Explorer
+      // ----------------------------------------------------------------
+      const stSearch = document.getElementById("st-search");
+      const stSort = document.getElementById("st-sort");
+      const facStateSelect = document.getElementById("fac-state");
+
+      CMS.by_state
+        .slice()
+        .sort((a, b) => a.state.localeCompare(b.state))
+        .forEach((s) => {
+          const opt = document.createElement("option");
+          opt.value = s.state;
+          opt.textContent = `${s.state} (${s.facilities})`;
+          facStateSelect.appendChild(opt);
+        });
+
+      function renderStates() {
+        const q = stSearch.value.trim().toLowerCase();
+        const sort = stSort.value;
+        let rows = CMS.by_state.filter((s) => !q || s.state.toLowerCase().includes(q));
+        const keyMap = {
+          hprd_desc: (a, b) => (b.avg_total_hprd || 0) - (a.avg_total_hprd || 0),
+          overdue_desc: (a, b) => (b.pct_overdue_2yr || 0) - (a.pct_overdue_2yr || 0),
+          wknd_desc: (a, b) => (b.weekend_drop_pct || 0) - (a.weekend_drop_pct || 0),
+          rn_wknd_desc: (a, b) => (b.rn_weekend_drop_pct || 0) - (a.rn_weekend_drop_pct || 0),
+          turn_desc: (a, b) => (b.avg_turnover_pct || 0) - (a.avg_turnover_pct || 0),
+          fined_desc: (a, b) => (b.pct_fined || 0) - (a.pct_fined || 0),
+          pe_desc: (a, b) => (b.pct_pe_reit || 0) - (a.pct_pe_reit || 0),
+          state_asc: (a, b) => a.state.localeCompare(b.state),
+        };
+        rows.sort(keyMap[sort] || keyMap.hprd_desc);
+
+        document.getElementById("st-tbody").innerHTML = rows
+          .map(
+            (s) => `
+            <tr class="clickable" data-st="${esc(s.state)}" title="Click to filter Facility Lookup to ${esc(s.state)}">
+              <td><strong>${esc(s.state)}</strong>${s.gov_chain_n >= 20 ? ` <span class="tag tag-purple">${s.gov_chain_n} gov-chain</span>` : ""}</td>
+              <td class="num">${s.facilities}</td>
+              <td class="num">${s.avg_stars}</td>
+              <td class="num"><strong>${fmtNum(s.avg_total_hprd, 2)}h</strong></td>
+              <td class="num">${fmtNum(s.avg_weekend_hprd, 2)}h</td>
+              <td class="num ${s.weekend_drop_pct >= 14 ? "bad-txt" : ""}">-${s.weekend_drop_pct}%</td>
+              <td class="num ${s.rn_weekend_drop_pct >= 34 ? "bad-txt" : ""}">-${s.rn_weekend_drop_pct}%</td>
+              <td class="num ${s.avg_turnover_pct >= 50 ? "bad-txt" : ""}">${s.avg_turnover_pct}%</td>
+              <td class="num">${s.pct_fined}%</td>
+              <td class="num ${s.pct_overdue_2yr >= 15 ? "bad-txt" : ""}">${s.pct_overdue_2yr}%</td>
+              <td class="num">${s.pct_pe_reit}%</td>
+            </tr>
+          `
+          )
+          .join("");
+
+        document.querySelectorAll("#st-tbody tr[data-st]").forEach((tr) => {
+          tr.addEventListener("click", () => {
+            facStateSelect.value = tr.dataset.st;
+            facState.page = 1;
+            renderFacilities();
+            document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
+          });
+        });
+      }
+      stSearch.addEventListener("input", renderStates);
+      stSort.addEventListener("change", renderStates);
+      renderStates();
+
+      // ----------------------------------------------------------------
+      // 6. Async Load All 14,686 Facilities + 612 Chains
+      // ----------------------------------------------------------------
+      let FAC_DATA = null;
+      let FAC_IDX = {};
+      let FAC_FILTERED = [];
+      let CHAINS_DATA = [];
+      let CHAINS_FILTERED = [];
+
+      const facState = {
+        preset: "all",
+        chainId: "",
+        chainName: "",
+        selectedCcn: "",
+        page: 1,
+        pageSize: 50,
+      };
+      const chState = { page: 1, pageSize: 40 };
+
+      const facSearchEl = document.getElementById("fac-search");
+      const facOwnEl = document.getElementById("fac-own");
+      const facSortEl = document.getElementById("fac-sort");
+      const facDetailEl = document.getElementById("fac-detail");
+
+      function setFacilityPreset(preset) {
+        facState.preset = preset;
+        facState.page = 1;
+        document.querySelectorAll("#fac-chips .chip[data-preset]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.preset === preset);
+        });
+        renderFacilities();
+      }
+
+      function filterByChain(chainId, chainName) {
+        facState.chainId = chainId || "";
+        facState.chainName = chainName || "";
+        facState.preset = "all";
+        facState.page = 1;
+        facStateSelect.value = "";
+        facOwnEl.value = "";
+        facSearchEl.value = "";
+        document.querySelectorAll("#fac-chips .chip[data-preset]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.preset === "all");
+        });
+        renderActiveChainPill();
+        renderFacilities();
+        document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
+      }
+
+      function renderActiveChainPill() {
+        const host = document.getElementById("active-chain-pill");
+        if (!facState.chainId) {
+          host.innerHTML = "";
+          return;
+        }
+        host.innerHTML = `<button type="button" class="chip chain-chip" id="clear-chain-btn">Chain: ${esc(facState.chainName)} &times;</button>`;
+        document.getElementById("clear-chain-btn").addEventListener("click", () => {
+          facState.chainId = "";
+          facState.chainName = "";
+          renderActiveChainPill();
+          renderFacilities();
+        });
+      }
+
+      document.querySelectorAll("#fac-chips .chip[data-preset]").forEach((btn) => {
+        btn.addEventListener("click", () => setFacilityPreset(btn.dataset.preset));
+      });
+
+      let searchTimer = null;
+      facSearchEl.addEventListener("input", () => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+          facState.page = 1;
+          renderFacilities();
+        }, 120);
+      });
+      facStateSelect.addEventListener("change", () => { facState.page = 1; renderFacilities(); });
+      facOwnEl.addEventListener("change", () => { facState.page = 1; renderFacilities(); });
+      facSortEl.addEventListener("change", () => { facState.page = 1; renderFacilities(); });
+
+      document.getElementById("fac-prev").addEventListener("click", () => {
+        if (facState.page > 1) { facState.page--; renderFacilityPage(); }
+      });
+      document.getElementById("fac-next").addEventListener("click", () => {
+        const maxP = Math.max(1, Math.ceil(FAC_FILTERED.length / facState.pageSize));
+        if (facState.page < maxP) { facState.page++; renderFacilityPage(); }
+      });
+
+      function fGet(row, col) { return row[FAC_IDX[col]]; }
+
+      function wkndDropOf(row) {
+        const th = fGet(row, "tot_h");
+        const wh = fGet(row, "wknd_h");
+        if (!th || wh == null || th <= 0) return null;
+        return ((th - wh) / th) * 100;
+      }
+
+      function renderFacilities() {
+        if (!FAC_DATA) return;
+        const q = facSearchEl.value.trim().toLowerCase();
+        const stF = facStateSelect.value;
+        const ownF = facOwnEl.value;
+        const preset = facState.preset;
+        const cidF = facState.chainId;
+        const chainsMap = FAC_DATA.chains || {};
+
+        const I = FAC_IDX;
+        const out = [];
+        const rows = FAC_DATA.rows;
+        for (let i = 0; i < rows.length; i++) {
+          const r = rows[i];
+          if (stF && r[I.st] !== stF) continue;
+          if (ownF && r[I.own] !== ownF) continue;
+          if (cidF && r[I.chain_id] !== cidF) continue;
+
+          if (preset !== "all") {
+            if (preset === "five_red" && !(r[I.stars] === 5 && r[I.rf_mask] > 0)) continue;
+            if (preset === "overdue" && r[I.overdue] !== 1) continue;
+            if (preset === "pe_reit") {
+              const pf = r[I.pecos_flags] || "";
+              if (!pf.includes("PE") && !pf.includes("REIT")) continue;
+            }
+            if (preset === "abuse_sff" && !(r[I.abuse] === 1 || r[I.sff])) continue;
+            if (preset === "tx_in_gov" && !(r[I.own] === "GV" && r[I.chain_id] && (r[I.st] === "TX" || r[I.st] === "IN"))) continue;
+            if (preset === "four_abuse" && !(r[I.stars] === 4 && r[I.abuse] === 1)) continue;
+            if (preset === "al_2020") {
+              const dt = r[I.insp_dt] || "";
+              if (!(r[I.stars] === 5 && r[I.st] === "AL" && dt && dt.slice(0, 4) <= "2020")) continue;
+            }
+          }
+
+          if (q) {
+            const cname = r[I.chain_id] ? (chainsMap[r[I.chain_id]] || "") : "";
+            const hay = `${r[I.ccn]} ${r[I.name]} ${r[I.city]} ${r[I.st]} ${r[I.zip]} ${cname}`.toLowerCase();
+            if (!hay.includes(q)) continue;
+          }
+          out.push(r);
+        }
+
+        const sort = facSortEl.value;
+        out.sort((a, b) => {
+          if (sort === "fines_desc") return (b[I.fines_amt] || 0) - (a[I.fines_amt] || 0);
+          if (sort === "stars_asc") return (a[I.stars] ?? 9) - (b[I.stars] ?? 9) || (b[I.fines_amt] || 0) - (a[I.fines_amt] || 0);
+          if (sort === "stars_desc") return (b[I.stars] ?? -1) - (a[I.stars] ?? -1) || (b[I.tot_h] ?? -1) - (a[I.tot_h] ?? -1);
+          if (sort === "hprd_asc") return (a[I.tot_h] ?? 99) - (b[I.tot_h] ?? 99);
+          if (sort === "hprd_desc") return (b[I.tot_h] ?? -1) - (a[I.tot_h] ?? -1);
+          if (sort === "turn_desc") return (b[I.turn] ?? -1) - (a[I.turn] ?? -1);
+          if (sort === "wknd_desc") return (wkndDropOf(b) ?? -999) - (wkndDropOf(a) ?? -999);
+          if (sort === "opmgn_desc") return (b[I.op_mgn] ?? -999) - (a[I.op_mgn] ?? -999);
+          return String(a[I.name]).localeCompare(String(b[I.name]));
+        });
+
+        FAC_FILTERED = out;
+        document.getElementById("btn-export-filtered").disabled = out.length === 0;
+        renderFacilityPage();
+      }
+
+      function renderFacilityPage() {
+        const total = FAC_FILTERED.length;
+        const maxPage = Math.max(1, Math.ceil(total / facState.pageSize));
+        if (facState.page > maxPage) facState.page = maxPage;
+        const start = (facState.page - 1) * facState.pageSize;
+        const slice = FAC_FILTERED.slice(start, start + facState.pageSize);
+        const I = FAC_IDX;
+        const chainsMap = FAC_DATA.chains || {};
+
+        document.getElementById("fac-status").innerHTML =
+          `Matched <strong>${fmtInt(total)}</strong> of ${fmtInt(FAC_DATA.rows.length)} U.S. nursing homes` +
+          (total > 0 ? ` &bull; Click any facility row for full 5-dataset dossier` : "");
+
+        document.getElementById("fac-page-info").textContent =
+          total > 0 ? `Showing ${fmtInt(start + 1)}–${fmtInt(Math.min(start + facState.pageSize, total))} of ${fmtInt(total)} (Page ${facState.page}/${maxPage})` : "No matching facilities.";
+        document.getElementById("fac-prev").disabled = facState.page <= 1;
+        document.getElementById("fac-next").disabled = facState.page >= maxPage;
+
+        const tbody = document.getElementById("fac-tbody");
+        if (!slice.length) {
+          tbody.innerHTML = `<tr><td colspan="8" class="muted" style="padding:20px; text-align:center;">No nursing homes match your current filters.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = slice
+          .map((r) => {
+            const ccn = r[I.ccn];
+            const cname = r[I.chain_id] ? chainsMap[r[I.chain_id]] || "" : "";
+            const pf = r[I.pecos_flags] || "";
+            const drop = wkndDropOf(r);
+            const badges = [];
+            if (r[I.abuse]) badges.push(`<span class="tag tag-bad">Abuse Icon</span>`);
+            if (r[I.sff]) badges.push(`<span class="tag tag-bad">${esc(r[I.sff])}</span>`);
+            if (r[I.overdue]) badges.push(`<span class="tag tag-warn">Overdue &gt;2y</span>`);
+            if (pf.includes("PE")) badges.push(`<span class="tag tag-purple">PE</span>`);
+            if (pf.includes("REIT")) badges.push(`<span class="tag tag-purple">REIT</span>`);
+            if (r[I.own] === "GV" && r[I.chain_id] && (r[I.st] === "TX" || r[I.st] === "IN")) badges.push(`<span class="tag tag-warn">Gov-Lease</span>`);
+            if (r[I.fn_rep] === "23" || r[I.fn_st] === "23") badges.push(`<span class="tag tag-muted">FN 23</span>`);
+            if (r[I.fn_st] === "24") badges.push(`<span class="tag tag-bad">FN 24</span>`);
+
+            const ownBadge = r[I.own] === "NP" ? "tag-good" : r[I.own] === "GV" ? "tag-purple" : "tag-muted";
+            const ownLabel = r[I.own] === "NP" ? "Non-Profit" : r[I.own] === "GV" ? "Gov" : r[I.own] === "FP" ? "For-Profit" : "Other";
+            const starStr = r[I.stars] != null ? `<strong>${r[I.stars]}&#9733;</strong>` : `<span class="muted">N/R</span>`;
+            const subStars = `<div class="muted" style="font-size:0.72rem;">H:${r[I.h_stars] ?? "–"} S:${r[I.s_stars] ?? "–"} Q:${r[I.q_stars] ?? "–"}</div>`;
+
+            const hrsHtml =
+              r[I.tot_h] != null
+                ? `<strong>${fmtNum(r[I.tot_h], 2)}</strong> &rarr; ${fmtNum(r[I.wknd_h], 2)}h<div class="${drop >= 15 ? "bad-txt" : "muted"}" style="font-size:0.73rem;">${drop != null ? "-" + drop.toFixed(1) + "%" : "—"}</div>`
+                : `<span class="muted">No PBJ</span>`;
+
+            const finHtml =
+              r[I.op_mgn] != null || r[I.labor_d] != null
+                ? `<span class="${r[I.op_mgn] < 0 ? "bad-txt" : "good-txt"}">${fmtPct(r[I.op_mgn], 1, true)}</span><div class="muted" style="font-size:0.73rem;">${r[I.labor_d] != null ? "$" + Math.round(r[I.labor_d]) + "/d" : "—"}</div>`
+                : `<span class="muted">${r[I.hosp] ? "Hosp 2552-10" : "—"}</span>`;
+
+            return `
+              <tr class="clickable ${facState.selectedCcn === ccn ? "selected" : ""}" data-ccn="${esc(ccn)}">
+                <td>
+                  <strong>${esc(r[I.name])}</strong>
+                  <div class="muted" style="font-size:0.76rem;">${esc(r[I.city])}, ${esc(r[I.st])} ${esc(r[I.zip])} &bull; CCN <code>${esc(ccn)}</code></div>
+                  <div>${badges.join("")}</div>
+                </td>
+                <td style="font-size:0.8rem;">${cname ? esc(cname) : `<span class="muted">Independent</span>`}</td>
+                <td><span class="tag ${ownBadge}">${ownLabel}</span></td>
+                <td class="num">${starStr}${subStars}</td>
+                <td class="num">${hrsHtml}</td>
+                <td class="num ${r[I.turn] >= 50 ? "bad-txt" : ""}">${r[I.turn] != null ? fmtPct(r[I.turn], 1) : "—"}</td>
+                <td class="num ${r[I.fines_amt] >= 50000 ? "bad-txt" : ""}">${r[I.fines_amt] > 0 ? fmtMoney(r[I.fines_amt]) : "$0"}<div class="muted" style="font-size:0.72rem;">${r[I.fines_n]} fine${r[I.fines_n] === 1 ? "" : "s"}</div></td>
+                <td class="num">${finHtml}</td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        tbody.querySelectorAll("tr[data-ccn]").forEach((tr) => {
+          tr.addEventListener("click", () => openFacilityDetail(tr.dataset.ccn));
+        });
+      }
+
+      function openFacilityDetail(ccn) {
+        const I = FAC_IDX;
+        const r = FAC_DATA.rows.find((x) => x[I.ccn] === ccn);
+        if (!r) return;
+        facState.selectedCcn = ccn;
+        document.querySelectorAll("#fac-tbody tr").forEach((tr) => tr.classList.toggle("selected", tr.dataset.ccn === ccn));
+
+        const chainsMap = FAC_DATA.chains || {};
+        const ownTypes = FAC_DATA.own_types || [];
+        const cname = r[I.chain_id] ? chainsMap[r[I.chain_id]] || "" : "";
+        const ownFull = ownTypes[r[I.own_idx]] || r[I.own];
+
+        const totDrop = wkndDropOf(r);
+        const rnDrop = r[I.rn_h] && r[I.rn_wknd_h] != null && r[I.rn_h] > 0 ? ((r[I.rn_h] - r[I.rn_wknd_h]) / r[I.rn_h]) * 100 : null;
+        const impWkday = r[I.tot_h] && r[I.wknd_h] != null ? (7 * r[I.tot_h] - 2 * r[I.wknd_h]) / 5 : null;
+        const impDrop = impWkday && impWkday > 0 ? ((impWkday - r[I.wknd_h]) / impWkday) * 100 : null;
+
+        const rfList = [];
+        if (r[I.rf_mask] & 1) rfList.push("Turnover >= 50%");
+        if (r[I.rf_mask] & 2) rfList.push("Active federal fines");
+        if (r[I.rf_mask] & 4) rfList.push("Weekend staffing drop >= 15%");
+        if (r[I.rf_mask] & 8) rfList.push("Inspection overdue > 2 years");
+
+        // Footnotes decoder
+        const fnDefs = CMS.footnote_audit.definitions || {};
+        const fnCodes = [...new Set([r[I.fn_st], r[I.fn_rep], r[I.fn_turn]].filter(Boolean))];
+        const fnHtml = fnCodes.length
+          ? `<div class="callout warn" style="margin-top:12px; margin-bottom:0; font-size:0.84rem;">
+               <strong>CMS Footnote Explanations for This Facility:</strong>
+               <ul style="margin:6px 0 0; padding-left:18px;">
+                 ${fnCodes.map((code) => `<li><strong>Footnote ${esc(code)}:</strong> ${esc(fnDefs[code] || "See CMS Care Compare footnote reference.")}</li>`).join("")}
+               </ul>
+             </div>`
+          : "";
+
+        const pflags = (r[I.pecos_flags] || "").split(",").filter(Boolean);
+        const pflagNames = {
+          PE: "Private Equity", REIT: "REIT", ADP: "Additional Disclosable Party (ADP)",
+          HOLD: "Holding Company", MGMT: "Management Services Co.", INV: "Investment Firm",
+          FIN: "Financial Institution", CONS: "Consulting Firm", STF: "Medical Staffing Co.", ACQ: "Created for Acquisition"
+        };
+
+        const careCompareUrl = `https://www.medicare.gov/care-compare/details/nursing-home/${encodeURIComponent(ccn)}`;
+        const propublicaUrl = `https://projects.propublica.org/nursing-homes/homes/h-${encodeURIComponent(ccn)}`;
+
+        facDetailEl.innerHTML = `
+          <div class="detail-head">
+            <div>
+              <span class="eyebrow" style="margin-bottom:4px;">5-Dataset Facility Dossier &bull; CCN ${esc(ccn)}</span>
+              <h3 style="margin:2px 0 4px; font-size:1.18rem; color:var(--ink);">${esc(r[I.name])}</h3>
+              <div class="muted" style="font-size:0.86rem;">
+                ${esc(r[I.city])}, ${esc(r[I.st])} ${esc(r[I.zip])} &bull; ${esc(ownFull)} &bull;
+                ${r[I.beds] != null ? `${r[I.beds]} certified beds` : ""} ${r[I.res] != null ? `(${r[I.res]} avg residents/day)` : ""}
+                ${r[I.hosp] ? ` &bull; <span class="tag tag-muted">Hospital-Based</span>` : ""}
+                ${r[I.chg_own] ? ` &bull; <span class="tag tag-warn">Changed Ownership &lt;12m</span>` : ""}
+              </div>
+              <div style="margin-top:6px; font-size:0.85rem;">
+                <strong>Corporate Chain:</strong>
+                ${cname ? `<button type="button" class="btn btn-sm" id="detail-chain-btn">${esc(cname)} (Filter all homes &rarr;)</button>` : `<span class="muted">Independent / No CMS Chain ID</span>`}
+              </div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+              <a class="btn btn-sm btn-primary" href="${careCompareUrl}" target="_blank" rel="noopener">Medicare Care Compare &nearr;</a>
+              <a class="btn btn-sm" href="${propublicaUrl}" target="_blank" rel="noopener">ProPublica Inspection Reports &nearr;</a>
+              <button type="button" class="btn btn-sm" id="detail-close-btn" aria-label="Close detail panel">Close &times;</button>
+            </div>
+          </div>
+
+          <div class="detail-grid">
+            <div class="detail-box">
+              <h4>Ratings, Inspections &amp; Penalties</h4>
+              <div class="kv"><span>Overall / Health / Staffing / QM</span><strong>${r[I.stars] ?? "N/R"}&#9733; &nbsp;(H:${r[I.h_stars] ?? "–"} / S:${r[I.s_stars] ?? "–"} / Q:${r[I.q_stars] ?? "–"})</strong></div>
+              <div class="kv"><span>Last Standard Health Survey</span><strong class="${r[I.overdue] ? "bad-txt" : ""}">${esc(r[I.insp_dt] || "Not listed")} ${r[I.overdue] ? "(>2 yrs overdue)" : ""}</strong></div>
+              <div class="kv"><span>Cycle 1 Health Deficiencies</span><strong>${r[I.defic] ?? "—"}</strong></div>
+              <div class="kv"><span>Federal Fines</span><strong class="${r[I.fines_amt] > 0 ? "bad-txt" : ""}">${fmtMoney(r[I.fines_amt])} (${r[I.fines_n]} fine${r[I.fines_n] === 1 ? "" : "s"})</strong></div>
+              <div class="kv"><span>Abuse Icon / SFF Status</span><strong class="${r[I.abuse] || r[I.sff] ? "bad-txt" : ""}">${r[I.abuse] ? "YES — Abuse Icon" : "No"} / ${esc(r[I.sff] || "None")}</strong></div>
+              <div class="kv"><span>Red Flags Triggered</span><strong class="${rfList.length ? "warn-txt" : "good-txt"}">${rfList.length ? esc(rfList.join("; ")) : "None"}</strong></div>
+            </div>
+
+            <div class="detail-box">
+              <h4>PBJ Staffing &amp; Turnover (Payroll-Verified)</h4>
+              <div class="kv"><span>Total Nurse Hrs (7-Day Avg &rarr; Wknd)</span><strong>${fmtNum(r[I.tot_h], 2)}h &rarr; ${fmtNum(r[I.wknd_h], 2)}h (${totDrop != null ? "-" + totDrop.toFixed(1) + "%" : "—"})</strong></div>
+              <div class="kv"><span>Implied Mon–Fri &rarr; Wknd Drop</span><strong>${impDrop != null ? "-" + impDrop.toFixed(1) + "%" : "—"}</strong></div>
+              <div class="kv"><span>RN Hrs (7-Day Avg &rarr; Wknd)</span><strong>${fmtNum(r[I.rn_h], 2)}h &rarr; ${fmtNum(r[I.rn_wknd_h], 2)}h (${rnDrop != null ? "-" + rnDrop.toFixed(1) + "%" : "—"})</strong></div>
+              <div class="kv"><span>Annual Total Nursing Turnover</span><strong class="${r[I.turn] >= 50 ? "bad-txt" : ""}">${r[I.turn] != null ? fmtPct(r[I.turn], 1) : "—"}</strong></div>
+              <div class="kv"><span>Annual RN Turnover</span><strong class="${r[I.rn_turn] >= 50 ? "bad-txt" : ""}">${r[I.rn_turn] != null ? fmtPct(r[I.rn_turn], 1) : "—"}</strong></div>
+              <div class="kv"><span>Administrators Left (12m)</span><strong>${r[I.adm_left] ?? "—"}</strong></div>
+            </div>
+
+            <div class="detail-box">
+              <h4>PECOS Ownership &amp; Entity Disclosure Audit</h4>
+              <div class="kv"><span>Disclosed Entity Flags</span><strong>${pflags.length ? esc(pflags.map((c) => pflagNames[c] || c).join(", ")) : "None flagged in PECOS"}</strong></div>
+              <div class="kv"><span>Nameless Org Rows (Blank Name)</span><strong class="${r[I.nameless_n] ? "warn-txt" : ""}">${r[I.nameless_n] ? r[I.nameless_n] + " blank org row(s)" : "0"}</strong></div>
+              <div class="kv"><span>Notable Corporate Entities</span><strong style="max-width:65%; font-weight:600;">${r[I.owner_orgs] ? esc(r[I.owner_orgs]) : "None listed under PE/REIT/Holding/Mgmt"}</strong></div>
+              <div class="muted" style="font-size:0.76rem; margin-top:6px;">Note: Only 0.7% of SNFs self-report PE and 4.2% REIT in PECOS; absence of a PE/REIT flag does not guarantee non-investor ownership.</div>
+            </div>
+
+            <div class="detail-box">
+              <h4>FY2024 Cost Report (Form 2540-10)</h4>
+              ${
+                r[I.op_mgn] != null || r[I.labor_d] != null || r[I.mcaid_pct] != null
+                  ? `
+                  <div class="kv"><span>Medicaid Share of Patient Days</span><strong>${r[I.mcaid_pct] != null ? fmtPct(r[I.mcaid_pct], 1) : "—"}</strong></div>
+                  <div class="kv"><span>True Patient-Care Operating Margin</span><strong class="${r[I.op_mgn] < 0 ? "bad-txt" : "good-txt"}">${fmtPct(r[I.op_mgn], 2, true)}</strong></div>
+                  <div class="kv"><span>Total Net Margin (incl. Other Income)</span><strong class="${r[I.tot_mgn] < 0 ? "bad-txt" : "good-txt"}">${fmtPct(r[I.tot_mgn], 2, true)}</strong></div>
+                  <div class="kv"><span>Total Direct Labor / Resident Day</span><strong>${r[I.labor_d] != null ? "$" + fmtNum(r[I.labor_d], 2) : "—"}</strong></div>
+                  <div class="kv"><span>W-2 Adjusted Salaries / Day</span><strong>${r[I.w2_d] != null ? "$" + fmtNum(r[I.w2_d], 2) : "—"}</strong></div>
+                  <div class="kv"><span>Net Patient Revenue / Day</span><strong>${r[I.rev_d] != null ? "$" + fmtNum(r[I.rev_d], 2) : "—"}</strong></div>
+                  `
+                  : `<p class="muted" style="font-size:0.84rem;">No standalone Form 2540-10 Cost Report matched for FY2024.${r[I.hosp] ? " Because this facility is hospital-based, it likely files under Hospital Cost Report Form 2552-10 instead." : " This can occur for newly certified, closed, or non-standard fiscal-year facilities."}</p>`
+              }
+            </div>
+          </div>
+          ${fnHtml}
+        `;
+
+        facDetailEl.classList.add("open");
+        facDetailEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+        document.getElementById("detail-close-btn").addEventListener("click", () => {
+          facDetailEl.classList.remove("open");
+          facState.selectedCcn = "";
+          document.querySelectorAll("#fac-tbody tr.selected").forEach((tr) => tr.classList.remove("selected"));
+        });
+        const chBtn = document.getElementById("detail-chain-btn");
+        if (chBtn) {
+          chBtn.addEventListener("click", () => filterByChain(r[I.chain_id], cname));
+        }
+      }
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && facDetailEl.classList.contains("open")) {
+          facDetailEl.classList.remove("open");
+        }
+      });
+
+      // CSV download helpers
+      function csvCell(v) {
+        const s = String(v == null ? "" : v);
+        return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+      }
+
+      function downloadCsv(filename, headers, rows) {
+        const lines = [headers.map(csvCell).join(",")];
+        for (let i = 0; i < rows.length; i++) {
+          lines.push(rows[i].map(csvCell).join(","));
+        }
+        const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(url);
+      }
+
+      document.getElementById("btn-export-filtered").addEventListener("click", () => {
+        if (!FAC_DATA || !FAC_FILTERED.length) return;
+        const I = FAC_IDX;
+        const chainsMap = FAC_DATA.chains || {};
+        const ownTypes = FAC_DATA.own_types || [];
+        const headers = [
+          "ccn", "provider_name", "city", "state", "zip", "ownership_group", "ownership_type",
+          "beds", "avg_residents", "chain_id", "chain_name", "overall_stars", "health_stars",
+          "staffing_stars", "qm_stars", "total_hprd_7day", "weekend_hprd", "rn_hprd_7day",
+          "weekend_rn_hprd", "turnover_pct", "rn_turnover_pct", "fines_count", "fines_dollars",
+          "abuse_icon", "sff_status", "overdue_2yr", "last_survey_date", "pecos_flags",
+          "pecos_nameless_org_rows", "pecos_notable_owners", "fy2024_medicaid_pct",
+          "fy2024_patient_op_margin_pct", "fy2024_total_net_margin_pct", "fy2024_direct_labor_day",
+          "fy2024_w2_salaries_day", "fy2024_net_patient_rev_day"
+        ];
+        const rows = FAC_FILTERED.map((r) => [
+          r[I.ccn], r[I.name], r[I.city], r[I.st], r[I.zip], r[I.own], ownTypes[r[I.own_idx]] || "",
+          r[I.beds], r[I.res], r[I.chain_id] || "", r[I.chain_id] ? chainsMap[r[I.chain_id]] || "" : "",
+          r[I.stars], r[I.h_stars], r[I.s_stars], r[I.q_stars], r[I.tot_h], r[I.wknd_h],
+          r[I.rn_h], r[I.rn_wknd_h], r[I.turn], r[I.rn_turn], r[I.fines_n], r[I.fines_amt],
+          r[I.abuse] ? "Y" : "N", r[I.sff] || "", r[I.overdue] ? "Y" : "N", r[I.insp_dt] || "",
+          r[I.pecos_flags] || "", r[I.nameless_n] || 0, r[I.owner_orgs] || "", r[I.mcaid_pct],
+          r[I.op_mgn], r[I.tot_mgn], r[I.labor_d], r[I.w2_d], r[I.rev_d]
+        ]);
+        downloadCsv(`cms-nursing-homes-filtered-${FAC_FILTERED.length}.csv`, headers, rows);
+      });
+
+      // ----------------------------------------------------------------
+      // 7. 612-Chain Scorecard Rendering
+      // ----------------------------------------------------------------
+      const chSearchEl = document.getElementById("ch-search");
+      const chMinEl = document.getElementById("ch-min");
+      const chSortEl = document.getElementById("ch-sort");
+
+      function renderChains() {
+        const q = chSearchEl.value.trim().toLowerCase();
+        const minN = parseInt(chMinEl.value, 10) || 1;
+        const sort = chSortEl.value;
+
+        let rows = CHAINS_DATA.filter((c) => c.n >= minN && (!q || c.name.toLowerCase().includes(q)));
+        rows.sort((a, b) => {
+          if (sort === "n_desc") return b.n - a.n;
+          if (sort === "stars_asc") return (a.stars ?? 9) - (b.stars ?? 9) || b.n - a.n;
+          if (sort === "stars_desc") return (b.stars ?? -1) - (a.stars ?? -1) || b.n - a.n;
+          if (sort === "hprd_asc") return (a.tot_h ?? 99) - (b.tot_h ?? 99);
+          if (sort === "hprd_desc") return (b.tot_h ?? -1) - (a.tot_h ?? -1);
+          if (sort === "rn_drop_desc") return (b.rn_wknd_drop ?? -999) - (a.rn_wknd_drop ?? -999);
+          if (sort === "turn_desc") return (b.turn ?? -1) - (a.turn ?? -1);
+          if (sort === "fines_desc") return b.fines_tot - a.fines_tot;
+          if (sort === "avgfine_desc") return b.avg_fine - a.avg_fine;
+          if (sort === "abuse_desc") return (b.abuse_pct ?? -1) - (a.abuse_pct ?? -1);
+          if (sort === "ap_desc") return (b.ap_pct ?? -1) - (a.ap_pct ?? -1);
+          return b.n - a.n;
+        });
+
+        CHAINS_FILTERED = rows;
+        document.getElementById("btn-export-chains").disabled = rows.length === 0;
+        renderChainPage();
+      }
+
+      function renderChainPage() {
+        const total = CHAINS_FILTERED.length;
+        const maxPage = Math.max(1, Math.ceil(total / chState.pageSize));
+        if (chState.page > maxPage) chState.page = maxPage;
+        const start = (chState.page - 1) * chState.pageSize;
+        const slice = CHAINS_FILTERED.slice(start, start + chState.pageSize);
+
+        document.getElementById("ch-status").innerHTML =
+          `Showing <strong>${fmtInt(total)}</strong> of ${fmtInt(CHAINS_DATA.length)} corporate chains &bull; Click any chain row to inspect all its facilities above`;
+        document.getElementById("ch-page-info").textContent =
+          total > 0 ? `Showing ${fmtInt(start + 1)}–${fmtInt(Math.min(start + chState.pageSize, total))} of ${fmtInt(total)} (Page ${chState.page}/${maxPage})` : "No matching chains.";
+        document.getElementById("ch-prev").disabled = chState.page <= 1;
+        document.getElementById("ch-next").disabled = chState.page >= maxPage;
+
+        const tbody = document.getElementById("ch-tbody");
+        if (!slice.length) {
+          tbody.innerHTML = `<tr><td colspan="10" class="muted" style="padding:18px; text-align:center;">No chains match your filters.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = slice
+          .map((c) => {
+            const cavHtml = c.caveat ? `<div style="margin-top:2px;"><span class="tag tag-warn">${esc(c.caveat)}</span></div>` : "";
+            const mix = c.np_pct >= 50 ? `<span class="tag tag-good">${c.np_pct}% NP</span>` : c.gov_pct >= 50 ? `<span class="tag tag-purple">${c.gov_pct}% Gov</span>` : `<span class="tag tag-muted">${c.fp_pct}% FP</span>`;
+            return `
+              <tr class="clickable" data-cid="${esc(c.id)}" data-cname="${esc(c.name)}" title="Click to filter Facility Lookup to ${esc(c.name)}">
+                <td>
+                  <strong>${esc(c.name)}</strong> ${mix}
+                  <div class="muted" style="font-size:0.74rem;">${c.states} state${c.states === 1 ? "" : "s"} &bull; ${c.sff ? `${c.sff} SFF, ` : ""}${c.pe_reit_n ? `${c.pe_reit_n} PE/REIT` : "0 PE/REIT flagged"}</div>
+                  ${cavHtml}
+                </td>
+                <td class="num"><strong>${c.n}</strong></td>
+                <td class="num ${c.stars != null && c.stars <= 2.0 ? "bad-txt" : c.stars >= 4.0 ? "good-txt" : ""}">${c.stars != null ? c.stars.toFixed(1) + "&#9733;" : "—"}</td>
+                <td class="num">${c.tot_h != null ? fmtNum(c.tot_h, 2) + "h" : (c.fn23_n ? `<span class="warn-txt">FN 23</span>` : "—")}</td>
+                <td class="num ${c.rn_wknd_drop >= 38 ? "bad-txt" : ""}">${c.rn_wknd_drop != null ? "-" + c.rn_wknd_drop.toFixed(1) + "%" : "—"}</td>
+                <td class="num ${c.turn >= 55 ? "bad-txt" : ""}">${c.turn != null ? fmtPct(c.turn, 1) : "—"}</td>
+                <td class="num">${fmtMoney(c.fines_tot)}<div class="muted" style="font-size:0.72rem;">avg ${fmtMoney(c.avg_fine)}</div></td>
+                <td class="num ${c.abuse_pct >= 20 ? "bad-txt" : ""}">${c.abuse_pct != null ? fmtPct(c.abuse_pct, 1) : "—"}</td>
+                <td class="num ${c.ap_pct >= 25 ? "warn-txt" : ""}">${c.ap_pct != null ? fmtPct(c.ap_pct, 1) : "—"}</td>
+                <td class="num ${c.med_op_mgn != null && c.med_op_mgn < 0 ? "bad-txt" : ""}">${c.med_op_mgn != null ? fmtPct(c.med_op_mgn, 1, true) : "—"}</td>
+              </tr>
+            `;
+          })
+          .join("");
+
+        tbody.querySelectorAll("tr[data-cid]").forEach((tr) => {
+          tr.addEventListener("click", () => filterByChain(tr.dataset.cid, tr.dataset.cname));
+        });
+      }
+
+      chSearchEl.addEventListener("input", () => { chState.page = 1; renderChains(); });
+      chMinEl.addEventListener("change", () => { chState.page = 1; renderChains(); });
+      chSortEl.addEventListener("change", () => { chState.page = 1; renderChains(); });
+      document.getElementById("ch-prev").addEventListener("click", () => { if (chState.page > 1) { chState.page--; renderChainPage(); } });
+      document.getElementById("ch-next").addEventListener("click", () => {
+        const maxP = Math.max(1, Math.ceil(CHAINS_FILTERED.length / chState.pageSize));
+        if (chState.page < maxP) { chState.page++; renderChainPage(); }
+      });
+
+      document.getElementById("btn-export-chains").addEventListener("click", () => {
+        if (!CHAINS_FILTERED.length) return;
+        const headers = ["chain_id", "chain_name", "facilities", "states", "avg_stars", "total_hprd", "wknd_drop_pct", "rn_wknd_drop_pct", "turnover_pct", "total_fines_dollars", "avg_fine_dollars", "abuse_pct", "antipsychotic_pct", "med_op_margin_pct", "fn23_count", "caveat"];
+        const rows = CHAINS_FILTERED.map((c) => [c.id, c.name, c.n, c.states, c.stars, c.tot_h, c.wknd_drop, c.rn_wknd_drop, c.turn, c.fines_tot, c.avg_fine, c.abuse_pct, c.ap_pct, c.med_op_mgn, c.fn23_n, c.caveat || ""]);
+        downloadCsv(`cms-nursing-home-chains-${CHAINS_FILTERED.length}.csv`, headers, rows);
+      });
+
+      // Fetch facilities.json & chains.json asynchronously so initial page render is instantaneous
+      fetch("../../data/nursing-homes/facilities.json")
+        .then((res) => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+        .then((data) => {
+          FAC_DATA = data;
+          data.cols.forEach((c, idx) => { FAC_IDX[c] = idx; });
+          renderFacilities();
+        })
+        .catch((err) => {
+          document.getElementById("fac-status").innerHTML = `<span class="bad-txt">Could not load facilities.json (${esc(err.message)}). If opening locally via file://, serve over HTTP (e.g. python -m http.server).</span>`;
+        });
+
+      fetch("../../data/nursing-homes/chains.json")
+        .then((res) => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+        .then((data) => {
+          CHAINS_DATA = data.chains || [];
+          renderChains();
+        })
+        .catch((err) => {
+          document.getElementById("ch-status").innerHTML = `<span class="bad-txt">Could not load chains.json (${esc(err.message)}).</span>`;
+        });
+    })();
   </script>
 </body>
 </html>

@@ -216,6 +216,14 @@
     }
 
     .guide-card:hover { border-color: #b5cecc; }
+    .guide-card.flagship-card {
+      border: 2px solid var(--accent);
+      background: linear-gradient(180deg, #f8fcfc 0%, #ffffff 38%);
+    }
+    .badge-flagship {
+      background: var(--accent);
+      color: #ffffff;
+    }
 
     .guide-meta {
       display: flex;
@@ -438,18 +446,22 @@
           const statusBadge = isLive
             ? `<span class="badge badge-live">${g.number} &bull; Published</span>`
             : `<span class="badge badge-upcoming">${g.number} &bull; Coming Next</span>`;
+          const flagshipBadge = g.flagship
+            ? `<span class="badge badge-flagship">Flagship Investigation</span>`
+            : "";
 
           const actions = isLive
             ? `
-              <a class="btn btn-primary" href="${g.guideUrl}">Read Full Guide</a>
+              <a class="btn btn-primary" href="${g.guideUrl}">${g.flagship ? "Open Flagship Platform" : "Read Full Guide"}</a>
               ${g.toolUrl ? `<a class="btn btn-secondary" href="${g.toolUrl}">${g.toolLabel || "Open Interactive Tool"}</a>` : ""}
               <span class="source-note">${g.sourcesCount}</span>
             `
             : `<span class="source-note" style="margin-left:0;">Currently researching &amp; analyzing public datasets.</span>`;
 
           return `
-            <article class="guide-card">
+            <article class="guide-card ${g.flagship ? "flagship-card" : ""}">
               <div class="guide-meta">
+                ${flagshipBadge}
                 ${statusBadge}
                 <span class="badge badge-cat">${g.category}</span>
                 <span class="guide-date">${g.date}</span>

@@ -4,21 +4,22 @@ window.RESEARCH_GUIDES = [
   {
     id: "nursing-home-reality",
     number: "Guide #03",
+    flagship: true,
     status: "published",
     date: "November 2026",
     category: "Elder Care & Health",
-    title: "Nursing Home Reality Beyond the 5-Star Rating (14,686 U.S. Homes)",
+    title: "U.S. Nursing Home Accountability Platform (14,686 Homes, 612 Chains & FY2024 Finances)",
     summary:
-      "Reproducible analysis of all 14,686 Medicare-certified nursing homes (live CMS Payroll-Based Journal data) exposing the 30.4% weekend RN staffing cliff, 45.3% annual turnover, $445.7M in fines, and the 44-minute daily for-profit vs. non-profit care gap.",
+      "Flagship 5-dataset CMS join uniting all 14,686 U.S. nursing homes, 612 corporate chains, 302,718 PECOS ownership rows, and 13,819 matched FY2024 Cost Reports—exposing broken PE/REIT disclosures (14,257 nameless org rows), Medicaid-controlled labor & margin gaps (+$25–$80/day more at non-profits), the TX/IN government-chain lease distortion, state inspection backlogs (AL 85.3%, VA 57.1%, DC 56.2%), and the 46.8% 5-star red-flag illusion.",
     highlights: [
-      "Interactive 50-state + DC explorer sortable by staffing, weekend drop, turnover & fines",
-      "Exposes the '5-Star Illusion': 23.7% of 5-star homes cut weekend nursing by 15%+",
-      "6 concrete questions for families touring facilities on a weekend"
+      "Instant search across all 14,686 homes with full 5-dataset dossiers & Care Compare / ProPublica links",
+      "612-chain scorecard + Medicaid-controlled FY2024 true operating margins & direct labor spending",
+      "Open linked dataset (.csv.gz + JSON) & reproducible 5-endpoint Python pipeline"
     ],
     guideUrl: "./guides/nursing-homes/",
-    toolUrl: "./guides/nursing-homes/#state-explorer",
-    toolLabel: "Explore All 50 States",
-    sourcesCount: "Live CMS Dataset (14,686 facilities)"
+    toolUrl: "./guides/nursing-homes/#lookup",
+    toolLabel: "Search All 14,686 Homes",
+    sourcesCount: "5 Live CMS Datasets (14,686 homes & 612 chains)"
   },
   {
     id: "airline-wheelchair-scorecard",

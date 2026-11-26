@@ -15,7 +15,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 
 1. **Guide #01 — Microplastics in Drinking Water:** [`guides/microplastics/`](./guides/microplastics/) + [Interactive Decision Calculator](./microplastics-calculator/) + [Markdown Guide](./microplastics-drinking-water-guide.md) + [1-Min Shareable Summary](./microplastics-shareable-summary.md)
 2. **Guide #02 — Global Traffic Safety (158 Countries):** [`guides/traffic-safety/`](./guides/traffic-safety/) + [Python WHO Analysis](./data/traffic-safety/analyze_who_road_deaths.py)
-3. **Guide #03 — Nursing Home Reality Beyond the 5-Star Rating (14,686 U.S. Homes):** [`guides/nursing-homes/`](./guides/nursing-homes/) + [Python CMS PBJ Analysis](./data/nursing-homes/analyze_cms_nursing_homes.py)
+3. **Guide #03 (Flagship Investigation) — U.S. Nursing Home Accountability Platform (14,686 Homes, 612 Chains & FY2024 Finances):** [`guides/nursing-homes/`](./guides/nursing-homes/) + [5-Dataset Python CMS Pipeline](./data/nursing-homes/analyze_cms_nursing_homes.py) + [Linked Dataset (.csv.gz)](./data/nursing-homes/cms-nursing-homes-linked.csv.gz) + [`chains.json`](./data/nursing-homes/chains.json) + [`facilities.json`](./data/nursing-homes/facilities.json)
 4. **Guide #04 — Airline Reliability & Wheelchair Safety Scorecard (2024–2025 DOT/BTS):** [`guides/airline-safety/`](./guides/airline-safety/)
 5. **Guide #05 — Food Recalls Decoded: Allergens vs. Severe Pathogens (29,634 openFDA Records):** [`guides/food-recalls/`](./guides/food-recalls/) + [Python openFDA Analysis](./data/food-recalls/analyze_openfda_food_recalls.py)
 6. **Guide #06 — Financial Disputes, Credit-Repair Spam & P2P Fraud Reality (CFPB):** [`guides/financial-disputes/`](./guides/financial-disputes/)
