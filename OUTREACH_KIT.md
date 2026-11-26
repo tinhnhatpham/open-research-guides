@@ -154,3 +154,18 @@
 > - **Honest caveat:** Form 300A covers all 50 states, while Federal OSHA Severe Injury Reports cover the 29 Federal OSHA jurisdictions (21 State-Plan states report separately).
 >
 > Interactive lookup across 5,744 employers, 267 industries & 1,000 injury hotspots + open `.csv.gz`: https://open-research-guides.vercel.app/guides/workplace-safety/
+
+### D. Used-Car & Automaker Safety Reality — 4,056 Models & 438,178 NHTSA Complaints (`r/whatcarshouldibuy`, `r/cars`, `r/personalfinance`, `r/datasets`)
+
+**Title:**
+`[OC] I deduplicated 637,333 NHTSA owner complaints (2020–2026) and joined them with 13,785 post-2010 recalls into a free Used-Car Model-Year Safety Checker (4,056 vehicles)`
+
+**Body:**
+> When shopping for a used car, NHTSA's site only checks one VIN or model-year at a time, and its raw complaint CSVs repeat the same `ODINO` ID whenever an owner lists multiple failing parts (overcounting fires by +63% and deaths by +86%). I cleaned out **199,155 duplicate component rows** and joined all 13,785 post-2010 recalls (including NHTSA's 307 Do-Not-Drive & Park-Outside fire advisories) with 438,178 unique 2020–2026 owner complaints.
+>
+> A few findings straight from the federal filings:
+> - **Hyundai & Kia dominate U.S. vehicle fires:** Kia (`44.2` fires per 1,000 complaints; 1,100 fires) and Hyundai (`30.6/1k`; 876 fires) account for **9 of the Top 10 most fire-prone model-years** in America and 35 combined Park-Outside fire advisories.
+> - **Tesla cuts through both myths:** One of the *lowest* fire rates (`5.8/1k` complaints), yet `106.4` crash complaints per 1,000 (`1,383` crashes)—3×–4× the crash share of Ford (`26.0/1k`), Chevy (`34.2/1k`), or Honda (`36.2/1k`).
+> - **Ford leads total recall volume by >2×:** 657 vehicle recall campaigns (2016–2026) including 77 ODI-forced probes and 18 Do-Not-Drive advisories (vs. Chevy 270, Toyota 203, Honda 180).
+>
+> Compare any car's MY 2010–2026 years side-by-side (zero ads/affiliates) + open `.csv.gz`: https://open-research-guides.vercel.app/guides/auto-safety/

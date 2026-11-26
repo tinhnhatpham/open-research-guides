@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "auto-safety-nhtsa",
+    number: "Guide #13",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Auto Safety & Consumer Rights",
+    title: "Used-Car & Automaker Safety Reality: 4,056 Models, 13,785 Recalls & 438,178 Complaints (NHTSA 2010–2026)",
+    summary:
+      "Zero-affiliate, deduplicated audit of daily-updated NHTSA recall campaigns (2010–Nov 2026; 541.2M units; 307 Do-Not-Drive & Park-Outside advisories) joined with 438,178 unique 2020–2026 owner complaints (removing 199,155 duplicate ODINO rows)—exposing Hyundai/Kia's fire dominance (9 of Top 10 fire models), Ford's 657 recall campaigns, and Tesla's fire-vs-crash split.",
+    highlights: [
+      "Interactive Used-Car Pre-Buy Check comparing every MY 2010–2026 model year side-by-side",
+      "Searchable catalog of 4,056 vehicles + all 307 Do-Not-Drive & Park-Outside fire warnings",
+      "36-brand scorecard + open .csv.gz downloads & reproducible NHTSA flat-file Python pipeline"
+    ],
+    guideUrl: "./guides/auto-safety/",
+    toolUrl: "./guides/auto-safety/#prebuy",
+    toolLabel: "Check a Used Car",
+    sourcesCount: "Live NHTSA ODI (13,785 recalls + 438k complaints)"
+  },
+  {
     id: "workplace-safety-osha",
     number: "Guide #12",
     flagship: true,
