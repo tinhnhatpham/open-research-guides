@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at_utc": "2026-11-26T18:22:06Z",
-    "runtime_sec": 2.9,
+    "generated_at_utc": "2026-11-26T19:50:23Z",
+    "runtime_sec": 10.4,
     "endpoints": {
       "cost_report": {
         "title": "Hospital Provider Cost Report : 2024-01-02",
