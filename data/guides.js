@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "weather-risk-noaa",
+    number: "Guide #15",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Climate, Housing & Insurance Risk",
+    title: "America's Extreme Weather & Homebuyer Hazard Map: All 3,259 U.S. Counties (NOAA 2016–2026)",
+    summary:
+      "Zero-paywall audit of 687,227 observed NOAA Storm Events (2016–Nov 2026; $245.83B property damage, $14.91B crop loss, 10,485 deaths) across 3,259 U.S. counties—tracking +15.3% 5-year storm acceleration, county-level hail/flood/tornado/wildfire profiles, and the silent killers (Extreme Heat & Cold) driving U.S. fatalities.",
+    highlights: [
+      "Instant county lookup across all 3,259 U.S. counties with #1 local hazard, damage percentile & 5-year trend",
+      "Property Damage ($96B Flood, $82B Hurricane, $32B Wildfire, $12B Hail) vs. Deadliest Hazards breakdown",
+      "Open bulk dataset (.csv.gz) & reproducible NOAA NCEI Python pipeline (handling County vs NWS Zone mapping)"
+    ],
+    guideUrl: "./guides/weather-risk/",
+    toolUrl: "./guides/weather-risk/#lookup",
+    toolLabel: "Check Your County",
+    sourcesCount: "Live NOAA NCEI (687,227 events, 3,259 counties)"
+  },
+  {
     id: "college-debt-roi",
     number: "Guide #14",
     flagship: true,

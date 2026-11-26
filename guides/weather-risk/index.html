@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>America's Extreme Weather &amp; Homebuyer Hazard Map: All 3,259 U.S. Counties (NOAA 2016–2026) — Open Plain-Language Research</title>
+  <meta name="description" content="Zero-paywall analysis of 687,227 observed NOAA Storm Events (2016–2026) across 3,259 U.S. counties ($245.8B property damage, 10,485 deaths): look up your county's #1 hazard, hail/tornado/flood/wind counts, 5-year event acceleration (+15.3%), and the silent killers (Extreme Heat &amp; Rip Currents)." />
+  <meta property="og:title" content="America's Extreme Weather & Homebuyer Hazard Map — All 3,259 U.S. Counties (NOAA 2016–2026)" />
+  <meta property="og:description" content="Search any U.S. county before buying a home or insuring property: 11 years of observed NOAA property damage, hail, floods, tornadoes, wildfires, and 5-year event trends." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://open-research-guides.vercel.app/guides/weather-risk/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://open-research-guides.vercel.app/guides/weather-risk/" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    section[id] { scroll-margin-top: 68px; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+    @media (max-width: 720px) { .topbar { position: static; } }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.88rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .nav-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 28px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 18px 15px; } }
+    .eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: #134e4a; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.3rem); line-height: 1.18; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.89rem; margin-bottom: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 820px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.91rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 12px; }
+    .controls input, .controls select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.87rem; background: var(--surface); color: var(--ink); }
+    .controls input { flex: 1; min-width: 220px; }
+    .chip-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+    .chip { border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 0.81rem; font-weight: 600; cursor: pointer; }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 460px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 820px; }
+    th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-alt); position: sticky; top: 0; font-weight: 700; z-index: 2; }
+    tbody tr.clickable { cursor: pointer; }
+    tbody tr.clickable:hover { background: #f3f9f9; }
+    tbody tr.selected { background: var(--accent-soft); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .good-txt { color: var(--good-ink); font-weight: 700; }
+    .bad-txt { color: var(--bad-ink); font-weight: 700; }
+    .muted { color: var(--ink-muted); }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-right: 4px; white-space: nowrap; }
+    .b-bad { background: var(--bad-bg); color: var(--bad-ink); }
+    .b-warn { background: var(--warn-bg); color: var(--warn-ink); }
+    .b-good { background: var(--good-bg); color: var(--good-ink); }
+    .b-soft { background: var(--accent-soft); color: var(--accent-dark); }
+    .dossier { display: none; margin-top: 16px; border: 2px solid var(--accent); border-radius: 14px; padding: 20px; background: #fbfdfd; }
+    .dossier.open { display: block; }
+    .dossier-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+    @media (max-width: 780px) { .dossier-grid { grid-template-columns: repeat(2, 1fr); } }
+    .c-box { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; }
+    .c-lbl { font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); font-weight: 700; }
+    .c-val { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+    .c-sub { font-size: 0.76rem; color: var(--ink-muted); margin-top: 2px; }
+    .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 820px) { .split-grid { grid-template-columns: 1fr; } }
+    .bar-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .bar-item { display: grid; grid-template-columns: 185px 1fr 86px; align-items: center; gap: 10px; font-size: 0.83rem; }
+    @media (max-width: 600px) { .bar-item { grid-template-columns: 1fr; gap: 3px; } }
+    .bar-track { background: #e8efee; border-radius: 999px; height: 15px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: var(--accent); }
+    .bar-fill.bad { background: #dc2626; }
+    .pager { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; font-size: 0.85rem; color: var(--ink-muted); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 13px; font-size: 0.84rem; font-weight: 650; cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.87rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <nav class="nav-links" aria-label="Section navigation">
+        <a href="#lookup">All-3,259 County Lookup</a>
+        <a href="#hazards">Property Damage vs. Silent Killers</a>
+        <a href="#states">52-State Scorecard</a>
+        <a href="#methodology">Caveats &amp; Open CSV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Flagship Investigation #09 &bull; Guide #15 &bull; Climate, Housing &amp; Insurance Risk</span>
+      <h1>America's Extreme Weather &amp; Homebuyer Hazard Map: All 3,259 U.S. Counties (NOAA 2016–2026)</h1>
+      <p class="meta">
+        Zero-paywall analysis of <strong>687,227</strong> observed <strong>NOAA NCEI Storm Events</strong> (2016–Nov 2026; <strong>$245.83B</strong> documented property damage, <strong>$14.91B</strong> crop loss, <strong>10,485</strong> deaths) mapped across <strong>3,259</strong> U.S. counties &bull; Updated November 2026
+      </p>
+
+      <div class="callout">
+        <strong>Why this doesn't exist anywhere else:</strong> Commercial property climate-risk scores (like First Street) sit behind paywalls, while NOAA's own Storm Events portal only runs clunky single-county queries and splits county-FIPS events (<code>CZ_TYPE=C</code>) from NWS forecast-zone events (<code>CZ_TYPE=Z</code>: hurricanes, wildfires, heat waves). Here you can check <strong>any U.S. county's 11-year observed weather damage, #1 hazard, hail/tornado/flood frequency, and 5-year event acceleration</strong>—free and open.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Observed Storm Events (11 Yr)</div>
+          <div class="kpi-val" id="kpi-ev">687,227</div>
+          <div class="kpi-sub" id="kpi-ev-sub">2021–25 vs 2016–20: +15.3% more severe events</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">NWS Field Property Damage</div>
+          <div class="kpi-val bad" id="kpi-prop">$245.8B</div>
+          <div class="kpi-sub" id="kpi-prop-sub">+ $14.9B crop damage (Flood $96.2B, Hurricane $82.1B)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Weather Fatalities (11 Yr)</div>
+          <div class="kpi-val bad" id="kpi-deaths">10,485</div>
+          <div class="kpi-sub" id="kpi-deaths-sub">20,960 injuries &mdash; Extreme Heat &amp; Cold lead deaths</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Counties &amp; Territories Mapped</div>
+          <div class="kpi-val good" id="kpi-cnty">3,259</div>
+          <div class="kpi-sub">Incl. 165,474 exact-matched NWS Zone hurricane/wildfire rows</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. All-3,259 County Lookup -->
+    <section class="card" id="lookup">
+      <h2>1. Homebuyer &amp; Resident Lookup: Search All 3,259 U.S. Counties (2016–2026)</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:12px;">
+        Type any U.S. county (e.g., <code>Harris</code>, <code>Miami-Dade</code>, <code>Maricopa</code>, <code>Los Angeles</code>, <code>Tarrant</code>, <code>Buncombe</code>, <code>Cook</code>, <code>El Paso</code>) and click a row to inspect its complete 11-year hazard dossier, national property-damage percentile, and 5-year event trend.
+      </p>
+
+      <div class="controls">
+        <input type="search" id="q" placeholder="Search county name, state, or #1 hazard (e.g. Harris, Hail, Wildfire)..." aria-label="Search U.S. counties" />
+        <select id="f-state" aria-label="Filter by state"><option value="">All 52 States &amp; PR</option></select>
+        <select id="f-sort" aria-label="Sort counties">
+          <option value="prop_desc">Sort: Most Property Damage ($M)</option>
+          <option value="events_desc">Sort: Most Storm Events (11 Yr)</option>
+          <option value="deaths_desc">Sort: Most Weather Deaths</option>
+          <option value="hail_desc">Sort: Most Hailstorms (Roof Risk)</option>
+          <option value="tornado_desc">Sort: Most Tornadoes</option>
+          <option value="flood_desc">Sort: Most Flood / Flash Floods</option>
+          <option value="chg_desc">Sort: Fastest 5-Yr Event Surge (%)</option>
+        </select>
+      </div>
+
+      <div class="chip-bar">
+        <button type="button" class="chip active" data-preset="all">All 3,259 Counties</button>
+        <button type="button" class="chip" data-preset="top10">Top 10% Damage Risk (&ge;90th pctl)</button>
+        <button type="button" class="chip" data-preset="hail">Hail Alley (&ge;100 Hail Events)</button>
+        <button type="button" class="chip" data-preset="tornado">Tornado Hotspots (&ge;25)</button>
+        <button type="button" class="chip" data-preset="flood">Heavy Flood (&ge;50 Floods)</button>
+        <button type="button" class="chip" data-preset="surge">Fastest Surge (&ge;+50% 2021–25)</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>County &amp; State</th>
+              <th>#1 Local Hazard</th>
+              <th class="num">Property Dmg</th>
+              <th class="num">Dmg Pctl</th>
+              <th class="num">Events (11y)</th>
+              <th class="num">5-Yr Trend</th>
+              <th class="num">Hail</th>
+              <th class="num">Tornado</th>
+              <th class="num">Deaths</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body">
+            <tr><td colspan="9" class="muted">Loading all 3,259 U.S. counties...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <span id="pg-info">--</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn" id="pg-prev">&larr; Prev</button>
+          <button type="button" class="btn" id="pg-next">Next &rarr;</button>
+        </div>
+      </div>
+
+      <div class="dossier" id="dossier" aria-live="polite"></div>
+    </section>
+
+    <!-- 2. Property Damage vs Silent Killers -->
+    <section class="card" id="hazards">
+      <h2>2. What Costs Billions vs. What Actually Kills Americans (2016–2026)</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:14px;">
+        One of the starkest mismatches in U.S. disaster preparedness: <strong>Floods ($96.2B)</strong>, <strong>Hurricanes ($82.1B)</strong>, <strong>Wildfires ($31.8B)</strong>, and <strong>Hail ($11.8B)</strong> dominate home-insurance losses—while low-property-damage <strong>Silent Killers</strong> (<strong>Extreme Heat</strong>, <strong>Winter Cold</strong>, and <strong>Coastal Rip Currents</strong>) account for the majority of U.S. weather fatalities.
+      </p>
+      <div class="split-grid">
+        <div>
+          <h3>Most Destructive Hazards (Property Damage, $B)</h3>
+          <div class="bar-list" id="prop-bars"></div>
+        </div>
+        <div>
+          <h3>Deadliest Weather Hazards (Direct + Indirect Deaths)</h3>
+          <div class="bar-list" id="death-bars"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 52-State Scorecard -->
+    <section class="card" id="states">
+      <h2>3. 52-State &amp; Puerto Rico Extreme Weather Scorecard (2016–2026)</h2>
+      <div class="table-wrap" style="max-height:440px;">
+        <table style="min-width:740px;">
+          <thead>
+            <tr>
+              <th>State / Territory</th>
+              <th>#1 Property Hazard</th>
+              <th class="num">Property Dmg</th>
+              <th class="num">Crop Dmg</th>
+              <th class="num">Total Events</th>
+              <th class="num">Deaths</th>
+              <th class="num">Injuries</th>
+            </tr>
+          </thead>
+          <tbody id="state-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Honest Caveats & Open CSV -->
+    <section class="card" id="methodology">
+      <h2>4. Honest Methodological Caveats &amp; Open Dataset Downloads</h2>
+      <div class="callout warn">
+        <strong>Important Caveats (Read Before Citing):</strong>
+        <ul style="margin:6px 0 0; padding-left:18px;">
+          <li><strong>NWS Field Estimates vs. Final Insured Losses:</strong> NOAA Storm Events records initial field-office damage estimates (`DAMAGE_PROPERTY`). While exact for comparing relative county hazards (flood vs. hail vs. tornado), field estimates systematically understate final insured catastrophe losses for mega-hurricanes and urban wildfires compared to NOAA's separate Billion-Dollar Disasters tally.</li>
+          <li><strong>County FIPS vs. NWS Forecast Zones (`CZ_TYPE=C` vs `Z`):</strong> NOAA records tornadoes, hail, flash floods, and severe winds by County FIPS, but records hurricanes, wildfires, heat waves, and winter storms by NWS Forecast Zone. Our national &amp; state tables include <strong>100% of all 687,227 events</strong>; our county lookup merges all County-FIPS rows plus <strong>165,474 exact-name 1:1 zone-to-county matches</strong>, while multi-county mountain/coastal zones remain in state totals.</li>
+          <li><strong>Always Check Parcel-Level Flood Maps:</strong> County-level history does not replace parcel elevation—always verify exact flood zones at <a href="https://msc.fema.gov/portal/home" target="_blank" rel="noopener">FEMA Flood Map Service Center</a> and pair with our <a href="../flood-claims/">Guide #07 Flood Claims Reality</a>.</li>
+        </ul>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 18px;">
+        <a class="btn btn-primary" href="../../data/weather-risk/noaa-counties-2016-2026.csv.gz" download>Download All 3,259 Counties (.csv.gz)</a>
+        <a class="btn" href="../../data/weather-risk/summary.json" target="_blank" rel="noopener">View summary.json</a>
+        <a class="btn" href="https://github.com/tinhnhatpham/open-research-guides/blob/main/data/weather-risk/analyze_noaa_storms.py" target="_blank" rel="noopener">Reproducible Python Pipeline (GitHub)</a>
+      </div>
+
+      <ul class="sources">
+        <li><strong>NOAA National Centers for Environmental Information (NCEI):</strong> <a href="https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/" target="_blank" rel="noopener">Storm Events Database Bulk CSV.GZ Archive (2016–2026)</a>.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research Guides &bull; Zero ads, zero affiliates, open federal data</span>
+      <span><a href="../../" style="color:var(--accent-dark); text-decoration:none; font-weight:600;">All 15 Research Guides &rarr;</a></span>
+    </footer>
+  </main>
+
+  <script src="../../data/weather-risk/summary-data.js"></script>
+  <script>
+  (function () {
+    const S = window.NOAA_SUMMARY;
+    if (!S) return;
+
+    const fmtN = (n) => n == null ? "—" : Number(n).toLocaleString("en-US");
+    const fmtDmg = (m) => {
+      if (m == null || m === 0) return "$0";
+      if (m >= 1000) return `$${(m / 1000).toFixed(2)}B`;
+      if (m >= 1) return `$${m.toFixed(1)}M`;
+      return `$${Math.round(m * 1000)}K`;
+    };
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    // Hydrate Hero KPIs
+    const N = S.national;
+    document.getElementById("kpi-ev").textContent = fmtN(N.events);
+    document.getElementById("kpi-ev-sub").textContent = `2021–25 vs 2016–20: ${N.ev_5yr_chg_pct > 0 ? '+' : ''}${N.ev_5yr_chg_pct}% more severe events`;
+    document.getElementById("kpi-prop").textContent = `$${N.prop_b}B`;
+    document.getElementById("kpi-prop-sub").textContent = `+ $${N.crop_b}B crop loss (Flood $${S.by_hazard[0].prop_b}B, Hurricane $${S.by_hazard[1].prop_b}B)`;
+    document.getElementById("kpi-deaths").textContent = fmtN(N.deaths);
+    document.getElementById("kpi-deaths-sub").textContent = `${fmtN(N.inj)} injuries — #1 Killer: ${S.deadliest_hazards[0].hazard} (${fmtN(S.deadliest_hazards[0].deaths)})`;
+    document.getElementById("kpi-cnty").textContent = fmtN(N.counties_mapped);
+
+    // Hazard Bars
+    const maxP = Math.max(...S.by_hazard.map(h => h.prop_b), 1);
+    document.getElementById("prop-bars").innerHTML = S.by_hazard.slice(0, 8).map(h => `
+      <div class="bar-item">
+        <div><strong>${esc(h.hazard)}</strong></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(h.prop_b / maxP * 100).toFixed(1)}%"></div></div>
+        <div class="num"><strong>$${h.prop_b.toFixed(1)}B</strong></div>
+      </div>
+    `).join("");
+
+    const maxD = Math.max(...S.deadliest_hazards.map(h => h.deaths), 1);
+    document.getElementById("death-bars").innerHTML = S.deadliest_hazards.map(h => `
+      <div class="bar-item">
+        <div><strong>${esc(h.hazard)}</strong></div>
+        <div class="bar-track"><div class="bar-fill bad" style="width:${(h.deaths / maxD * 100).toFixed(1)}%"></div></div>
+        <div class="num bad-txt">${fmtN(h.deaths)}</div>
+      </div>
+    `).join("");
+
+    // State Table + Filter
+    const fState = document.getElementById("f-state");
+    document.getElementById("state-body").innerHTML = S.by_state.map(s => `
+      <tr>
+        <td><strong>${esc(s.name)}</strong> (${esc(s.state)})</td>
+        <td><span class="badge b-soft">${esc(s.top_haz)}</span></td>
+        <td class="num ${s.prop_b >= 10 ? 'bad-txt' : ''}"><strong>$${s.prop_b.toFixed(2)}B</strong></td>
+        <td class="num">$${s.crop_b.toFixed(2)}B</td>
+        <td class="num">${fmtN(s.events)}</td>
+        <td class="num ${s.deaths >= 400 ? 'bad-txt' : ''}">${fmtN(s.deaths)}</td>
+        <td class="num">${fmtN(s.inj)}</td>
+      </tr>
+    `).join("");
+
+    [...S.by_state].sort((a, b) => a.state.localeCompare(b.state)).forEach(s => {
+      const o = document.createElement("option");
+      o.value = s.state; o.textContent = `${s.state} — ${s.name}`;
+      fState.appendChild(o);
+    });
+
+    // County Lookup
+    let C = {}, ROWS = [], FILTERED = [], PAGE = 1, PAGE_SIZE = 25, PRESET = "all", SEL = null;
+
+    function openDossier(r) {
+      SEL = r;
+      const d = document.getElementById("dossier");
+      const chg = r[C.ev_chg_pct];
+      d.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--accent-dark);">County FIPS ${esc(r[C.fips])} &bull; Observed 2016–2026 NOAA Storm Events</div>
+            <h3 style="font-size:1.18rem; margin:2px 0 4px;">${esc(r[C.county])}, ${esc(r[C.state])}</h3>
+            <div><span class="badge ${r[C.dmg_pctl] >= 90 ? 'b-bad' : r[C.dmg_pctl] >= 75 ? 'b-warn' : 'b-good'}">${r[C.dmg_pctl]}th Percentile Property Damage</span> <span class="badge b-soft">#1 Hazard: ${esc(r[C.top_haz])}</span></div>
+          </div>
+          <a class="btn" href="https://msc.fema.gov/portal/home" target="_blank" rel="noopener">Check Parcel on FEMA Flood Map &rarr;</a>
+        </div>
+        <div class="dossier-grid">
+          <div class="c-box"><div class="c-lbl">11-Yr Property Damage</div><div class="c-val ${r[C.prop_m] >= 100 ? 'bad-txt' : ''}">${fmtDmg(r[C.prop_m])}</div><div class="c-sub">Crop damage: ${fmtDmg(r[C.crop_m])}</div></div>
+          <div class="c-box"><div class="c-lbl">Severe Events &amp; Trend</div><div class="c-val">${fmtN(r[C.events])}</div><div class="c-sub">2016–20: ${fmtN(r[C.ev_16_20])} &rarr; 2021–25: ${fmtN(r[C.ev_21_25])} (${chg == null ? 'n/a' : (chg > 0 ? '+' : '') + chg + '%'})</div></div>
+          <div class="c-box"><div class="c-lbl">Roof / Wind / Flood Counts</div><div class="c-val">${fmtN(r[C.hail])} hail / ${fmtN(r[C.tornado])} torn.</div><div class="c-sub">${fmtN(r[C.flood])} floods &bull; ${fmtN(r[C.wind])} severe winds</div></div>
+          <div class="c-box"><div class="c-lbl">Human Toll (11 Yr)</div><div class="c-val ${r[C.deaths] >= 10 ? 'bad-txt' : ''}">${fmtN(r[C.deaths])} deaths</div><div class="c-sub">${fmtN(r[C.inj])} direct + indirect injuries</div></div>
+        </div>
+      `;
+      d.classList.add("open");
+    }
+
+    function applyFilters() {
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      const st = fState.value;
+      const sort = document.getElementById("f-sort").value;
+
+      FILTERED = ROWS.filter(r => {
+        if (st && r[C.state] !== st) return false;
+        if (PRESET === "top10" && r[C.dmg_pctl] < 90.0) return false;
+        if (PRESET === "hail" && r[C.hail] < 100) return false;
+        if (PRESET === "tornado" && r[C.tornado] < 25) return false;
+        if (PRESET === "flood" && r[C.flood] < 50) return false;
+        if (PRESET === "surge" && (r[C.ev_chg_pct] == null || r[C.ev_chg_pct] < 50)) return false;
+        if (q && !(r[C.county] + " " + r[C.state] + " " + r[C.top_haz]).toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      const desc = (k) => (a, b) => (b[k] == null ? -1e9 : b[k]) - (a[k] == null ? -1e9 : a[k]);
+      if (sort === "prop_desc") FILTERED.sort(desc(C.prop_m));
+      else if (sort === "events_desc") FILTERED.sort(desc(C.events));
+      else if (sort === "deaths_desc") FILTERED.sort(desc(C.deaths));
+      else if (sort === "hail_desc") FILTERED.sort(desc(C.hail));
+      else if (sort === "tornado_desc") FILTERED.sort(desc(C.tornado));
+      else if (sort === "flood_desc") FILTERED.sort(desc(C.flood));
+      else if (sort === "chg_desc") FILTERED.sort(desc(C.ev_chg_pct));
+
+      PAGE = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const total = FILTERED.length;
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (PAGE > pages) PAGE = pages;
+      const start = (PAGE - 1) * PAGE_SIZE;
+      const slice = FILTERED.slice(start, start + PAGE_SIZE);
+      document.getElementById("pg-info").textContent =
+        total ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${fmtN(total)} counties (Page ${PAGE}/${pages})` : "No matching counties.";
+      document.getElementById("pg-prev").disabled = PAGE <= 1;
+      document.getElementById("pg-next").disabled = PAGE >= pages;
+
+      const tb = document.getElementById("tbl-body");
+      if (!slice.length) {
+        tb.innerHTML = '<tr><td colspan="9" class="muted">No matching counties.</td></tr>';
+        return;
+      }
+      tb.innerHTML = slice.map((r, i) => {
+        const chg = r[C.ev_chg_pct];
+        const chgHtml = chg == null ? '<span class="muted">—</span>'
+          : `<span class="${chg >= 30 ? 'bad-txt' : chg <= -15 ? 'good-txt' : ''}">${chg > 0 ? '+' : ''}${chg}%</span>`;
+        return `
+          <tr class="clickable ${SEL && SEL[C.fips] === r[C.fips] ? 'selected' : ''}" data-idx="${start + i}">
+            <td><strong>${esc(r[C.county])}</strong>, ${esc(r[C.state])}</td>
+            <td><span class="badge b-soft">${esc(r[C.top_haz])}</span></td>
+            <td class="num ${r[C.prop_m] >= 100 ? 'bad-txt' : ''}"><strong>${fmtDmg(r[C.prop_m])}</strong></td>
+            <td class="num">${r[C.dmg_pctl]}%</td>
+            <td class="num">${fmtN(r[C.events])}</td>
+            <td class="num">${chgHtml}</td>
+            <td class="num">${fmtN(r[C.hail])}</td>
+            <td class="num">${fmtN(r[C.tornado])}</td>
+            <td class="num ${r[C.deaths] >= 15 ? 'bad-txt' : ''}">${fmtN(r[C.deaths])}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    document.getElementById("tbl-body").addEventListener("click", (e) => {
+      const tr = e.target.closest("tr[data-idx]");
+      if (!tr) return;
+      openDossier(FILTERED[Number(tr.dataset.idx)]);
+      renderTable();
+    });
+
+    ["q", "f-state", "f-sort"].forEach(id => {
+      document.getElementById(id).addEventListener(id === "q" ? "input" : "change", applyFilters);
+    });
+    document.querySelectorAll(".chip").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".chip").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        PRESET = btn.dataset.preset;
+        applyFilters();
+      });
+    });
+    document.getElementById("pg-prev").addEventListener("click", () => { if (PAGE > 1) { PAGE--; renderTable(); } });
+    document.getElementById("pg-next").addEventListener("click", () => { PAGE++; renderTable(); });
+
+    fetch("../../data/weather-risk/counties.json")
+      .then(r => r.json())
+      .then(d => {
+        d.cols.forEach((c, i) => { C[c] = i; });
+        ROWS = d.rows;
+        applyFilters();
+        if (ROWS.length) openDossier(ROWS[0]);
+      })
+      .catch(() => {
+        document.getElementById("tbl-body").innerHTML = '<tr><td colspan="9" class="bad-txt">Failed to load counties.json.</td></tr>';
+      });
+  })();
+  </script>
+</body>
+</html>

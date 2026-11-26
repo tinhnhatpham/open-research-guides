@@ -224,8 +224,14 @@ def fetch_file(url: str, filename: str, referer: str, min_bytes: int = 1_000_000
 
 def main() -> None:
     ita_url, sir_url = discover_latest_urls()
-    ita_path = fetch_file(ita_url, "ita_2025.csv", ITA_PAGE, min_bytes=10_000_000)
-    sir_path = fetch_file(sir_url, "sir_2015_2025.zip", SIR_PAGE, min_bytes=5_000_000)
+    try:
+        ita_path = fetch_file(ita_url, "ita_2025.csv", ITA_PAGE, min_bytes=10_000_000)
+        sir_path = fetch_file(sir_url, "sir_2015_2025.zip", SIR_PAGE, min_bytes=5_000_000)
+    except RuntimeError as exc:
+        if os.environ.get("CI") and (ROOT / "summary.json").exists() and (ROOT / "employers.json").exists():
+            print(f"Skipping OSHA refresh in CI (CloudFront/host returned error: {exc}); keeping existing verified artifacts.")
+            return
+        raise
 
     # 1. Stream & clean ITA 2025 Form 300A filings with duplicate detection
     raw_count = 0

@@ -184,3 +184,17 @@
 > - **For-Profit 4-Year Reality:** `$30,716/yr` median net price (2.1× Public), `33.7%` graduation rate, `$40,092` 10-yr earnings, and only `10%` making 2-year loan principal progress. Nationwide, 781 of the 914 schools failing the High-School Earnings Test (`85.4%`) are For-Profit.
 >
 > Income-bracket ROI calculator + all 6,232 colleges + `.csv.gz`: https://open-research-guides.vercel.app/guides/colleges/
+
+### F. America's Extreme Weather & Homebuyer Hazard Map — All 3,259 U.S. Counties (`r/RealEstate`, `r/FirstTimeHomeBuyer`, `r/datasets`)
+
+**Title:**
+`[OC] I mapped 687,227 observed NOAA Storm Events (2016–2026) across all 3,259 U.S. counties into a free, zero-paywall Homebuyer Hazard Lookup`
+
+**Body:**
+> Most homebuyer climate-risk scores are paywalled, while NOAA's Storm Events portal only runs single-county dropdown queries and splits County FIPS events (hail/tornado/flood) from NWS Forecast Zones (hurricanes/wildfires/heat). I compiled all 11 latest NOAA annual files (2016–Nov 2026; 687,227 events, $245.8B NWS property damage, 10,485 deaths) into a fast lookup across 3,259 counties + open `.csv.gz`.
+>
+> Highlights:
+> - Severe events jumped **+15.3%** in 2021–2025 vs. 2016–2020 (`291k → 336k`).
+> - Property losses are dominated by Floods (`$96.2B`), Hurricanes (`$82.1B`), Wildfires (`$31.8B`), Tornadoes (`$13.3B`), and Hail (`$11.8B`—Colorado's #1 hazard!), while low-property-damage Extreme Heat & Cold drive the largest share of U.S. weather deaths.
+>
+> Search any U.S. county + open `.csv.gz`: https://open-research-guides.vercel.app/guides/weather-risk/
