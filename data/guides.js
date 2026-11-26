@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "hospital-charity-care",
+    number: "Guide #08",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Healthcare & Billing",
+    title: "U.S. Hospital Charity Care, Chargemaster Markups & Financial Reality (5,435 Hospitals)",
+    summary:
+      "Flagship 4-dataset CMS join uniting all 5,435 U.S. hospitals, 5,078 full-year FY2024 Form 2552-10 Cost Reports, and 147,029 PECOS owner rows—showing why 31.7% of tax-exempt hospitals spend <1% on charity care (408 while earning ≥5% net margins), median markups hit 3.74× (6.40× at for-profits), and how patients can invoke IRS Section 501(r).",
+    highlights: [
+      "Instant lookup across all 5,435 hospitals with FY2024 financials, markups & Care Compare / Dollar For links",
+      "Interactive IRS Section 501(r) Charity Care Eligibility Checker + 50-state table",
+      "Open linked dataset (.csv.gz) & reproducible 4-endpoint Python pipeline (catching the S-10 bad-debt charges trap)"
+    ],
+    guideUrl: "./guides/hospitals/",
+    toolUrl: "./guides/hospitals/#lookup",
+    toolLabel: "Search All 5,435 Hospitals",
+    sourcesCount: "4 Live CMS Datasets (5,435 hospitals)"
+  },
+  {
     id: "nursing-home-reality",
     number: "Guide #03",
     flagship: true,
