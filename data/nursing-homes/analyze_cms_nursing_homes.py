@@ -31,7 +31,7 @@ import statistics
 import subprocess
 import time
 from collections import Counter, defaultdict
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -610,7 +610,7 @@ def main() -> None:
             "overdue_n": 0, "pe_reit_n": 0, "pe_n": 0, "reit_n": 0,
             "fn23_n": 0, "fn24_n": 0, "fn25_n": 0,
             "op_margins": [], "tot_margins": [], "direct_labor_days": [],
-            "gov_tx_in_n": 0, "gov_states": Counter(),
+            "gov_tx_in_n": 0,
         }
     )
 
@@ -994,8 +994,6 @@ def main() -> None:
                 ce["direct_labor_days"].append(crec["direct_labor_day"])
             if is_tx_in_gov_chain:
                 ce["gov_tx_in_n"] += 1
-            if own == "Government":
-                ce["gov_states"][st] += 1
 
         # Compact facility row
         own_code = "FP" if own == "For-Profit" else ("NP" if own == "Non-Profit" else ("GV" if own == "Government" else "OT"))
@@ -1354,7 +1352,7 @@ def main() -> None:
 
     summary = {
         "metadata": {
-            "generated_utc": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "generated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "provider_processing_date": processing_date,
             "total_facilities": total_facilities,
             "alphanumeric_ccn_count": alphanumeric_ccns,

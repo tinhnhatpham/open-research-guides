@@ -49,6 +49,11 @@
       top: 0;
       z-index: 30;
     }
+    section[id] { scroll-margin-top: 68px; }
+    @media (max-width: 720px) {
+      .topbar { position: static; }
+      section[id] { scroll-margin-top: 12px; }
+    }
     .topbar-inner {
       max-width: 1180px;
       margin: 0 auto;
@@ -292,6 +297,7 @@
     }
     tbody tr.clickable { cursor: pointer; transition: background 0.1s ease; }
     tbody tr.clickable:hover { background: #f3f9f9; }
+    tbody tr.clickable:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; background: #eef7f7; }
     tbody tr.selected { background: #e6f4f4 !important; }
     .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .bad-txt { color: var(--bad-ink); font-weight: 700; }
@@ -504,8 +510,8 @@
 
       <div class="controls">
         <input type="search" id="fac-search" placeholder="Search name, city, ZIP, state, CCN (e.g. 015392), or chain..." aria-label="Search nursing homes" />
-        <select id="fac-state" aria-label="Filter by state">
-          <option value="">All States &amp; DC</option>
+        <select id="fac-state" aria-label="Filter by state or territory">
+          <option value="">All States, DC &amp; Territories</option>
         </select>
         <select id="fac-own" aria-label="Filter by ownership">
           <option value="">All Ownership Types</option>
@@ -818,6 +824,40 @@
         const n = Number(v);
         return (signed && n > 0 ? "+" : "") + n.toFixed(d) + "%";
       };
+      // Formats a positive drop as "-12.0%", a weekend increase (negative drop) as "+2.6%", and near-zero as "0.0%"
+      const fmtStaffDelta = (dropPct) => {
+        if (dropPct == null || !Number.isFinite(dropPct)) return "—";
+        if (dropPct > 0.05) return "-" + dropPct.toFixed(1) + "%";
+        if (dropPct < -0.05) return "+" + Math.abs(dropPct).toFixed(1) + "%";
+        return "0.0%";
+      };
+      const marginClass = (v) => (v == null || Number.isNaN(v) ? "muted" : Number(v) < 0 ? "bad-txt" : "good-txt");
+      const cmpNumDesc = (a, b) => {
+        const av = a != null && Number.isFinite(a);
+        const bv = b != null && Number.isFinite(b);
+        if (!av && !bv) return 0;
+        if (!av) return 1;
+        if (!bv) return -1;
+        return b - a;
+      };
+      const cmpNumAsc = (a, b) => {
+        const av = a != null && Number.isFinite(a);
+        const bv = b != null && Number.isFinite(b);
+        if (!av && !bv) return 0;
+        if (!av) return 1;
+        if (!bv) return -1;
+        return a - b;
+      };
+      const hasFlag = (flagsStr, code) => Boolean(flagsStr && flagsStr.split(",").includes(code));
+      const bindRowActivation = (tr, handler) => {
+        tr.addEventListener("click", handler);
+        tr.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handler();
+          }
+        });
+      };
 
       // ----------------------------------------------------------------
       // 1. Hydrate Hero KPIs & Metadata
@@ -839,6 +879,10 @@
       document.getElementById("chain-share-txt").textContent = `${nat.chain_affiliated_pct}% (${fmtInt(nat.chain_affiliated_count)} homes)`;
       document.getElementById("hosp-excl-txt").textContent = `${cr.hospital_based_exclusion_pct}% (${fmtInt(cr.hospital_based_missing_2540_10)} of ${fmtInt(cr.hospital_based_total)})`;
       document.getElementById("free-match-txt").textContent = `${cr.freestanding_match_pct}%`;
+      const fourAbuseChip = document.querySelector('#fac-chips .chip[data-preset="four_abuse"]');
+      if (fourAbuseChip) fourAbuseChip.innerHTML = `4&#9733; w/ Abuse Icon (${fmtInt(fs.four_star_abuse_count)})`;
+      const al2020Chip = document.querySelector('#fac-chips .chip[data-preset="al_2020"]');
+      if (al2020Chip) al2020Chip.innerHTML = `AL 5&#9733; Uninspected Since 2020 (${fmtInt(ib.five_star_uninspected_since_2020.length)})`;
 
       document.getElementById("hero-kpis").innerHTML = `
         <div class="kpi">
@@ -873,8 +917,8 @@
             .map((own, idx) => {
               const d = row.by_ownership[own];
               if (!d || !d.facilities) return "";
-              const opCls = d.median_op_margin_pct < 0 ? "bad-txt" : "good-txt";
-              const totCls = d.median_tot_margin_pct < 0 ? "bad-txt" : "good-txt";
+              const opCls = marginClass(d.median_op_margin_pct);
+              const totCls = marginClass(d.median_tot_margin_pct);
               return `
                 <tr style="${idx === 0 ? "border-top:2px solid var(--border);" : ""}">
                   <td>${idx === 0 ? `<strong>${esc(row.medicaid_tier)} Medicaid</strong>` : ""}</td>
@@ -910,14 +954,18 @@
       const npCohort = pec.cohorts.find((x) => x.cohort === "Non-Profit") || {};
       const govExcl = gc.ownership_split.find((x) => x.ownership.includes("Excl")) || {};
       const govLease = gc.ownership_split.find((x) => x.ownership.includes("Leases")) || {};
+      const namelessTop2 = (pec.nameless_top_roles || []).slice(0, 2);
+      const namelessRolesText = namelessTop2.length >= 2
+        ? `${fmtInt(namelessTop2[0].rows)} ${esc(namelessTop2[0].role.toLowerCase())} rows, ${fmtInt(namelessTop2[1].rows)} ${esc(namelessTop2[1].role.toLowerCase())} rows`
+        : "predominantly ADP and indirect ownership rows";
 
       document.getElementById("findings-grid").innerHTML = `
         <article class="finding-card">
           <div>
             <div class="finding-num">Finding #01 &bull; PECOS Ownership Audit</div>
-            <h3>Mandatory PE/REIT Disclosures Are Broken—With 14,257 Nameless Org Rows</h3>
+            <h3>Mandatory PE/REIT Disclosures Are Broken—With ${fmtInt(pec.nameless_org_rows)} Nameless Org Rows</h3>
             <p>Across <strong>${fmtInt(pec.total_owner_rows)}</strong> PECOS owner rows (${fmtInt(pec.matched_owner_ccns)} matched homes), only <strong>${fmtInt(pec.flag_facilities.pe)} (${pec.flag_pct_matched.pe}%)</strong> self-report Private Equity and <strong>${fmtInt(pec.flag_facilities.reit)} (${pec.flag_pct_matched.reit}%)</strong> self-report a REIT—far below academic estimates—while <strong>${fmtInt(pec.flag_facilities.holding)} (${pec.flag_pct_matched.holding}%)</strong> list Holding Companies, <strong>${fmtInt(pec.flag_facilities.mgmt)} (${pec.flag_pct_matched.mgmt}%)</strong> list Management Services Companies, and <strong>${fmtInt(pec.flag_facilities.adp)} (${pec.flag_pct_matched.adp}%)</strong> list Additional Disclosable Parties (ADPs).</p>
-            <p>Worse, <strong>${fmtInt(pec.nameless_org_rows)}</strong> organization rows (<strong>${pec.nameless_org_pct_of_org_rows}%</strong> of all org rows, across <strong>${fmtInt(pec.nameless_org_facilities)}</strong> homes) leave <code>ORGANIZATION NAME - OWNER</code> completely blank (12,076 ADP rows, 1,728 indirect ownership rows). Disclosed for-profit PE/REIT homes are fined at <strong>${peCohort.pct_fined}%</strong> vs. <strong>${npCohort.pct_fined}%</strong> for non-profits.</p>
+            <p>Worse, <strong>${fmtInt(pec.nameless_org_rows)}</strong> organization rows (<strong>${pec.nameless_org_pct_of_org_rows}%</strong> of all org rows, across <strong>${fmtInt(pec.nameless_org_facilities)}</strong> matched homes) leave <code>ORGANIZATION NAME - OWNER</code> completely blank (${namelessRolesText}). Disclosed for-profit PE/REIT homes are fined at <strong>${peCohort.pct_fined}%</strong> vs. <strong>${npCohort.pct_fined}%</strong> for non-profits.</p>
           </div>
           <div><button type="button" class="btn btn-sm" data-jump-preset="pe_reit">Inspect ${fmtInt(pec.flag_facilities.pe_or_reit)} Disclosed PE/REIT Homes &rarr;</button></div>
         </article>
@@ -929,7 +977,7 @@
             <p>Excluding CMS's blank-ID National benchmark row, <strong>${fmtInt(CMS.chain_highlights.total_chains)}</strong> corporate chains operate <strong>${nat.chain_affiliated_pct}%</strong> of U.S. nursing homes. Among chains with &ge;20 homes, averages swing from <strong>Acts Retirement-Life (4.9&#9733;, 4.5h)</strong> and <strong>Advanced Health Care (4.7&#9733;, 5.6h)</strong> down to <strong>Reliant Care (1.3&#9733;, 2.0h; behavioral caveat)</strong> and <strong>Arcadia Care (1.7&#9733;, 40% abuse icon)</strong>.</p>
             <p>Active federal fines concentrate heavily at the top: <strong>PACS Group ($8.66M across 277 homes)</strong>, <strong>Creative Solutions ($7.81M, 150 homes)</strong>, <strong>Genesis HealthCare ($7.30M, 183 homes)</strong>, <strong>Avir Health ($6.85M, 118 homes)</strong>, and <strong>The Ensign Group ($6.50M, 347 homes)</strong>.</p>
           </div>
-          <div><a class="btn btn-sm" href="#chains">Explore All 612 Chains &rarr;</a></div>
+          <div><a class="btn btn-sm" href="#chains">Explore All ${fmtInt(CMS.chain_highlights.total_chains)} Chains &rarr;</a></div>
         </article>
 
         <article class="finding-card">
@@ -949,13 +997,13 @@
             <p><strong>${gc.gov_in_chain_pct}% (${fmtInt(gc.gov_in_chain)} of ${fmtInt(gc.gov_total)})</strong> of "Government" nursing homes belong to corporate chains—and <strong>${gc.tx_in_share_of_gov_chains_pct}%</strong> of those are concentrated in just two states: <strong>Texas (${gc.tx_gov_chain_count})</strong> and <strong>Indiana (${gc.in_gov_chain_count})</strong>, where county hospital districts hold licenses to capture supplemental Medicaid funds while leasing operations to private chains (Wellsential, American Senior Communities, Ensign, Creative Solutions).</p>
             <p>Genuine public/veterans' networks (FL Veterans' Affairs, NYC Health + Hospitals, Hawaii Health Systems) average <strong>${govExcl.avg_total_hprd} hrs/day &amp; ${govExcl.avg_stars}&#9733; (${govExcl.pct_fined}% fined)</strong>—versus TX/IN gov-chain leases at just <strong>${govLease.avg_total_hprd} hrs/day &amp; ${govLease.avg_stars}&#9733; (${govLease.pct_fined}% fined)</strong>, an 81-minute daily care gap.</p>
           </div>
-          <div><button type="button" class="btn btn-sm" data-jump-preset="tx_in_gov">Inspect All 286 TX/IN Gov-Chain Leases &rarr;</button></div>
+          <div><button type="button" class="btn btn-sm" data-jump-preset="tx_in_gov">Inspect All ${fmtInt(govLease.facilities)} TX/IN Gov-Chain Leases &rarr;</button></div>
         </article>
 
         <article class="finding-card">
           <div>
             <div class="finding-num">Finding #05 &bull; State Inspection Backlog</div>
-            <h3>955 Homes Are Overdue &gt;2 Years—Including 4 Active 5&#9733; AL Homes Uninspected Since 2020</h3>
+            <h3>${fmtInt(ib.national_overdue_2yr_count)} Homes Are Overdue &gt;2 Years—Including ${ib.five_star_uninspected_since_2020.length} Active 5&#9733; AL Homes Uninspected Since 2020</h3>
             <p>Nationally, <strong>${fmtInt(ib.national_overdue_2yr_count)} (${ib.national_overdue_2yr_pct}%)</strong> homes have gone more than 2 years without a standard federal health inspection. Three jurisdictions account for a severe oversight collapse: <strong>Alabama (${ib.top_overdue_states[0].overdue_pct}%)</strong>, <strong>Virginia (${ib.top_overdue_states[1].overdue_pct}%)</strong>, and <strong>Washington, DC (${ib.top_overdue_states[2].overdue_pct}%)</strong>.</p>
             <ul class="mini-list">${al2020List}</ul>
           </div>
@@ -965,22 +1013,21 @@
         <article class="finding-card">
           <div>
             <div class="finding-num">Finding #06 &bull; 5-Star Illusion &amp; Staffing Footnotes</div>
-            <h3>46.8% of 5&#9733; Homes Carry Red Flags—and 20 4&#9733; Homes Have an Active Abuse Icon</h3>
+            <h3>${fs.pct_any_red_flag_4}% of 5&#9733; Homes Carry Red Flags—and ${fs.four_star_abuse_count} 4&#9733; Homes Have an Active Abuse Icon</h3>
             <p>Among <strong>${fmtInt(fs.five_star_count)}</strong> 5-star nursing homes, <strong>${fs.pct_any_red_flag_4}%</strong> carry at least one major warning sign: <strong>${fs.pct_big_weekend_drop_15plus}%</strong> cut weekend nursing &ge;15%, <strong>${fs.pct_high_turnover_50plus}%</strong> suffer &ge;50% annual turnover, <strong>${fs.pct_with_fines}%</strong> have active fines, and <strong>${fs.pct_overdue_2yr}%</strong> are &gt;2 years overdue (<strong>${fs.pct_any_red_flag_3}%</strong> on the 3 non-overdue flags). Meanwhile, <strong>${fs.four_star_abuse_count}</strong> homes hold a <strong>4-star overall rating despite CMS's red Abuse Icon</strong>.</p>
             <p>PBJ footnote audit: <strong>${fn24}</strong> homes triggered <strong>Footnote 24</strong> (high days with no RN onsite, auto 1&#9733; staffing), <strong>${fn25}</strong> triggered <strong>Footnote 25</strong> (CMS couldn't validate PBJ accuracy), <strong>${fn23}</strong> triggered <strong>Footnote 23</strong> (non-submission), and <strong>${fn6}</strong> triggered <strong>Footnote 6</strong> (failed calculation criteria).</p>
           </div>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button type="button" class="btn btn-sm" data-jump-preset="five_red">5&#9733; w/ Red Flags &rarr;</button>
-            <button type="button" class="btn btn-sm" data-jump-preset="four_abuse">20 4&#9733; Abuse Homes &rarr;</button>
+            <button type="button" class="btn btn-sm" data-jump-preset="four_abuse">${fs.four_star_abuse_count} 4&#9733; Abuse Homes &rarr;</button>
           </div>
         </article>
       `;
 
-      // Bind finding jump buttons
+      // Bind finding jump buttons (reset conflicting filters so cohort counts match Findings exactly)
       document.querySelectorAll("[data-jump-preset]").forEach((btn) => {
         btn.addEventListener("click", () => {
-          setFacilityPreset(btn.dataset.jumpPreset);
-          document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
+          jumpToPreset(btn.dataset.jumpPreset);
         });
       });
 
@@ -1049,14 +1096,14 @@
         document.getElementById("st-tbody").innerHTML = rows
           .map(
             (s) => `
-            <tr class="clickable" data-st="${esc(s.state)}" title="Click to filter Facility Lookup to ${esc(s.state)}">
+            <tr class="clickable" tabindex="0" data-st="${esc(s.state)}" title="Click to filter Facility Lookup to ${esc(s.state)}">
               <td><strong>${esc(s.state)}</strong>${s.gov_chain_n >= 20 ? ` <span class="tag tag-purple">${s.gov_chain_n} gov-chain</span>` : ""}</td>
               <td class="num">${s.facilities}</td>
               <td class="num">${s.avg_stars}</td>
               <td class="num"><strong>${fmtNum(s.avg_total_hprd, 2)}h</strong></td>
               <td class="num">${fmtNum(s.avg_weekend_hprd, 2)}h</td>
-              <td class="num ${s.weekend_drop_pct >= 14 ? "bad-txt" : ""}">-${s.weekend_drop_pct}%</td>
-              <td class="num ${s.rn_weekend_drop_pct >= 34 ? "bad-txt" : ""}">-${s.rn_weekend_drop_pct}%</td>
+              <td class="num ${s.weekend_drop_pct >= 14 ? "bad-txt" : ""}">${fmtStaffDelta(s.weekend_drop_pct)}</td>
+              <td class="num ${s.rn_weekend_drop_pct >= 34 ? "bad-txt" : ""}">${fmtStaffDelta(s.rn_weekend_drop_pct)}</td>
               <td class="num ${s.avg_turnover_pct >= 50 ? "bad-txt" : ""}">${s.avg_turnover_pct}%</td>
               <td class="num">${s.pct_fined}%</td>
               <td class="num ${s.pct_overdue_2yr >= 15 ? "bad-txt" : ""}">${s.pct_overdue_2yr}%</td>
@@ -1067,9 +1114,18 @@
           .join("");
 
         document.querySelectorAll("#st-tbody tr[data-st]").forEach((tr) => {
-          tr.addEventListener("click", () => {
-            facStateSelect.value = tr.dataset.st;
+          bindRowActivation(tr, () => {
+            facState.chainId = "";
+            facState.chainName = "";
+            facState.preset = "all";
             facState.page = 1;
+            facOwnEl.value = "";
+            facSearchEl.value = "";
+            facStateSelect.value = tr.dataset.st;
+            document.querySelectorAll("#fac-chips .chip[data-preset]").forEach((b) => {
+              b.classList.toggle("active", b.dataset.preset === "all");
+            });
+            renderActiveChainPill();
             renderFacilities();
             document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
           });
@@ -1110,6 +1166,17 @@
           b.classList.toggle("active", b.dataset.preset === preset);
         });
         renderFacilities();
+      }
+
+      function jumpToPreset(preset) {
+        facState.chainId = "";
+        facState.chainName = "";
+        facStateSelect.value = "";
+        facOwnEl.value = "";
+        facSearchEl.value = "";
+        renderActiveChainPill();
+        setFacilityPreset(preset);
+        document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
       }
 
       function filterByChain(chainId, chainName) {
@@ -1199,7 +1266,7 @@
             if (preset === "overdue" && r[I.overdue] !== 1) continue;
             if (preset === "pe_reit") {
               const pf = r[I.pecos_flags] || "";
-              if (!pf.includes("PE") && !pf.includes("REIT")) continue;
+              if (!hasFlag(pf, "PE") && !hasFlag(pf, "REIT")) continue;
             }
             if (preset === "abuse_sff" && !(r[I.abuse] === 1 || r[I.sff])) continue;
             if (preset === "tx_in_gov" && !(r[I.own] === "GV" && r[I.chain_id] && (r[I.st] === "TX" || r[I.st] === "IN"))) continue;
@@ -1221,13 +1288,13 @@
         const sort = facSortEl.value;
         out.sort((a, b) => {
           if (sort === "fines_desc") return (b[I.fines_amt] || 0) - (a[I.fines_amt] || 0);
-          if (sort === "stars_asc") return (a[I.stars] ?? 9) - (b[I.stars] ?? 9) || (b[I.fines_amt] || 0) - (a[I.fines_amt] || 0);
-          if (sort === "stars_desc") return (b[I.stars] ?? -1) - (a[I.stars] ?? -1) || (b[I.tot_h] ?? -1) - (a[I.tot_h] ?? -1);
-          if (sort === "hprd_asc") return (a[I.tot_h] ?? 99) - (b[I.tot_h] ?? 99);
-          if (sort === "hprd_desc") return (b[I.tot_h] ?? -1) - (a[I.tot_h] ?? -1);
-          if (sort === "turn_desc") return (b[I.turn] ?? -1) - (a[I.turn] ?? -1);
-          if (sort === "wknd_desc") return (wkndDropOf(b) ?? -999) - (wkndDropOf(a) ?? -999);
-          if (sort === "opmgn_desc") return (b[I.op_mgn] ?? -999) - (a[I.op_mgn] ?? -999);
+          if (sort === "stars_asc") return cmpNumAsc(a[I.stars], b[I.stars]) || (b[I.fines_amt] || 0) - (a[I.fines_amt] || 0);
+          if (sort === "stars_desc") return cmpNumDesc(a[I.stars], b[I.stars]) || cmpNumDesc(a[I.tot_h], b[I.tot_h]);
+          if (sort === "hprd_asc") return cmpNumAsc(a[I.tot_h], b[I.tot_h]);
+          if (sort === "hprd_desc") return cmpNumDesc(a[I.tot_h], b[I.tot_h]);
+          if (sort === "turn_desc") return cmpNumDesc(a[I.turn], b[I.turn]);
+          if (sort === "wknd_desc") return cmpNumDesc(wkndDropOf(a), wkndDropOf(b));
+          if (sort === "opmgn_desc") return cmpNumDesc(a[I.op_mgn], b[I.op_mgn]);
           return String(a[I.name]).localeCompare(String(b[I.name]));
         });
 
@@ -1270,8 +1337,8 @@
             if (r[I.abuse]) badges.push(`<span class="tag tag-bad">Abuse Icon</span>`);
             if (r[I.sff]) badges.push(`<span class="tag tag-bad">${esc(r[I.sff])}</span>`);
             if (r[I.overdue]) badges.push(`<span class="tag tag-warn">Overdue &gt;2y</span>`);
-            if (pf.includes("PE")) badges.push(`<span class="tag tag-purple">PE</span>`);
-            if (pf.includes("REIT")) badges.push(`<span class="tag tag-purple">REIT</span>`);
+            if (hasFlag(pf, "PE")) badges.push(`<span class="tag tag-purple">PE</span>`);
+            if (hasFlag(pf, "REIT")) badges.push(`<span class="tag tag-purple">REIT</span>`);
             if (r[I.own] === "GV" && r[I.chain_id] && (r[I.st] === "TX" || r[I.st] === "IN")) badges.push(`<span class="tag tag-warn">Gov-Lease</span>`);
             if (r[I.fn_rep] === "23" || r[I.fn_st] === "23") badges.push(`<span class="tag tag-muted">FN 23</span>`);
             if (r[I.fn_st] === "24") badges.push(`<span class="tag tag-bad">FN 24</span>`);
@@ -1281,18 +1348,19 @@
             const starStr = r[I.stars] != null ? `<strong>${r[I.stars]}&#9733;</strong>` : `<span class="muted">N/R</span>`;
             const subStars = `<div class="muted" style="font-size:0.72rem;">H:${r[I.h_stars] ?? "–"} S:${r[I.s_stars] ?? "–"} Q:${r[I.q_stars] ?? "–"}</div>`;
 
+            const dropCls = drop != null && drop >= 15 ? "bad-txt" : drop != null && drop < -0.05 ? "good-txt" : "muted";
             const hrsHtml =
               r[I.tot_h] != null
-                ? `<strong>${fmtNum(r[I.tot_h], 2)}</strong> &rarr; ${fmtNum(r[I.wknd_h], 2)}h<div class="${drop >= 15 ? "bad-txt" : "muted"}" style="font-size:0.73rem;">${drop != null ? "-" + drop.toFixed(1) + "%" : "—"}</div>`
+                ? `<strong>${fmtNum(r[I.tot_h], 2)}</strong> &rarr; ${fmtNum(r[I.wknd_h], 2)}h<div class="${dropCls}" style="font-size:0.73rem;">${fmtStaffDelta(drop)}</div>`
                 : `<span class="muted">No PBJ</span>`;
 
             const finHtml =
               r[I.op_mgn] != null || r[I.labor_d] != null
-                ? `<span class="${r[I.op_mgn] < 0 ? "bad-txt" : "good-txt"}">${fmtPct(r[I.op_mgn], 1, true)}</span><div class="muted" style="font-size:0.73rem;">${r[I.labor_d] != null ? "$" + Math.round(r[I.labor_d]) + "/d" : "—"}</div>`
+                ? `<span class="${marginClass(r[I.op_mgn])}">${fmtPct(r[I.op_mgn], 1, true)}</span><div class="muted" style="font-size:0.73rem;">${r[I.labor_d] != null ? "$" + Math.round(r[I.labor_d]) + "/d" : "—"}</div>`
                 : `<span class="muted">${r[I.hosp] ? "Hosp 2552-10" : "—"}</span>`;
 
             return `
-              <tr class="clickable ${facState.selectedCcn === ccn ? "selected" : ""}" data-ccn="${esc(ccn)}">
+              <tr class="clickable ${facState.selectedCcn === ccn ? "selected" : ""}" tabindex="0" data-ccn="${esc(ccn)}">
                 <td>
                   <strong>${esc(r[I.name])}</strong>
                   <div class="muted" style="font-size:0.76rem;">${esc(r[I.city])}, ${esc(r[I.st])} ${esc(r[I.zip])} &bull; CCN <code>${esc(ccn)}</code></div>
@@ -1311,7 +1379,7 @@
           .join("");
 
         tbody.querySelectorAll("tr[data-ccn]").forEach((tr) => {
-          tr.addEventListener("click", () => openFacilityDetail(tr.dataset.ccn));
+          bindRowActivation(tr, () => openFacilityDetail(tr.dataset.ccn));
         });
       }
 
@@ -1329,8 +1397,10 @@
 
         const totDrop = wkndDropOf(r);
         const rnDrop = r[I.rn_h] && r[I.rn_wknd_h] != null && r[I.rn_h] > 0 ? ((r[I.rn_h] - r[I.rn_wknd_h]) / r[I.rn_h]) * 100 : null;
-        const impWkday = r[I.tot_h] && r[I.wknd_h] != null ? (7 * r[I.tot_h] - 2 * r[I.wknd_h]) / 5 : null;
-        const impDrop = impWkday && impWkday > 0 ? ((impWkday - r[I.wknd_h]) / impWkday) * 100 : null;
+        const anomalousPbj = r[I.tot_h] > 0 && r[I.wknd_h] != null && r[I.wknd_h] > r[I.tot_h] * 1.5;
+        const impWkday = !anomalousPbj && r[I.tot_h] > 0 && r[I.wknd_h] != null ? (7 * r[I.tot_h] - 2 * r[I.wknd_h]) / 5 : null;
+        const impDrop = impWkday != null && impWkday > 0 ? ((impWkday - r[I.wknd_h]) / impWkday) * 100 : null;
+        const impDropLabel = anomalousPbj ? "N/A (anomalous PBJ)" : fmtStaffDelta(impDrop);
 
         const rfList = [];
         if (r[I.rf_mask] & 1) rfList.push("Turnover >= 50%");
@@ -1396,9 +1466,9 @@
 
             <div class="detail-box">
               <h4>PBJ Staffing &amp; Turnover (Payroll-Verified)</h4>
-              <div class="kv"><span>Total Nurse Hrs (7-Day Avg &rarr; Wknd)</span><strong>${fmtNum(r[I.tot_h], 2)}h &rarr; ${fmtNum(r[I.wknd_h], 2)}h (${totDrop != null ? "-" + totDrop.toFixed(1) + "%" : "—"})</strong></div>
-              <div class="kv"><span>Implied Mon–Fri &rarr; Wknd Drop</span><strong>${impDrop != null ? "-" + impDrop.toFixed(1) + "%" : "—"}</strong></div>
-              <div class="kv"><span>RN Hrs (7-Day Avg &rarr; Wknd)</span><strong>${fmtNum(r[I.rn_h], 2)}h &rarr; ${fmtNum(r[I.rn_wknd_h], 2)}h (${rnDrop != null ? "-" + rnDrop.toFixed(1) + "%" : "—"})</strong></div>
+              <div class="kv"><span>Total Nurse Hrs (7-Day Avg &rarr; Wknd)</span><strong>${fmtNum(r[I.tot_h], 2)}h &rarr; ${fmtNum(r[I.wknd_h], 2)}h (${fmtStaffDelta(totDrop)})</strong></div>
+              <div class="kv"><span>Implied Mon–Fri &rarr; Wknd Change</span><strong>${impDropLabel}</strong></div>
+              <div class="kv"><span>RN Hrs (7-Day Avg &rarr; Wknd)</span><strong>${fmtNum(r[I.rn_h], 2)}h &rarr; ${fmtNum(r[I.rn_wknd_h], 2)}h (${fmtStaffDelta(rnDrop)})</strong></div>
               <div class="kv"><span>Annual Total Nursing Turnover</span><strong class="${r[I.turn] >= 50 ? "bad-txt" : ""}">${r[I.turn] != null ? fmtPct(r[I.turn], 1) : "—"}</strong></div>
               <div class="kv"><span>Annual RN Turnover</span><strong class="${r[I.rn_turn] >= 50 ? "bad-txt" : ""}">${r[I.rn_turn] != null ? fmtPct(r[I.rn_turn], 1) : "—"}</strong></div>
               <div class="kv"><span>Administrators Left (12m)</span><strong>${r[I.adm_left] ?? "—"}</strong></div>
@@ -1409,7 +1479,7 @@
               <div class="kv"><span>Disclosed Entity Flags</span><strong>${pflags.length ? esc(pflags.map((c) => pflagNames[c] || c).join(", ")) : "None flagged in PECOS"}</strong></div>
               <div class="kv"><span>Nameless Org Rows (Blank Name)</span><strong class="${r[I.nameless_n] ? "warn-txt" : ""}">${r[I.nameless_n] ? r[I.nameless_n] + " blank org row(s)" : "0"}</strong></div>
               <div class="kv"><span>Notable Corporate Entities</span><strong style="max-width:65%; font-weight:600;">${r[I.owner_orgs] ? esc(r[I.owner_orgs]) : "None listed under PE/REIT/Holding/Mgmt"}</strong></div>
-              <div class="muted" style="font-size:0.76rem; margin-top:6px;">Note: Only 0.7% of SNFs self-report PE and 4.2% REIT in PECOS; absence of a PE/REIT flag does not guarantee non-investor ownership.</div>
+              <div class="muted" style="font-size:0.76rem; margin-top:6px;">Note: Only ${pec.flag_pct_matched.pe}% of matched SNFs self-report PE and ${pec.flag_pct_matched.reit}% REIT in PECOS; absence of a PE/REIT flag does not guarantee non-investor ownership.</div>
             </div>
 
             <div class="detail-box">
@@ -1418,8 +1488,8 @@
                 r[I.op_mgn] != null || r[I.labor_d] != null || r[I.mcaid_pct] != null
                   ? `
                   <div class="kv"><span>Medicaid Share of Patient Days</span><strong>${r[I.mcaid_pct] != null ? fmtPct(r[I.mcaid_pct], 1) : "—"}</strong></div>
-                  <div class="kv"><span>True Patient-Care Operating Margin</span><strong class="${r[I.op_mgn] < 0 ? "bad-txt" : "good-txt"}">${fmtPct(r[I.op_mgn], 2, true)}</strong></div>
-                  <div class="kv"><span>Total Net Margin (incl. Other Income)</span><strong class="${r[I.tot_mgn] < 0 ? "bad-txt" : "good-txt"}">${fmtPct(r[I.tot_mgn], 2, true)}</strong></div>
+                  <div class="kv"><span>True Patient-Care Operating Margin</span><strong class="${marginClass(r[I.op_mgn])}">${fmtPct(r[I.op_mgn], 2, true)}</strong></div>
+                  <div class="kv"><span>Total Net Margin (incl. Other Income)</span><strong class="${marginClass(r[I.tot_mgn])}">${fmtPct(r[I.tot_mgn], 2, true)}</strong></div>
                   <div class="kv"><span>Total Direct Labor / Resident Day</span><strong>${r[I.labor_d] != null ? "$" + fmtNum(r[I.labor_d], 2) : "—"}</strong></div>
                   <div class="kv"><span>W-2 Adjusted Salaries / Day</span><strong>${r[I.w2_d] != null ? "$" + fmtNum(r[I.w2_d], 2) : "—"}</strong></div>
                   <div class="kv"><span>Net Patient Revenue / Day</span><strong>${r[I.rev_d] != null ? "$" + fmtNum(r[I.rev_d], 2) : "—"}</strong></div>
@@ -1434,20 +1504,22 @@
         facDetailEl.classList.add("open");
         facDetailEl.scrollIntoView({ behavior: "smooth", block: "nearest" });
 
-        document.getElementById("detail-close-btn").addEventListener("click", () => {
-          facDetailEl.classList.remove("open");
-          facState.selectedCcn = "";
-          document.querySelectorAll("#fac-tbody tr.selected").forEach((tr) => tr.classList.remove("selected"));
-        });
+        document.getElementById("detail-close-btn").addEventListener("click", closeFacilityDetail);
         const chBtn = document.getElementById("detail-chain-btn");
         if (chBtn) {
           chBtn.addEventListener("click", () => filterByChain(r[I.chain_id], cname));
         }
       }
 
+      function closeFacilityDetail() {
+        facDetailEl.classList.remove("open");
+        facState.selectedCcn = "";
+        document.querySelectorAll("#fac-tbody tr.selected").forEach((tr) => tr.classList.remove("selected"));
+      }
+
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && facDetailEl.classList.contains("open")) {
-          facDetailEl.classList.remove("open");
+          closeFacilityDetail();
         }
       });
 
@@ -1515,16 +1587,16 @@
         let rows = CHAINS_DATA.filter((c) => c.n >= minN && (!q || c.name.toLowerCase().includes(q)));
         rows.sort((a, b) => {
           if (sort === "n_desc") return b.n - a.n;
-          if (sort === "stars_asc") return (a.stars ?? 9) - (b.stars ?? 9) || b.n - a.n;
-          if (sort === "stars_desc") return (b.stars ?? -1) - (a.stars ?? -1) || b.n - a.n;
-          if (sort === "hprd_asc") return (a.tot_h ?? 99) - (b.tot_h ?? 99);
-          if (sort === "hprd_desc") return (b.tot_h ?? -1) - (a.tot_h ?? -1);
-          if (sort === "rn_drop_desc") return (b.rn_wknd_drop ?? -999) - (a.rn_wknd_drop ?? -999);
-          if (sort === "turn_desc") return (b.turn ?? -1) - (a.turn ?? -1);
+          if (sort === "stars_asc") return cmpNumAsc(a.stars, b.stars) || b.n - a.n;
+          if (sort === "stars_desc") return cmpNumDesc(a.stars, b.stars) || b.n - a.n;
+          if (sort === "hprd_asc") return cmpNumAsc(a.tot_h, b.tot_h);
+          if (sort === "hprd_desc") return cmpNumDesc(a.tot_h, b.tot_h);
+          if (sort === "rn_drop_desc") return cmpNumDesc(a.rn_wknd_drop, b.rn_wknd_drop);
+          if (sort === "turn_desc") return cmpNumDesc(a.turn, b.turn);
           if (sort === "fines_desc") return b.fines_tot - a.fines_tot;
           if (sort === "avgfine_desc") return b.avg_fine - a.avg_fine;
-          if (sort === "abuse_desc") return (b.abuse_pct ?? -1) - (a.abuse_pct ?? -1);
-          if (sort === "ap_desc") return (b.ap_pct ?? -1) - (a.ap_pct ?? -1);
+          if (sort === "abuse_desc") return cmpNumDesc(a.abuse_pct, b.abuse_pct);
+          if (sort === "ap_desc") return cmpNumDesc(a.ap_pct, b.ap_pct);
           return b.n - a.n;
         });
 
@@ -1556,9 +1628,25 @@
         tbody.innerHTML = slice
           .map((c) => {
             const cavHtml = c.caveat ? `<div style="margin-top:2px;"><span class="tag tag-warn">${esc(c.caveat)}</span></div>` : "";
-            const mix = c.np_pct >= 50 ? `<span class="tag tag-good">${c.np_pct}% NP</span>` : c.gov_pct >= 50 ? `<span class="tag tag-purple">${c.gov_pct}% Gov</span>` : `<span class="tag tag-muted">${c.fp_pct}% FP</span>`;
+            let mix;
+            if (c.np_pct >= 50) {
+              mix = `<span class="tag tag-good">${c.np_pct}% NP</span>`;
+            } else if (c.gov_pct >= 50) {
+              mix = `<span class="tag tag-purple">${c.gov_pct}% Gov</span>`;
+            } else if (c.fp_pct >= 50) {
+              mix = `<span class="tag tag-muted">${c.fp_pct}% FP</span>`;
+            } else {
+              const parts = [
+                { lbl: "FP", v: c.fp_pct || 0 },
+                { lbl: "NP", v: c.np_pct || 0 },
+                { lbl: "Gov", v: c.gov_pct || 0 },
+              ].sort((a, b) => b.v - a.v);
+              const top = parts.filter((p) => p.v > 0).slice(0, 2).map((p) => `${Math.round(p.v)}% ${p.lbl}`).join("/");
+              mix = `<span class="tag tag-muted">Mixed (${top || "Other"})</span>`;
+            }
+            const rnDropCls = c.rn_wknd_drop != null && c.rn_wknd_drop >= 38 ? "bad-txt" : c.rn_wknd_drop != null && c.rn_wknd_drop < -0.05 ? "good-txt" : "";
             return `
-              <tr class="clickable" data-cid="${esc(c.id)}" data-cname="${esc(c.name)}" title="Click to filter Facility Lookup to ${esc(c.name)}">
+              <tr class="clickable" tabindex="0" data-cid="${esc(c.id)}" data-cname="${esc(c.name)}" title="Click to filter Facility Lookup to ${esc(c.name)}">
                 <td>
                   <strong>${esc(c.name)}</strong> ${mix}
                   <div class="muted" style="font-size:0.74rem;">${c.states} state${c.states === 1 ? "" : "s"} &bull; ${c.sff ? `${c.sff} SFF, ` : ""}${c.pe_reit_n ? `${c.pe_reit_n} PE/REIT` : "0 PE/REIT flagged"}</div>
@@ -1567,19 +1655,19 @@
                 <td class="num"><strong>${c.n}</strong></td>
                 <td class="num ${c.stars != null && c.stars <= 2.0 ? "bad-txt" : c.stars >= 4.0 ? "good-txt" : ""}">${c.stars != null ? c.stars.toFixed(1) + "&#9733;" : "—"}</td>
                 <td class="num">${c.tot_h != null ? fmtNum(c.tot_h, 2) + "h" : (c.fn23_n ? `<span class="warn-txt">FN 23</span>` : "—")}</td>
-                <td class="num ${c.rn_wknd_drop >= 38 ? "bad-txt" : ""}">${c.rn_wknd_drop != null ? "-" + c.rn_wknd_drop.toFixed(1) + "%" : "—"}</td>
+                <td class="num ${rnDropCls}">${fmtStaffDelta(c.rn_wknd_drop)}</td>
                 <td class="num ${c.turn >= 55 ? "bad-txt" : ""}">${c.turn != null ? fmtPct(c.turn, 1) : "—"}</td>
                 <td class="num">${fmtMoney(c.fines_tot)}<div class="muted" style="font-size:0.72rem;">avg ${fmtMoney(c.avg_fine)}</div></td>
                 <td class="num ${c.abuse_pct >= 20 ? "bad-txt" : ""}">${c.abuse_pct != null ? fmtPct(c.abuse_pct, 1) : "—"}</td>
                 <td class="num ${c.ap_pct >= 25 ? "warn-txt" : ""}">${c.ap_pct != null ? fmtPct(c.ap_pct, 1) : "—"}</td>
-                <td class="num ${c.med_op_mgn != null && c.med_op_mgn < 0 ? "bad-txt" : ""}">${c.med_op_mgn != null ? fmtPct(c.med_op_mgn, 1, true) : "—"}</td>
+                <td class="num ${marginClass(c.med_op_mgn)}">${c.med_op_mgn != null ? fmtPct(c.med_op_mgn, 1, true) : "—"}</td>
               </tr>
             `;
           })
           .join("");
 
         tbody.querySelectorAll("tr[data-cid]").forEach((tr) => {
-          tr.addEventListener("click", () => filterByChain(tr.dataset.cid, tr.dataset.cname));
+          bindRowActivation(tr, () => filterByChain(tr.dataset.cid, tr.dataset.cname));
         });
       }
 
@@ -1605,6 +1693,20 @@
         .then((data) => {
           FAC_DATA = data;
           data.cols.forEach((c, idx) => { FAC_IDX[c] = idx; });
+          // Append any U.S. territories (e.g. GU, PR) present in facilities.json so all 14,686 homes are filterable
+          const existingStates = new Set(Array.from(facStateSelect.options).map((o) => o.value));
+          const extraCounts = {};
+          const stIdx = FAC_IDX.st;
+          for (let i = 0; i < data.rows.length; i++) {
+            const st = data.rows[i][stIdx];
+            if (st && !existingStates.has(st)) extraCounts[st] = (extraCounts[st] || 0) + 1;
+          }
+          Object.keys(extraCounts).sort().forEach((st) => {
+            const opt = document.createElement("option");
+            opt.value = st;
+            opt.textContent = `${st} (${extraCounts[st]} — Territory)`;
+            facStateSelect.appendChild(opt);
+          });
           renderFacilities();
         })
         .catch((err) => {
