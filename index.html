@@ -373,23 +373,26 @@
 
       <div class="pillars">
         <div class="pillar">
-          <strong>Primary Sources First</strong>
-          Every claim traces back to peer-reviewed studies, official testing standards, or open public data.
+          <strong>12 Automated Federal Flagships</strong>
+          Covering 500,000+ U.S. banks, credit unions, utilities, workplaces, schools, colleges, dams, cars &amp; hospitals—refreshed monthly via GitHub Actions.
         </div>
         <div class="pillar">
-          <strong>Honest About Uncertainty</strong>
-          We explicitly note scientific critiques, lab limits, and what researchers still don't know.
+          <strong>Data Forensics &amp; Honest Caveats</strong>
+          We catch duplicate filings, accounting traps, and agency quirks—explicitly documenting limits so you can trust every number.
         </div>
         <div class="pillar">
-          <strong>Built for Real Budgets</strong>
-          Clear cost comparisons and practical trade-offs so anyone can take action—not just experts.
+          <strong>Zero Ads, Zero Affiliates, Open CSV</strong>
+          Every platform includes free interactive calculators, reproducible Python scripts, and downloadable bulk <code>.csv.gz</code> datasets.
         </div>
       </div>
     </section>
 
     <section id="guides">
       <div class="section-head">
-        <h2>Research Guides &amp; Interactive Tools</h2>
+        <h2>Research Guides &amp; Interactive Tools (18)</h2>
+        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; width:100%;">
+          <input type="search" id="hub-search" placeholder="Search all 18 guides &amp; tools (e.g. bank, electric, school, car, dam, college, hospital)..." aria-label="Search research guides" style="flex:1; min-width:240px; border:1.5px solid var(--border); border-radius:999px; padding:8px 14px; font-size:0.88rem; background:var(--surface); color:var(--ink);" />
+        </div>
         <div class="filter-bar" id="filter-bar" aria-label="Filter guides by category"></div>
       </div>
 
@@ -417,9 +420,10 @@
     const guides = window.RESEARCH_GUIDES || [];
     let activeCategory = "All";
 
-    const categories = ["All", ...new Set(guides.map((g) => g.category))];
+    const categories = ["All", "Flagships Only", ...new Set(guides.map((g) => g.category))];
     const filterBar = document.getElementById("filter-bar");
     const grid = document.getElementById("guides-grid");
+    const searchEl = document.getElementById("hub-search");
 
     function renderFilters() {
       filterBar.innerHTML = categories
@@ -439,10 +443,16 @@
     }
 
     function renderGuides() {
-      const visible =
-        activeCategory === "All"
-          ? guides
-          : guides.filter((g) => g.category === activeCategory);
+      const q = (searchEl && searchEl.value || "").trim().toLowerCase();
+      const visible = guides.filter((g) => {
+        if (activeCategory === "Flagships Only" && !g.flagship) return false;
+        if (activeCategory !== "All" && activeCategory !== "Flagships Only" && g.category !== activeCategory) return false;
+        if (q) {
+          const hay = (g.title + " " + g.summary + " " + g.category + " " + g.highlights.join(" ")).toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
 
       grid.innerHTML = visible
         .map((g) => {
@@ -482,6 +492,7 @@
         .join("");
     }
 
+    if (searchEl) searchEl.addEventListener("input", renderGuides);
     renderFilters();
     renderGuides();
   </script>
