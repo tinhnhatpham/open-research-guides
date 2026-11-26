@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microplastics in Drinking Water — Evidence-Based Decision Calculator</title>
+  <style>
+    :root {
+      --bg: #f6f7f5;
+      --surface: #ffffff;
+      --surface-alt: #f0f4f3;
+      --ink: #17212b;
+      --ink-muted: #52606d;
+      --border: #d9e2e0;
+      --accent: #0f6b6e;
+      --accent-dark: #0a4f52;
+      --accent-soft: #e6f4f4;
+      --warn-bg: #fff8eb;
+      --warn-border: #f59e0b;
+      --warn-ink: #8a4b08;
+      --danger-bg: #fef2f2;
+      --danger-border: #dc2626;
+      --danger-ink: #991b1b;
+      --good-bg: #ecfdf5;
+      --good-border: #10b981;
+      --good-ink: #065f46;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 28px 20px 64px;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 13px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+
+    .topbar a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 650;
+    }
+
+    .topbar a:hover { text-decoration: underline; }
+
+    header {
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 20px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2.25rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: var(--ink-muted);
+      max-width: 760px;
+      font-size: 1rem;
+    }
+
+    .calm-banner {
+      margin-top: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--accent);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+    }
+
+    .calm-banner strong { color: var(--ink); }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(310px, 400px) 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 880px) {
+      .layout { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .card + .card { margin-top: 18px; }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 1.12rem;
+      letter-spacing: -0.01em;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    .field:last-child { margin-bottom: 0; }
+
+    .field-label {
+      display: block;
+      font-weight: 650;
+      font-size: 0.92rem;
+      margin-bottom: 8px;
+    }
+
+    .field-hint {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+      margin-top: 4px;
+    }
+
+    .option-group {
+      display: grid;
+      gap: 8px;
+    }
+
+    .option-group.cols-2 {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .option-group.cols-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .pill-btn {
+      appearance: none;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 0.88rem;
+      font-weight: 550;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      border-color: var(--accent);
+      background: #fafdfd;
+    }
+
+    .pill-btn.active {
+      border-color: var(--accent);
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .pill-btn small {
+      display: block;
+      font-weight: 400;
+      font-size: 0.76rem;
+      color: var(--ink-muted);
+      margin-top: 2px;
+    }
+
+    .pill-btn.active small { color: var(--accent-dark); opacity: 0.85; }
+
+    .checkbox-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.88rem;
+      background: #fcfdfd;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .check-item:hover { border-color: var(--accent); }
+
+    .check-item input {
+      margin-top: 3px;
+      accent-color: var(--accent);
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+    }
+
+    .slider-value {
+      min-width: 72px;
+      text-align: right;
+      font-weight: 700;
+      color: var(--accent-dark);
+      font-size: 0.95rem;
+    }
+
+    /* Output styling */
+    .rec-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--good-ink);
+      background: var(--good-bg);
+      border: 1px solid #a7f3d0;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .rec-title {
+      font-size: 1.45rem;
+      margin: 0 0 8px;
+      line-height: 1.25;
+      color: var(--ink);
+    }
+
+    .rec-summary {
+      margin: 0 0 16px;
+      color: var(--ink-muted);
+      font-size: 0.96rem;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 540px) {
+      .metrics-grid { grid-template-columns: 1fr; }
+      .option-group.cols-3 { grid-template-columns: 1fr; }
+    }
+
+    .metric-box {
+      background: var(--surface-alt);
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .metric-label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-muted);
+      font-weight: 650;
+    }
+
+    .metric-val {
+      font-size: 1.15rem;
+      font-weight: 750;
+      color: var(--ink);
+      margin-top: 2px;
+    }
+
+    .metric-sub {
+      font-size: 0.76rem;
+      color: var(--ink-muted);
+    }
+
+    .alerts-stack {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .alert {
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.89rem;
+      border: 1px solid transparent;
+    }
+
+    .alert strong { display: block; margin-bottom: 2px; }
+
+    .alert.warn {
+      background: var(--warn-bg);
+      border-color: #fcd34d;
+      color: var(--warn-ink);
+    }
+
+    .alert.danger {
+      background: var(--danger-bg);
+      border-color: #fca5a5;
+      color: var(--danger-ink);
+    }
+
+    .alert.good {
+      background: var(--good-bg);
+      border-color: #6ee7b7;
+      color: var(--good-ink);
+    }
+
+    .action-steps {
+      margin: 0 0 16px;
+      padding-left: 20px;
+      font-size: 0.92rem;
+    }
+
+    .action-steps li { margin-bottom: 6px; }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .primary-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 9px;
+      padding: 10px 16px;
+      font-size: 0.88rem;
+      font-weight: 650;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    .primary-btn:hover { background: var(--accent-dark); }
+
+    .copy-status {
+      font-size: 0.84rem;
+      color: var(--good-ink);
+      font-weight: 600;
+    }
+
+    /* Bar chart */
+    .chart-list {
+      display: grid;
+      gap: 13px;
+      margin-top: 12px;
+    }
+
+    .chart-row {
+      display: grid;
+      gap: 4px;
+    }
+
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+
+    .chart-name { font-weight: 650; }
+    .chart-meta { color: var(--ink-muted); font-size: 0.8rem; }
+
+    .chart-track {
+      height: 12px;
+      background: #e9efee;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .chart-bar {
+      height: 100%;
+      border-radius: 999px;
+      background: #8aa7a8;
+      transition: width 0.3s ease;
+    }
+
+    .chart-bar.recommended { background: var(--accent); }
+    .chart-bar.bottled { background: #dc6843; }
+    .chart-bar.caution { background: #d97706; opacity: 0.65; }
+
+    .tag-pill {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 999px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
+
+    .tag-best { background: var(--accent-soft); color: var(--accent-dark); }
+    .tag-warn { background: var(--warn-bg); color: var(--warn-ink); }
+    .tag-no { background: var(--danger-bg); color: var(--danger-ink); }
+
+    /* Evidence accordion */
+    details {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 11px 14px;
+      background: #fcfdfd;
+    }
+
+    details + details { margin-top: 10px; }
+
+    summary {
+      cursor: pointer;
+      font-weight: 650;
+      font-size: 0.92rem;
+      color: var(--ink);
+    }
+
+    details p {
+      margin: 8px 0 0;
+      font-size: 0.87rem;
+      color: var(--ink-muted);
+    }
+
+    footer {
+      margin-top: 32px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="topbar" aria-label="Site navigation">
+    <div class="topbar-inner">
+      <a href="../">&larr; Back to Research Hub</a>
+      <a href="../guides/microplastics/">Read Full Evidence Guide &rarr;</a>
+    </div>
+  </nav>
+  <div class="container">
+    <header>
+      <span class="eyebrow">Open Plain-Language Science Tool</span>
+      <h1>Microplastics in Drinking Water: What Actually Works?</h1>
+      <p class="subtitle">
+        Answer five quick questions about your home and budget to get a calm, peer-reviewed recommendation—without marketing hype.
+      </p>
+      <div class="calm-banner">
+        <strong>Scientific context:</strong> Both the WHO and U.S. EPA note that scientists have not yet established exact human health thresholds for microplastics in drinking water. This tool helps you reduce exposure affordably based on what lab studies actually verify.
+      </div>
+    </header>
+
+    <main class="layout">
+      <!-- Left column: Inputs -->
+      <section class="card" aria-label="Household inputs">
+        <h2>1. Tell Us About Your Setup</h2>
+
+        <div class="field">
+          <span class="field-label">Tap Water Hardness</span>
+          <div class="option-group" id="hardness-group">
+            <button type="button" class="pill-btn" data-value="hard">
+              Hard water (&gt;120 mg/L CaCO₃)
+              <small>Leaves white chalky scale on kettles or faucets</small>
+            </button>
+            <button type="button" class="pill-btn" data-value="soft">
+              Soft or moderate water
+              <small>Little to no white limescale buildup</small>
+            </button>
+            <button type="button" class="pill-btn active" data-value="unknown">
+              Not sure
+              <small>We'll recommend a method that works either way</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">Living Situation</span>
+          <div class="option-group cols-2" id="housing-group">
+            <button type="button" class="pill-btn active" data-value="renter">
+              Renter / No plumbing
+              <small>Countertop or pitcher only</small>
+            </button>
+            <button type="button" class="pill-btn" data-value="owner">
+              Can install under-sink
+              <small>DIY or plumber setup</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <span class="field-label">Target Annual Budget (Filters / Energy)</span>
+          <div class="option-group cols-3" id="budget-group">
+            <button type="button" class="pill-btn" data-value="tight">
+              Tightest
+              <small>≤ $40/yr</small>
+            </button>
+            <button type="button" class="pill-btn active" data-value="moderate">
+              Moderate
+              <small>$50–$100/yr</small>
+            </button>
+            <button type="button" class="pill-btn" data-value="flexible">
+              Flexible
+              <small>$100–$200/yr</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="liters-slider">Daily Drinking Water Volume (Household)</label>
+          <div class="slider-row">
+            <input type="range" id="liters-slider" min="1" max="10" step="1" value="3" />
+            <span class="slider-value" id="liters-display">3 L / day</span>
+          </div>
+          <span class="field-hint">Used to estimate electricity for boiling and potential bottled-water savings.</span>
+        </div>
+
+        <div class="field">
+          <span class="field-label">Important Checks (Select any that apply)</span>
+          <div class="checkbox-list">
+            <label class="check-item">
+              <input type="checkbox" id="chk-chemicals" />
+              <span><strong>Lead, nitrates, or PFAS concern</strong> (older pipes or local water advisory)</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" id="chk-kettle" />
+              <span><strong>I boil water in a plastic electric kettle</strong> (or a metal kettle with plastic inside)</span>
+            </label>
+            <label class="check-item">
+              <input type="checkbox" id="chk-bottled" />
+              <span><strong>I currently buy bottled water regularly</strong> (show estimated annual savings)</span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Right column: Results -->
+      <div>
+        <section class="card" aria-live="polite">
+          <span class="rec-badge" id="rec-badge">Best Evidence-Based Match</span>
+          <h2 class="rec-title" id="rec-title">Membrane-Equipped Filter Pitcher</h2>
+          <p class="rec-summary" id="rec-summary"></p>
+
+          <div class="metrics-grid">
+            <div class="metric-box">
+              <div class="metric-label">Upfront Cost</div>
+              <div class="metric-val" id="metric-upfront">$40–$60</div>
+              <div class="metric-sub" id="metric-upfront-sub">Hardware only</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-label">Ongoing Annual Cost</div>
+              <div class="metric-val" id="metric-annual">$50–$90/yr</div>
+              <div class="metric-sub" id="metric-annual-sub">Replacement filters</div>
+            </div>
+            <div class="metric-box">
+              <div class="metric-label">Lab Removal Evidence</div>
+              <div class="metric-val" id="metric-removal">78–100%</div>
+              <div class="metric-sub" id="metric-removal-sub">Physical membrane barrier</div>
+            </div>
+          </div>
+
+          <div class="alerts-stack" id="alerts-container"></div>
+
+          <h3>Practical Next Steps</h3>
+          <ol class="action-steps" id="action-steps"></ol>
+
+          <div class="btn-row">
+            <button type="button" class="primary-btn" id="copy-btn">Copy My Personalized Plan</button>
+            <span class="copy-status" id="copy-status" aria-live="polite"></span>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>2. Three-Year Total Cost Comparison (Estimated)</h2>
+          <p class="field-hint" style="margin-top:-8px; margin-bottom: 12px;">
+            Includes hardware + 3 years of replacement filters or boiling energy (based on your daily water volume, ~$0.18/kWh U.S. avg).
+          </p>
+          <div class="chart-list" id="cost-chart"></div>
+        </section>
+
+        <section class="card">
+          <h2>3. Check the Primary Science Behind These Rules</h2>
+
+          <details>
+            <summary>Boiling hard water traps plastics—but plastic kettles add billions back</summary>
+            <p>
+              <strong>Yu, Zeng et al. (2024, <em>Environ. Sci. Technol. Lett.</em>)</strong> showed boiling hard water (&gt;120 mg/L CaCO₃) encapsulates 80–90% of micro/nanoplastics inside limescale crust—if you strain the scale out afterward (soft water removed only ~25%).
+              However, <strong>Shi et al. (2025, <em>npj Emerging Contaminants</em>)</strong> demonstrated that polypropylene electric kettles shed millions to billions of new nanoplastics per mL during boiling (worst in the first 10–50 boils, and never reaching zero).
+            </p>
+          </details>
+
+          <details>
+            <summary>Why standard loose-carbon pitchers are NOT recommended for microplastics</summary>
+            <p>
+              <strong>Cherian et al. (2023, <em>Polymers</em>, Univ. of Toronto)</strong> tested common pour-through pitchers. Pitchers using only loose granular activated carbon (GAC) and ion-exchange resin lacked a tight physical barrier and sometimes had <em>more</em> plastic particles in filtered water than unfiltered input. By contrast, pitchers with a <strong>0.2 µm physical membrane</strong> removed 94–100% of PET fragments and 78–86% of PVC fragments.
+            </p>
+          </details>
+
+          <details>
+            <summary>What NSF/ANSI 401 certifies—and the nanoplastics certification gap</summary>
+            <p>
+              <strong>NSF/ANSI 401</strong> is the primary independent certification for microplastic reduction, testing particles between <strong>0.5 µm and 1 µm</strong> (requiring ≥85% reduction, often 95–99%+). Currently, there is <strong>no official consumer certification for nanoplastics (&lt;0.1 µm)</strong>. Reverse osmosis (~0.0001 µm pores) blocks them by physics, though poorly maintained downstream plastic tanks/tubing can re-introduce trace particles.
+            </p>
+          </details>
+
+          <details>
+            <summary>Bottled water &amp; glass bottles: what studies (and critiques) show</summary>
+            <p>
+              <strong>Qian et al. (2024, <em>PNAS</em>)</strong> estimated ~240,000 plastic particles/L in bottled water (~90% nanoplastics), though follow-up <em>PNAS</em> correspondence noted analytical debates over lab procedural blanks. Separately, France's <strong>ANSES (2025)</strong> found glass-bottled drinks averaged ~100 microplastics/L—not from glass itself, but from polyester paint flaking off metal caps during sealing. Filtered tap water in a reusable glass or stainless bottle avoids both.
+            </p>
+          </details>
+
+          <details>
+            <summary>Why boiling is unsafe if lead, nitrates, or PFAS are present</summary>
+            <p>
+              Both the <strong>U.S. EPA</strong> and <strong>CDC</strong> warn that boiling kills germs but does not destroy heavy metals or chemical pollutants. As clean water turns to steam, non-volatile contaminants like lead, nitrates, and PFAS stay behind and become <em>more concentrated</em>. Use certified chemical filtration (NSF/ANSI 53 or NSF/ANSI 58 RO) instead.
+            </p>
+          </details>
+        </section>
+      </div>
+    </main>
+
+    <footer>
+      <span>Part of the Open Plain-Language Research Guides project. No tracking, no affiliate links, runs 100% locally.</span>
+      <span>Evidence compiled from peer-reviewed studies (2023–2025) &amp; NSF/EPA/WHO guidance.</span>
+    </footer>
+  </div>
+
+  <script>
+    const state = {
+      hardness: "unknown",
+      housing: "renter",
+      budget: "moderate",
+      liters: 3,
+      chemicals: false,
+      kettle: false,
+      bottled: false
+    };
+
+    function setupPillGroup(containerId, stateKey) {
+      const container = document.getElementById(containerId);
+      container.querySelectorAll(".pill-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          container.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          state[stateKey] = btn.dataset.value;
+          render();
+        });
+      });
+    }
+
+    setupPillGroup("hardness-group", "hardness");
+    setupPillGroup("housing-group", "housing");
+    setupPillGroup("budget-group", "budget");
+
+    const litersSlider = document.getElementById("liters-slider");
+    const litersDisplay = document.getElementById("liters-display");
+    litersSlider.addEventListener("input", () => {
+      state.liters = Number(litersSlider.value);
+      litersDisplay.textContent = `${state.liters} L / day`;
+      render();
+    });
+
+    document.getElementById("chk-chemicals").addEventListener("change", (e) => {
+      state.chemicals = e.target.checked;
+      render();
+    });
+    document.getElementById("chk-kettle").addEventListener("change", (e) => {
+      state.kettle = e.target.checked;
+      render();
+    });
+    document.getElementById("chk-bottled").addEventListener("change", (e) => {
+      state.bottled = e.target.checked;
+      render();
+    });
+
+    function computeCosts() {
+      // Boiling electricity: ~0.105 kWh/L * 365 * $0.18/kWh + ~$10/yr unbleached paper filters
+      const boilEnergyAnnual = Math.round(state.liters * 0.105 * 365 * 0.18);
+      const boilAnnual = boilEnergyAnnual + 10;
+      const boilUpfront = state.kettle ? 35 : 15; // stainless pot/kettle if upgrading from plastic
+
+      // Bottled water baseline: conservative $0.45 per liter (multi-pack) to $1.00/L
+      const bottledAnnual = Math.round(state.liters * 0.50 * 365);
+
+      return {
+        boil: {
+          id: "boil",
+          name: "Boil + Strain (Plastic-Free Pot)",
+          upfrontLabel: state.kettle ? "$25–$45" : "$0–$40",
+          annualLabel: `~$${Math.max(12, boilAnnual - 5)}–$${boilAnnual + 8}/yr`,
+          threeYear: boilUpfront + boilAnnual * 3,
+          removal: state.hardness === "hard" ? "80–90%" : "~25% (soft)",
+          removalSub: "Hard water CaCO₃ trapping"
+        },
+        pitcher: {
+          id: "pitcher",
+          name: "Membrane-Equipped Filter Pitcher",
+          upfrontLabel: "$40–$60",
+          annualLabel: "$50–$90/yr",
+          threeYear: 50 + 70 * 3,
+          removal: "78–100%",
+          removalSub: "0.2 µm physical membrane + carbon"
+        },
+        carbon: {
+          id: "carbon",
+          name: "Under-Sink Solid Carbon Block (NSF 401)",
+          upfrontLabel: "$130–$350",
+          annualLabel: "$70–$150/yr",
+          threeYear: 220 + 110 * 3,
+          removal: "≥85–99%+",
+          removalSub: "0.5–1.0 µm certified block"
+        },
+        ro: {
+          id: "ro",
+          name: "Reverse Osmosis (RO) System",
+          upfrontLabel: "$200–$550+",
+          annualLabel: "$100–$200/yr",
+          threeYear: 350 + 150 * 3,
+          removal: ">99%",
+          removalSub: "~0.0001 µm (incl. most nanoplastics)"
+        },
+        bottled: {
+          id: "bottled",
+          name: `Daily Bottled Water (${state.liters} L/day est.)`,
+          threeYear: bottledAnnual * 3,
+          annual: bottledAnnual
+        }
+      };
+    }
+
+    function pickRecommendation(costs) {
+      // Decision logic grounded strictly in peer-reviewed evidence + EPA/CDC safety
+      let key = "pitcher";
+      let summary = "";
+      let steps = [];
+
+      if (state.budget === "tight" && state.hardness === "hard" && !state.chemicals) {
+        key = "boil";
+        summary =
+          "Because you have hard tap water and no known lead, nitrate, or PFAS concerns, boiling in a 100% plastic-free stainless steel or glass pot and straining out the white limescale traps 80–90% of micro- and nanoplastics at the lowest possible cost.";
+        steps = [
+          "Boil drinking water in a 100% stainless steel or borosilicate glass pot/kettle (no plastic water windows or inner lids).",
+          "Let the water cool briefly so calcium carbonate (limescale) flakes settle, then pour through an unbleached paper coffee filter or fine tea strainer.",
+          "Check your city's free Consumer Confidence Report (CCR) once a year to confirm lead, nitrates, and PFAS remain low."
+        ];
+      } else if (state.housing === "owner" && state.budget === "flexible") {
+        key = "ro";
+        summary =
+          "With under-sink installation available and a flexible budget, a well-maintained Reverse Osmosis (RO) system provides the tightest physical barrier (~0.0001 µm), removing >99% of microplastics, most nanoplastics, and chemical contaminants like lead, nitrates, and PFAS.";
+        steps = [
+          "Verify the exact model holds independent NSF/ANSI 58 (RO) and NSF/ANSI 401 (microplastics) listings—not just 'tested to NSF standards.'",
+          "Replace pre-filters every 6–12 months and the RO membrane every 2–3 years to prevent fouling and downstream shedding.",
+          "Consider a remineralization stage if you prefer mineral taste, and keep storage tanks/tubing maintained."
+        ];
+      } else if (state.housing === "owner" && state.budget === "moderate") {
+        key = "carbon";
+        summary =
+          "An under-sink solid carbon block system certified to NSF/ANSI 401 (and NSF/ANSI 53 for lead/PFAS) offers strong microplastic screening (0.5–1.0 µm) straight from your tap with zero wastewater and keeps natural minerals intact.";
+        steps = [
+          "Look up the exact model in the official NSF, WQA, or IAPMO directory to confirm explicit NSF/ANSI 401 microplastics certification (plus NSF 53 if lead/PFAS is a concern).",
+          "Replace cartridges every 6–12 months on schedule so flow channels don't degrade.",
+          "Note: Carbon blocks capture microplastics (≥0.5 µm) well; if capturing <0.1 µm nanoplastics is your top priority, upgrade to Reverse Osmosis."
+        ];
+      } else {
+        key = "pitcher";
+        const reasonParts = [];
+        if (state.chemicals && state.budget === "tight") {
+          reasonParts.push("boiling is unsafe when lead, nitrates, or PFAS may be present (it concentrates them)");
+        } else if (state.hardness !== "hard" && state.budget === "tight") {
+          reasonParts.push("boiling only removes ~25% of plastics in soft water (or if hardness is unknown)");
+        }
+        if (state.housing === "renter") {
+          reasonParts.push("it requires zero plumbing modifications");
+        }
+        summary =
+          `A dual-stage membrane pitcher (combining a ~0.2 µm physical microfilter with activated carbon, such as LifeStraw Home) is your safest practical match because ${reasonParts.length ? reasonParts.join(" and ") : "it balances strong physical particle removal with moderate annual cost"}.`;
+        steps = [
+          "Avoid standard loose-carbon pitchers (GAC + ion exchange only)—lab tests showed inconsistent results and occasional particle shedding.",
+          "Choose a pitcher with a physical hollow-fiber/microfiltration membrane (~0.2 µm) and verify independent NSF certifications (especially NSF 53 if lead/PFAS is a concern).",
+          "Swap the carbon stage on schedule (~every 2 months) and the membrane annually, and store drinking water in glass or stainless steel."
+        ];
+      }
+
+      return { key, rec: costs[key], summary, steps };
+    }
+
+    let lastPlanText = "";
+
+    function render() {
+      const costs = computeCosts();
+      const { key, rec, summary, steps } = pickRecommendation(costs);
+
+      document.getElementById("rec-title").textContent = rec.name;
+      document.getElementById("rec-summary").textContent = summary;
+      document.getElementById("metric-upfront").textContent = rec.upfrontLabel;
+      document.getElementById("metric-annual").textContent = rec.annualLabel;
+      document.getElementById("metric-removal").textContent = rec.removal;
+      document.getElementById("metric-removal-sub").textContent = rec.removalSub;
+
+      // Tailored alerts
+      const alerts = [];
+      if (state.chemicals) {
+        alerts.push({
+          type: "danger",
+          title: "Safety Warning: Do NOT rely on boiling for lead, nitrates, or PFAS",
+          body: "EPA and CDC guidance warns that boiling evaporates clean water while leaving heavy metals and chemical pollutants behind—concentrating them. Filter first using an NSF/ANSI 53 or NSF/ANSI 58 (RO) certified system."
+        });
+      }
+      if (state.kettle) {
+        alerts.push({
+          type: "warn",
+          title: "High-Impact Quick Win: Replace your plastic electric kettle",
+          body: "A 2025 study in npj Emerging Contaminants (Shi et al.) found polypropylene kettles shed millions to billions of nanoplastics during boiling—never dropping to zero. Switching to a 100% stainless steel or borosilicate glass kettle (check inside the lid & water window!) eliminates one of the biggest household sources."
+        });
+      }
+      if (state.hardness === "unknown") {
+        alerts.push({
+          type: "warn",
+          title: "Not sure if your water is hard?",
+          body: "Check your city's free annual Consumer Confidence Report (CCR) or look for chalky white residue on faucets and pots. Until confirmed (>120 mg/L CaCO₃), physical membrane filtration is far more reliable than boiling."
+        });
+      }
+      if (state.bottled) {
+        const recAnnualApprox = Math.round((rec.threeYear - (key === "ro" ? 350 : key === "carbon" ? 220 : key === "pitcher" ? 50 : 20)) / 3);
+        const yearlySavings = Math.max(0, costs.bottled.annual - recAnnualApprox);
+        alerts.push({
+          type: "good",
+          title: `Switching from bottled water could save ~$${yearlySavings.toLocaleString()}/year`,
+          body: `Buying ${state.liters} L/day of bottled water costs roughly $${costs.bottled.annual.toLocaleString()}/yr (at ~$0.50/L)—and studies show bottled water typically carries far more plastic particles than filtered tap water.`
+        });
+      }
+
+      const alertsEl = document.getElementById("alerts-container");
+      alertsEl.innerHTML = alerts
+        .map((a) => `<div class="alert ${a.type}"><strong>${a.title}</strong>${a.body}</div>`)
+        .join("");
+
+      const stepsEl = document.getElementById("action-steps");
+      stepsEl.innerHTML = steps.map((s) => `<li>${s}</li>`).join("");
+
+      // 3-Year Cost Comparison Chart
+      const rows = [
+        { ...costs.boil, status: state.chemicals ? "no" : state.hardness === "hard" ? "ok" : "warn" },
+        { ...costs.pitcher, status: "ok" },
+        { ...costs.carbon, status: state.housing === "renter" ? "warn" : "ok" },
+        { ...costs.ro, status: state.housing === "renter" ? "warn" : "ok" }
+      ];
+      if (state.bottled) {
+        rows.push({
+          id: "bottled",
+          name: costs.bottled.name,
+          threeYear: costs.bottled.threeYear,
+          removal: "Adds plastic",
+          status: "bottled"
+        });
+      }
+
+      const maxCost = Math.max(...rows.map((r) => r.threeYear), 400);
+      const chartEl = document.getElementById("cost-chart");
+      chartEl.innerHTML = rows
+        .map((r) => {
+          const pct = Math.max(8, Math.round((r.threeYear / maxCost) * 100));
+          let barClass = "chart-bar";
+          let tag = "";
+          if (r.id === key) {
+            barClass += " recommended";
+            tag = `<span class="tag-pill tag-best">Recommended</span>`;
+          } else if (r.status === "bottled") {
+            barClass += " bottled";
+            tag = `<span class="tag-pill tag-no">Highest cost &amp; plastic</span>`;
+          } else if (r.id === "boil" && state.chemicals) {
+            barClass += " caution";
+            tag = `<span class="tag-pill tag-no">Unsafe w/ lead/PFAS</span>`;
+          } else if (r.id === "boil" && state.hardness !== "hard") {
+            barClass += " caution";
+            tag = `<span class="tag-pill tag-warn">Low effect (~25%)</span>`;
+          } else if ((r.id === "carbon" || r.id === "ro") && state.housing === "renter") {
+            tag = `<span class="tag-pill tag-warn">Needs plumbing</span>`;
+          }
+
+          return `
+            <div class="chart-row">
+              <div class="chart-header">
+                <span class="chart-name">${r.name}${tag}</span>
+                <span class="chart-meta">~$${r.threeYear.toLocaleString()} over 3 yrs • ${r.removal}</span>
+              </div>
+              <div class="chart-track">
+                <div class="${barClass}" style="width: ${pct}%"></div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+
+      // Prepare copyable plain-text summary
+      lastPlanText = [
+        `Microplastics in Drinking Water — Personalized Plan`,
+        `Recommended Option: ${rec.name}`,
+        `Upfront: ${rec.upfrontLabel} | Ongoing: ${rec.annualLabel} | Lab Removal: ${rec.removal}`,
+        ``,
+        `Why: ${summary}`,
+        ``,
+        `Next Steps:`,
+        ...steps.map((s, i) => `${i + 1}. ${s}`),
+        ...(alerts.length ? ["", "Key Notes:", ...alerts.map((a) => `- ${a.title}: ${a.body}`)] : []),
+        ``,
+        `Sources: Yu et al. (2024, ES&T Lett.), Shi et al. (2025, npj Emerg. Contam.), Cherian et al. (2023, Polymers), Qian et al. (2024, PNAS), ANSES (2025), NSF/ANSI 401 & EPA/CDC guidance.`
+      ].join("\n");
+    }
+
+    document.getElementById("copy-btn").addEventListener("click", async () => {
+      const status = document.getElementById("copy-status");
+      try {
+        await navigator.clipboard.writeText(lastPlanText);
+        status.textContent = "Copied to clipboard!";
+      } catch {
+        status.textContent = "Copy blocked by browser—select and copy from the page.";
+      }
+      setTimeout(() => { status.textContent = ""; }, 2500);
+    });
+
+    render();
+  </script>
+</body>
+</html>

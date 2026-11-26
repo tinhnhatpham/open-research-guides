@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Microplastics in Drinking Water: What Actually Works — Open Plain-Language Research</title>
+  <meta name="description" content="A practical, peer-reviewed guide to reducing microplastics in drinking water on any budget, with real annual costs and safety caveats." />
+  <style>
+    :root {
+      --bg: #f6f7f5;
+      --surface: #ffffff;
+      --surface-alt: #f0f4f3;
+      --ink: #17212b;
+      --ink-muted: #52606d;
+      --border: #d9e2e0;
+      --accent: #0f6b6e;
+      --accent-dark: #0a4f52;
+      --accent-soft: #e6f4f4;
+      --warn-bg: #fff8eb;
+      --warn-border: #f59e0b;
+      --warn-ink: #8a4b08;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 13px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+
+    .topbar a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 650;
+    }
+
+    .topbar a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 32px 20px 72px;
+    }
+
+    article {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 34px 32px;
+      box-shadow: var(--shadow);
+    }
+
+    @media (max-width: 640px) {
+      article { padding: 22px 18px; }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.65rem, 3.2vw, 2.25rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .meta {
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      margin: 0 0 18px;
+    }
+
+    .cta-box {
+      background: var(--accent-soft);
+      border: 1px solid #b6dedf;
+      border-radius: 12px;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 18px 0 24px;
+    }
+
+    .cta-box p {
+      margin: 0;
+      font-size: 0.92rem;
+      color: var(--accent-dark);
+    }
+
+    .cta-btn {
+      background: var(--accent);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 650;
+      font-size: 0.88rem;
+      padding: 9px 15px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+
+    .cta-btn:hover { background: var(--accent-dark); }
+
+    .callout {
+      background: var(--surface-alt);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 18px 0;
+      font-size: 0.93rem;
+      color: var(--ink-muted);
+    }
+
+    .callout strong { color: var(--ink); }
+
+    .callout.warn {
+      background: var(--warn-bg);
+      border-left-color: var(--warn-border);
+      color: var(--warn-ink);
+    }
+
+    .callout.warn strong { color: var(--warn-ink); }
+
+    h2 {
+      margin: 30px 0 12px;
+      font-size: 1.3rem;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+      letter-spacing: -0.015em;
+    }
+
+    h3 {
+      margin: 20px 0 6px;
+      font-size: 1.05rem;
+      color: var(--accent-dark);
+    }
+
+    p { margin: 0 0 12px; }
+
+    ul, ol {
+      margin: 0 0 14px;
+      padding-left: 22px;
+    }
+
+    li { margin-bottom: 6px; }
+
+    .table-wrap {
+      overflow-x: auto;
+      margin: 14px 0 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      min-width: 600px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--surface-alt);
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .myth-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      background: #fcfdfd;
+    }
+
+    .myth-card h3 { margin-top: 0; }
+    .myth-card p:last-child { margin-bottom: 0; }
+
+    .sources li {
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+    }
+
+    .sources strong { color: var(--ink); }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <a href="../../microplastics-calculator/">Open Interactive Calculator &rarr;</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <article>
+      <span class="eyebrow">Guide #01 &bull; Everyday Science &amp; Health</span>
+      <h1>Microplastics in Drinking Water: What Actually Works (on Any Budget)</h1>
+      <p class="meta">Practical, citation-backed household guide &bull; Compiled November 2026</p>
+
+      <div class="callout">
+        <strong>A calm note before you start:</strong> Microplastics (1 &micro;m to 5 mm) and nanoplastics (&lt;1 &micro;m) appear in drinking water worldwide. However, major public health agencies—including the <strong>World Health Organization (WHO)</strong> and the <strong>U.S. EPA</strong> (which added microplastics to its draft Sixth Contaminant Candidate List)—emphasize that <strong>scientists do not yet have established human health thresholds</strong> for typical drinking-water exposure. The goal here is calm, affordable risk reduction—not panic.
+      </div>
+
+      <div class="cta-box">
+        <p><strong>Want a tailored recommendation for your home?</strong> Answer 5 quick questions to compare options and 3-year costs.</p>
+        <a class="cta-btn" href="../../microplastics-calculator/">Try the Interactive Calculator</a>
+      </div>
+
+      <h2>1. The 30-Second Decision Guide (By Budget)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Your Situation</th>
+              <th>Best Evidence-Backed Choice</th>
+              <th>Upfront</th>
+              <th>Est. Annual Cost</th>
+              <th>Why It Works</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Tightest budget &amp; hard tap water</strong><br /><em>(low lead/PFAS risk)</em></td>
+              <td><strong>Boil in a 100% plastic-free stainless/glass pot + strain</strong></td>
+              <td>$0–$40</td>
+              <td><strong>$15–$35/yr</strong></td>
+              <td>Limescale traps 80–90% of micro/nanoplastics as hard water boils—<em>only</em> if you strain the white scale out afterward.</td>
+            </tr>
+            <tr>
+              <td><strong>Renters / Zero plumbing / Soft water</strong></td>
+              <td><strong>Membrane-equipped pitcher</strong><br /><em>(e.g., 0.2 &micro;m microfilter + carbon, like LifeStraw Home)</em></td>
+              <td>$40–$60</td>
+              <td><strong>$50–$90/yr</strong></td>
+              <td>Physical membrane pores trap particles (78–100% in lab tests) that loose-carbon pitchers miss.</td>
+            </tr>
+            <tr>
+              <td><strong>Homeowners wanting minerals + zero wastewater</strong></td>
+              <td><strong>Under-sink solid carbon block</strong><br /><em>(verified NSF/ANSI 401 for microplastics)</em></td>
+              <td>$130–$350 <em>(DIY)</em></td>
+              <td><strong>$70–$150/yr</strong></td>
+              <td>Tight 0.5–1.0 &micro;m carbon block physically screens microplastics while keeping natural minerals.</td>
+            </tr>
+            <tr>
+              <td><strong>Maximum reduction (incl. nanoplastics)</strong></td>
+              <td><strong>Reverse Osmosis (RO)</strong><br /><em>(well-maintained, NSF/ANSI 58 + 401)</em></td>
+              <td>$200–$550+ <em>(DIY)</em></td>
+              <td><strong>$100–$200/yr</strong></td>
+              <td>~0.0001 &micro;m membrane blocks &gt;99% of microplastics and most nanoplastics.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Cost reality check:</strong> Buying bottled water daily often costs <strong>$300–$700+ per year</strong>—more than any home filter above—while typically delivering <em>more</em> plastic particles per liter than filtered tap water.</p>
+
+      <h2>2. How Each Method Actually Performs in Lab Studies</h2>
+      <p>The core rule from peer-reviewed testing is simple: <strong>removing microplastics requires either a tight physical barrier (tiny pores) or trapping them inside solid mineral scale.</strong> Filters built only for taste do not reliably block microscopic plastic particles.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Method</th>
+              <th>Mechanism / Pore Size</th>
+              <th>Lab Removal Evidence</th>
+              <th>Key Catch</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Standard Carbon Pitcher</strong><br /><em>(loose GAC + ion exchange)</em></td>
+              <td>Chemical adsorption (loose media)</td>
+              <td><strong>Inconsistent (~5–50%; sometimes adds particles)</strong></td>
+              <td>Built for chlorine/taste, not particles. Lab tests found some loose-media pitchers released <em>more</em> microplastics than went in.</td>
+            </tr>
+            <tr>
+              <td><strong>Boiling + Straining</strong></td>
+              <td>Coprecipitation with CaCO<sub>3</sub> limescale</td>
+              <td><strong>80–90% in hard water</strong> (&gt;120 mg/L); <strong>~25% in soft water</strong></td>
+              <td>Backfires in plastic kettles; <strong>concentrates</strong> lead, nitrates, or PFAS if present in tap water.</td>
+            </tr>
+            <tr>
+              <td><strong>Solid Carbon Block (NSF 401)</strong></td>
+              <td>Physical size exclusion (~0.5–1.0 &micro;m)</td>
+              <td><strong>&ge;85% to 99%+</strong> (0.5–1 &micro;m microplastics)</td>
+              <td>Does not guarantee capture of nanoplastics (&lt;0.1 &micro;m). Verify exact NSF 401 listing.</td>
+            </tr>
+            <tr>
+              <td><strong>Ultrafiltration / Membrane Pitcher</strong></td>
+              <td>Physical membrane (~0.01–0.2 &micro;m)</td>
+              <td><strong>78–100%</strong> (Cherian et al., 2023)</td>
+              <td>Slower drip rate; replace cartridges on schedule to avoid fouling or degradation.</td>
+            </tr>
+            <tr>
+              <td><strong>Reverse Osmosis (RO)</strong></td>
+              <td>Dense membrane (~0.0001 &micro;m)</td>
+              <td><strong>&gt;99%</strong> (including most nanoplastics)</td>
+              <td>Wastes reject water, strips minerals, and aging downstream plastic tanks/tubing can re-shed trace particles.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>3. Five Popular Myths vs. Primary Studies</h2>
+
+      <div class="myth-card">
+        <h3>Myth 1: "Just boil your tap water to remove microplastics."</h3>
+        <p><strong>What labs found:</strong> Yu, Zeng et al. (2024, <em>Environ. Sci. Technol. Lett.</em>) showed boiling hard tap water (&gt;120 mg/L CaCO<sub>3</sub>) traps <strong>80–90%</strong> of micro/nanoplastics inside limescale crust—<em>if</em> you strain the scale out afterward. In soft water, removal dropped to ~25%.</p>
+        <p><strong>The catch:</strong> Shi et al. (2025, <em>npj Emerging Contaminants</em>) found polypropylene (plastic) electric kettles release millions to billions of <em>new</em> nanoplastics per mL during boiling (worst in the first 10–50 boils, never dropping to zero). Even many "stainless steel" kettles hide plastic interior parts or water-level windows.</p>
+      </div>
+
+      <div class="myth-card">
+        <h3>Myth 2: "Any standard water pitcher filter removes microplastics."</h3>
+        <p><strong>What labs found:</strong> University of Toronto researchers (Cherian et al., 2023, <em>Polymers</em>) found pitchers using only loose granular activated carbon (GAC) and ion-exchange resin sometimes released <strong>more</strong> plastic particles than entered. Pitchers with a <strong>0.2 &micro;m physical membrane</strong> removed 94–100% of PET fragments and 78–86% of PVC fragments.</p>
+      </div>
+
+      <div class="myth-card">
+        <h3>Myth 3: "Bottled water is cleaner than tap water."</h3>
+        <p><strong>What labs found:</strong> Qian et al. (2024, <em>PNAS</em>) estimated 110,000–370,000 particles/L (avg ~240,000/L) in bottled water, ~90% nanoplastics—heavily polyamide from industrial filtration/bottling equipment. While subsequent <em>PNAS</em> correspondence debated laboratory procedural blank handling, environmental scientists broadly agree filtered tap water carries far fewer plastics at a fraction of the price.</p>
+      </div>
+
+      <div class="myth-card">
+        <h3>Myth 4: "Store-bought glass bottles completely avoid microplastics."</h3>
+        <p><strong>What labs found:</strong> A 2025 study by France's food safety agency (<strong>ANSES</strong>) found beverages in glass bottles averaged ~100 microplastics/L—higher than plastic bottles or cans in the same study. Glass itself is inert; the particles were <strong>polyester exterior paint flaking off metal bottle caps</strong> during sealing (corked wine did not show this). Refilling a reusable glass or stainless bottle with filtered tap water avoids both.</p>
+      </div>
+
+      <div class="myth-card">
+        <h3>Myth 5: "An NSF-certified microplastics filter removes nanoplastics too."</h3>
+        <p><strong>What the standard covers:</strong> <strong>NSF/ANSI 401</strong> tests particles between <strong>0.5 &micro;m and 1 &micro;m</strong> (&ge;85% reduction required). There is currently <strong>no official consumer certification for nanoplastics (&lt;0.1 &micro;m)</strong>. Be skeptical of brands claiming "certified 100% nanoplastic-free."</p>
+      </div>
+
+      <h2>4. Crucial Safety &amp; Buying Checklist</h2>
+      <div class="callout warn">
+        <strong>Never boil water to "fix" chemical contamination.</strong> Both the U.S. EPA and CDC warn that boiling kills biological germs—it does <em>not</em> remove lead, nitrates, or PFAS. Because clean water evaporates as steam while chemicals remain, boiling (and re-boiling) actually <strong>concentrates</strong> those pollutants. Filter first with an NSF/ANSI 53 or NSF/ANSI 58 (RO) certified system if chemical contaminants are a concern.
+      </div>
+      <ol>
+        <li><strong>Check your local water report for free:</strong> Search for your city's annual Consumer Confidence Report (CCR) to check water hardness and any lead, nitrate, or PFAS notes.</li>
+        <li><strong>Verify certifications directly:</strong> "Tested to NSF standards" is not certification. Look up the exact model in the official <strong>NSF, WQA, or IAPMO</strong> registries for explicit <strong>NSF/ANSI 401 microplastics</strong> certification.</li>
+        <li><strong>Upgrade plastic kettles:</strong> Switching to a 100% stainless steel or borosilicate glass kettle (with zero plastic inside the lid or water path) is one of the highest-impact one-time changes for daily tea or coffee drinkers.</li>
+        <li><strong>Replace filters on schedule:</strong> Overused cartridges channel, foul, or degrade.</li>
+      </ol>
+
+      <h2>5. What Science Still Doesn't Know</h2>
+      <ul>
+        <li><strong>Human health thresholds:</strong> Nanoplastics can cross biological barriers, but long-term dose-response thresholds for human disease remain unproven.</li>
+        <li><strong>Nanoscale measurement limits:</strong> Avoiding background lab contamination below 1 &micro;m remains a major analytical challenge.</li>
+        <li><strong>No nanoplastic filter standard:</strong> Consumers still lack a standardized third-party test for &lt;100 nm particles in household filters.</li>
+      </ul>
+
+      <h2>6. Primary Sources &amp; Standards</h2>
+      <ol class="sources">
+        <li><strong>Yu, Z., Zeng, E. Y., et al. (2024).</strong> <em>Drinking Boiled Tap Water Reduces Human Intake of Nanoplastics and Microplastics.</em> Environmental Science &amp; Technology Letters, Feb 2024.</li>
+        <li><strong>Shi, K., Okoffo, E. D., Fu, H., Bapp, C., Jiang, J., Rauert, C., &amp; Thomas, K. V. (2025).</strong> <em>Release of nanoplastic from polypropylene kettles.</em> npj Emerging Contaminants, Vol. 1, Article 16.</li>
+        <li><strong>Cherian, A. G., Liu, Z., McKie, M. J., Almuhtaram, H., &amp; Andrews, R. C. (2023).</strong> <em>Microplastic Removal from Drinking Water Using Point-of-Use Devices.</em> Polymers, 15(6), 1331. DOI: 10.3390/polym15061331 | PMID: 36987112.</li>
+        <li><strong>Qian, N., Min, W., Yan, B., et al. (2024).</strong> <em>Rapid single-particle chemical imaging of nanoplastics by SRS microscopy.</em> PNAS, Jan 2024 (and subsequent PNAS peer correspondence on procedural blanks).</li>
+        <li><strong>ANSES (2025).</strong> Beverage packaging microplastics study, <em>Journal of Food Composition and Analysis</em>, and Food Packaging Forum commentary.</li>
+        <li><strong>NSF International / ANSI:</strong> NSF/ANSI 401 (microplastics, 0.5–1 &micro;m), NSF/ANSI 53 (health contaminants), NSF/ANSI 58 (Reverse Osmosis).</li>
+        <li><strong>World Health Organization (WHO)</strong> drinking-water microplastics assessments; <strong>U.S. EPA</strong> Draft Sixth Contaminant Candidate List (CCL 6) &amp; EPA/CDC boil-water guidance.</li>
+      </ol>
+    </article>
+  </main>
+</body>
+</html>

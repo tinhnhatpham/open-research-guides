@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Plain-Language Research — Evidence-Backed Guides &amp; Tools</title>
+  <meta name="description" content="Calm, citation-backed guides and free interactive tools turning peer-reviewed science and public data into practical everyday decisions." />
+  <style>
+    :root {
+      --bg: #f6f7f5;
+      --surface: #ffffff;
+      --surface-alt: #f0f4f3;
+      --ink: #17212b;
+      --ink-muted: #52606d;
+      --border: #d9e2e0;
+      --accent: #0f6b6e;
+      --accent-dark: #0a4f52;
+      --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5;
+      --good-ink: #065f46;
+      --upcoming-bg: #f3f4f6;
+      --upcoming-ink: #4b5563;
+      --radius: 14px;
+      --shadow: 0 2px 14px rgba(23, 33, 43, 0.05);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand {
+      font-weight: 800;
+      font-size: 1rem;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    nav {
+      display: flex;
+      gap: 18px;
+      font-size: 0.9rem;
+    }
+
+    nav a {
+      color: var(--ink-muted);
+      text-decoration: none;
+      font-weight: 550;
+    }
+
+    nav a:hover { color: var(--accent); }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 36px 20px 72px;
+    }
+
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 34px 30px;
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: clamp(1.75rem, 3.6vw, 2.5rem);
+      line-height: 1.18;
+      letter-spacing: -0.025em;
+      max-width: 760px;
+    }
+
+    .hero p {
+      margin: 0 0 20px;
+      color: var(--ink-muted);
+      font-size: 1.03rem;
+      max-width: 720px;
+    }
+
+    .pillars {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 720px) {
+      .pillars { grid-template-columns: 1fr; }
+      .hero { padding: 24px 20px; }
+    }
+
+    .pillar {
+      background: var(--surface-alt);
+      border-radius: 10px;
+      padding: 13px 14px;
+      font-size: 0.87rem;
+      color: var(--ink-muted);
+    }
+
+    .pillar strong {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 2px;
+      font-size: 0.92rem;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 30px 0 16px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.3rem;
+      letter-spacing: -0.015em;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--ink-muted);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.83rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .guide-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      transition: border-color 0.15s ease;
+    }
+
+    .guide-card:hover { border-color: #b5cecc; }
+
+    .guide-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      font-size: 0.8rem;
+    }
+
+    .badge {
+      padding: 3px 9px;
+      border-radius: 999px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .badge-live { background: var(--good-bg); color: var(--good-ink); }
+    .badge-upcoming { background: var(--upcoming-bg); color: var(--upcoming-ink); }
+    .badge-cat { background: var(--accent-soft); color: var(--accent-dark); }
+
+    .guide-date { color: var(--ink-muted); }
+
+    .guide-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.32rem;
+      line-height: 1.28;
+      letter-spacing: -0.015em;
+    }
+
+    .guide-card p {
+      margin: 0 0 14px;
+      color: var(--ink-muted);
+      font-size: 0.96rem;
+    }
+
+    .highlights {
+      margin: 0 0 18px;
+      padding-left: 19px;
+      font-size: 0.9rem;
+      color: var(--ink);
+    }
+
+    .highlights li { margin-bottom: 4px; }
+
+    .card-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      font-weight: 650;
+      font-size: 0.9rem;
+      padding: 10px 16px;
+      border-radius: 9px;
+      transition: background 0.15s ease, border-color 0.15s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border: 1px solid var(--accent);
+    }
+
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--accent-dark);
+      border: 1.5px solid var(--accent);
+    }
+
+    .btn-secondary:hover { background: var(--accent-soft); }
+
+    .source-note {
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      margin-left: auto;
+    }
+
+    .about-card {
+      margin-top: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+
+    .about-card h2 {
+      margin: 0 0 10px;
+      font-size: 1.18rem;
+    }
+
+    .about-card p {
+      margin: 0 0 10px;
+      color: var(--ink-muted);
+      font-size: 0.94rem;
+    }
+
+    .about-card p:last-child { margin-bottom: 0; }
+
+    footer {
+      margin-top: 40px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
+      font-size: 0.83rem;
+      color: var(--ink-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="./">
+        <span class="brand-dot" aria-hidden="true"></span>
+        Open Plain-Language Research
+      </a>
+      <nav aria-label="Primary navigation">
+        <a href="#guides">Research Guides</a>
+        <a href="./microplastics-calculator/">Water Calculator</a>
+        <a href="#methodology">How We Research</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="eyebrow">Public-Interest Science &amp; Data</span>
+      <h1>Clear, citation-backed answers to everyday real-world problems.</h1>
+      <p>
+        An open collection of plain-language guides and free interactive tools built by checking primary peer-reviewed studies and public datasets—without fearmongering, ads, or affiliate links.
+      </p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <strong>Primary Sources First</strong>
+          Every claim traces back to peer-reviewed studies, official testing standards, or open public data.
+        </div>
+        <div class="pillar">
+          <strong>Honest About Uncertainty</strong>
+          We explicitly note scientific critiques, lab limits, and what researchers still don't know.
+        </div>
+        <div class="pillar">
+          <strong>Built for Real Budgets</strong>
+          Clear cost comparisons and practical trade-offs so anyone can take action—not just experts.
+        </div>
+      </div>
+    </section>
+
+    <section id="guides">
+      <div class="section-head">
+        <h2>Research Guides &amp; Interactive Tools</h2>
+        <div class="filter-bar" id="filter-bar" aria-label="Filter guides by category"></div>
+      </div>
+
+      <div class="grid" id="guides-grid"></div>
+    </section>
+
+    <section class="about-card" id="methodology">
+      <h2>How Each Guide Is Built</h2>
+      <p>
+        Every project starts with a practical question ordinary people face, then checks primary scientific papers, regulatory guidance, or open datasets to separate solid evidence from internet noise.
+      </p>
+      <p>
+        All content is freely accessible and released under <strong>CC BY 4.0</strong> (guides) and <strong>MIT</strong> (interactive tools), with zero user tracking or sponsored recommendations.
+      </p>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research — Built for public access.</span>
+      <span>CC BY 4.0 (Guides) &bull; MIT (Tools)</span>
+    </footer>
+  </main>
+
+  <script src="./data/guides.js"></script>
+  <script>
+    const guides = window.RESEARCH_GUIDES || [];
+    let activeCategory = "All";
+
+    const categories = ["All", ...new Set(guides.map((g) => g.category))];
+    const filterBar = document.getElementById("filter-bar");
+    const grid = document.getElementById("guides-grid");
+
+    function renderFilters() {
+      filterBar.innerHTML = categories
+        .map(
+          (cat) =>
+            `<button type="button" class="filter-btn ${cat === activeCategory ? "active" : ""}" data-cat="${cat}">${cat}</button>`
+        )
+        .join("");
+
+      filterBar.querySelectorAll(".filter-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          activeCategory = btn.dataset.cat;
+          renderFilters();
+          renderGuides();
+        });
+      });
+    }
+
+    function renderGuides() {
+      const visible =
+        activeCategory === "All"
+          ? guides
+          : guides.filter((g) => g.category === activeCategory);
+
+      grid.innerHTML = visible
+        .map((g) => {
+          const isLive = g.status === "published";
+          const statusBadge = isLive
+            ? `<span class="badge badge-live">${g.number} &bull; Published</span>`
+            : `<span class="badge badge-upcoming">${g.number} &bull; Coming Next</span>`;
+
+          const actions = isLive
+            ? `
+              <a class="btn btn-primary" href="${g.guideUrl}">Read Full Guide</a>
+              ${g.toolUrl ? `<a class="btn btn-secondary" href="${g.toolUrl}">${g.toolLabel || "Open Interactive Tool"}</a>` : ""}
+              <span class="source-note">${g.sourcesCount}</span>
+            `
+            : `<span class="source-note" style="margin-left:0;">Currently researching &amp; analyzing public datasets.</span>`;
+
+          return `
+            <article class="guide-card">
+              <div class="guide-meta">
+                ${statusBadge}
+                <span class="badge badge-cat">${g.category}</span>
+                <span class="guide-date">${g.date}</span>
+              </div>
+              <h3>${g.title}</h3>
+              <p>${g.summary}</p>
+              <ul class="highlights">
+                ${g.highlights.map((h) => `<li>${h}</li>`).join("")}
+              </ul>
+              <div class="card-actions">${actions}</div>
+            </article>
+          `;
+        })
+        .join("");
+    }
+
+    renderFilters();
+    renderGuides();
+  </script>
+</body>
+</html>
