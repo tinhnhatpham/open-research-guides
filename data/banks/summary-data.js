@@ -1,7 +1,7 @@
 window.FDIC_BANK_DATA = {
   "metadata": {
-    "generated_at_utc": "2026-11-26T20:06:20Z",
-    "runtime_sec": 6.0,
+    "generated_at_utc": "2026-11-26T20:15:42Z",
+    "runtime_sec": 6.4,
     "source": "FDIC BankFind API v2 (Active Institutions + FY2021 & FY2025 Year-End Call Reports)",
     "total_active_banks": 4204,
     "banks_with_fy25_call_report": 4165
