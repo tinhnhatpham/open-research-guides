@@ -1,4 +1,4 @@
-name: Monthly CMS Flagship Data Refresh (Nursing Homes & Hospitals)
+name: Monthly CMS Flagship Data Refresh (27,592 U.S. Healthcare Facilities)
 
 on:
   schedule:
@@ -21,29 +21,34 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run 5-dataset CMS nursing home pipeline
+      - name: Run 5-dataset CMS nursing home pipeline (14,686 homes)
         run: |
           python data/nursing-homes/analyze_cms_nursing_homes.py --export-csv cms-nursing-homes-linked.csv.gz
 
-      - name: Run 4-dataset CMS hospital pipeline
+      - name: Run 4-dataset CMS hospital pipeline (5,435 hospitals)
         run: |
           python data/hospitals/analyze_cms_hospitals.py --export-csv cms-hospitals-linked.csv.gz
+
+      - name: Run CMS dialysis clinic pipeline (7,471 clinics)
+        run: |
+          python data/dialysis/analyze_cms_dialysis.py --export-csv cms-dialysis-clinics-linked.csv.gz
 
       - name: Validate generated JS and JSON artifacts
         run: |
           node --check data/nursing-homes/summary-data.js
           node --check data/hospitals/summary-data.js
-          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals')"
+          node --check data/dialysis/summary-data.js
+          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals,', len(d['rows']), 'dialysis clinics')"
 
       - name: Commit and push if CMS data changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/nursing-homes/summary.json data/nursing-homes/summary-data.js data/nursing-homes/chains.json data/nursing-homes/facilities.json data/nursing-homes/cms-nursing-homes-linked.csv.gz data/hospitals/summary.json data/hospitals/summary-data.js data/hospitals/hospitals.json data/hospitals/cms-hospitals-linked.csv.gz
+          git add data/nursing-homes/summary.json data/nursing-homes/summary-data.js data/nursing-homes/chains.json data/nursing-homes/facilities.json data/nursing-homes/cms-nursing-homes-linked.csv.gz data/hospitals/summary.json data/hospitals/summary-data.js data/hospitals/hospitals.json data/hospitals/cms-hospitals-linked.csv.gz data/dialysis/summary.json data/dialysis/summary-data.js data/dialysis/clinics.json data/dialysis/cms-dialysis-clinics-linked.csv.gz
           if git diff --cached --quiet; then
             echo "No CMS data changes detected."
           else
             DATE_STR=$(date -u +%Y-%m-%d)
-            git commit -m "chore(data): monthly CMS nursing home & hospital snapshot refresh ($DATE_STR)"
+            git commit -m "chore(data): monthly CMS nursing home, hospital & dialysis refresh ($DATE_STR)"
             git push
           fi

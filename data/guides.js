@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "dialysis-accountability",
+    number: "Guide #09",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Healthcare & Kidney Care",
+    title: "The U.S. Dialysis Duopoly & Clinic Accountability Platform (7,471 Clinics)",
+    summary:
+      "Flagship analysis of all 7,471 Medicare-certified U.S. dialysis clinics (CMS Dialysis Facility Compare through Dec 2025): exposing DaVita + Fresenius's 73.5% duopoly, the non-profit vs. for-profit kidney transplant waitlist gap (19.3% vs 16.3%; Kaiser 41.9%), 2,915 high-catheter clinics, and why small independent for-profits actually post the worst raw averages.",
+    highlights: [
+      "Instant lookup across all 7,471 clinics with mortality, hospitalizations, catheters, home dialysis & evening shifts",
+      "Operator scorecard comparing DaVita, Fresenius, U.S. Renal Care, DCI, Kaiser & independents",
+      "Open linked dataset (.csv.gz) + Care Compare & SRTR Transplant Center links"
+    ],
+    guideUrl: "./guides/dialysis/",
+    toolUrl: "./guides/dialysis/#lookup",
+    toolLabel: "Search All 7,471 Clinics",
+    sourcesCount: "Live CMS Dialysis Dataset (7,471 clinics)"
+  },
+  {
     id: "hospital-charity-care",
     number: "Guide #08",
     flagship: true,

@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>U.S. Dialysis Duopoly &amp; Clinic Accountability Platform (7,471 Clinics) — Open Plain-Language Research</title>
+  <meta name="description" content="Reproducible analysis of all 7,471 Medicare-certified U.S. dialysis clinics (CMS Dialysis Facility Compare through Dec 2025): DaVita &amp; Fresenius 73.5% duopoly, transplant waitlist gaps, mortality, catheters, home dialysis, and downloadable open dataset." />
+  <meta property="og:title" content="U.S. Dialysis Clinic Accountability Platform (7,471 Clinics)" />
+  <meta property="og:description" content="Search all 7,471 U.S. dialysis clinics across mortality, hospitalizations, kidney transplant waitlist rates, long-term catheters, home dialysis, and evening shifts." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://open-research-guides.vercel.app/guides/dialysis/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://open-research-guides.vercel.app/guides/dialysis/" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    section[id] { scroll-margin-top: 68px; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+    @media (max-width: 720px) { .topbar { position: static; } }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.88rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .nav-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 28px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 18px 15px; } }
+    .eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: #134e4a; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.3rem); line-height: 1.18; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.89rem; margin-bottom: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 820px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.91rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 12px; }
+    .controls input, .controls select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.87rem; background: var(--surface); color: var(--ink); }
+    .controls input { flex: 1; min-width: 210px; }
+    .chip-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+    .chip { border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 0.81rem; font-weight: 600; cursor: pointer; }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 460px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 740px; }
+    th, td { padding: 9px 11px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-alt); position: sticky; top: 0; font-weight: 700; z-index: 2; }
+    tbody tr.clickable { cursor: pointer; }
+    tbody tr.clickable:hover, tbody tr.clickable:focus-visible { background: #f3f9f9; outline: 2px solid var(--accent); outline-offset: -2px; }
+    tbody tr.selected { background: var(--accent-soft); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .good-txt { color: var(--good-ink); font-weight: 700; }
+    .bad-txt { color: var(--bad-ink); font-weight: 700; }
+    .muted { color: var(--ink-muted); }
+    .badge { display: inline-block; font-size: 0.71rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-right: 4px; }
+    .b-np { background: var(--accent-soft); color: var(--accent-dark); }
+    .b-fp { background: var(--warn-bg); color: var(--warn-ink); }
+    .b-good { background: var(--good-bg); color: var(--good-ink); }
+    .b-bad { background: var(--bad-bg); color: var(--bad-ink); }
+    .pager { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; font-size: 0.85rem; color: var(--ink-muted); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 13px; font-size: 0.84rem; font-weight: 650; cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+    .dossier { display: none; margin-top: 16px; border: 2px solid var(--accent); border-radius: 14px; padding: 20px; background: #fbfdfd; }
+    .dossier.open { display: block; }
+    .dossier-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+    @media (max-width: 780px) { .dossier-grid { grid-template-columns: repeat(2, 1fr); } }
+    .d-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 11px 13px; }
+    .d-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); font-weight: 700; }
+    .d-val { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+    .findings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 780px) { .findings-grid { grid-template-columns: 1fr; } }
+    .finding { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: #fcfdfd; }
+    .finding p { font-size: 0.89rem; color: var(--ink-muted); }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.87rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <nav class="nav-links" aria-label="Section navigation">
+        <a href="#lookup">All-7,471 Lookup</a>
+        <a href="#chains">Chains Scorecard</a>
+        <a href="#findings">Key Findings</a>
+        <a href="#states">50-State Table</a>
+        <a href="#rights">Patient Rights</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Flagship Investigation #03 &bull; Guide #09</span>
+      <h1>The U.S. Dialysis Duopoly &amp; Clinic Accountability Platform</h1>
+      <p class="meta">
+        Reproducible analysis of all <strong>7,471</strong> Medicare-certified U.S. dialysis clinics (CMS Dialysis Facility Compare <code>23ew-n7w9</code>, clinical windows through Dec 2025) &bull; Updated November 2026
+      </p>
+
+      <div class="callout">
+        <strong>Why this platform exists:</strong> Over 500,000 Americans rely on dialysis three times a week to stay alive, yet Medicare Care Compare only lets you compare three clinics in your ZIP code at a time. Here you can compare <strong>every major corporate chain vs. non-profits and independents</strong>, search all 7,471 clinics instantly, and check kidney transplant waitlist rates, mortality, long-term catheters, home dialysis, and evening shifts.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">DaVita + Fresenius Duopoly</div>
+          <div class="kpi-val bad" id="kpi-duo">73.5%</div>
+          <div class="kpi-sub" id="kpi-duo-sub">5,489 of 7,471 U.S. clinics (89.5% For-Profit)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Transplant Waitlist Gap</div>
+          <div class="kpi-val good" id="kpi-wl">19.3% vs 16.3%</div>
+          <div class="kpi-sub">Non-Profit vs For-Profit (Kaiser: 41.9%)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">High Long-Term Catheter (&ge;20%)</div>
+          <div class="kpi-val bad" id="kpi-cath">2,915 clinics</div>
+          <div class="kpi-sub">39.0% of U.S. clinics (Indep. FP avg: 28.1%)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Evening / Late-Shift Access</div>
+          <div class="kpi-val" id="kpi-late">15.2%</div>
+          <div class="kpi-sub">Only 1,136 clinics offer evening shifts (56.6% Home)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- All-7,471 Lookup -->
+    <section class="card" id="lookup">
+      <h2>1. Instant All-7,471 U.S. Dialysis Clinic Lookup</h2>
+      <p style="color:var(--ink-muted); font-size:0.91rem; margin-bottom:12px;">
+        Search by clinic name, city, ZIP, state, CCN, or corporate chain. Click any row for its full clinical dossier and direct links to Medicare Care Compare and the SRTR Kidney Transplant Center Finder.
+      </p>
+
+      <div class="controls">
+        <input type="search" id="d-search" placeholder="Search clinic name, city, ZIP, CCN, or chain (e.g. DaVita, Fresenius, Kaiser, 90210)..." aria-label="Search clinics" />
+        <select id="d-state" aria-label="Filter by state"></select>
+        <select id="d-chain" aria-label="Filter by chain"></select>
+        <select id="d-sort" aria-label="Sort clinics">
+          <option value="stars_desc">Highest CMS Stars First</option>
+          <option value="pppw_desc">Highest Transplant Waitlist % First</option>
+          <option value="mort_asc">Lowest Mortality Rate First</option>
+          <option value="mort_desc">Highest Mortality Rate First</option>
+          <option value="cath_desc">Highest Long-Term Catheter % First</option>
+          <option value="hosp_asc">Lowest Hospitalization Rate First</option>
+        </select>
+      </div>
+
+      <div class="chip-bar" id="preset-bar">
+        <button type="button" class="chip active" data-preset="ALL">All Clinics (<span id="cnt-all">7,471</span>)</button>
+        <button type="button" class="chip" data-preset="WORSE_MORTALITY">Worse Mortality (<span id="cnt-wm">187</span>)</button>
+        <button type="button" class="chip" data-preset="WORSE_HOSP">Worse Hospitalization (<span id="cnt-wh">268</span>)</button>
+        <button type="button" class="chip" data-preset="LOW_TRANSPLANT">Worse Transplant Waitlist (<span id="cnt-wt">149</span>)</button>
+        <button type="button" class="chip" data-preset="HIGH_CATHETER">Catheter &ge;20% (<span id="cnt-hc">2,915</span>)</button>
+        <button type="button" class="chip" data-preset="HOME_DIALYSIS">Offers Home Dialysis (<span id="cnt-hd">4,225</span>)</button>
+        <button type="button" class="chip" data-preset="LATE_SHIFT">Evening / Late Shift (<span id="cnt-ls">1,136</span>)</button>
+        <button type="button" class="chip" data-preset="NONPROFIT">Non-Profit Only (<span id="cnt-np">782</span>)</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Clinic &amp; Location</th>
+              <th>Chain / Ownership</th>
+              <th class="num">Stars</th>
+              <th class="num">Mortality</th>
+              <th class="num">Hosp. Rate</th>
+              <th class="num">Waitlist %</th>
+              <th class="num">Catheter %</th>
+              <th>Options</th>
+            </tr>
+          </thead>
+          <tbody id="d-tbody"><tr><td colspan="8" class="muted">Loading all 7,471 dialysis clinics...</td></tr></tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <span id="d-status">Loading...</span>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn" id="btn-prev">&larr; Prev</button>
+          <button type="button" class="btn" id="btn-next">Next &rarr;</button>
+          <button type="button" class="btn" id="btn-csv">Export Filtered CSV</button>
+        </div>
+      </div>
+
+      <div class="dossier" id="d-dossier" aria-live="polite"></div>
+    </section>
+
+    <!-- Chain Accountability Scorecard -->
+    <section class="card" id="chains">
+      <h2>2. Corporate Chains vs. Non-Profits &amp; Independents (All Chains &ge; 15 Clinics)</h2>
+      <p style="color:var(--ink-muted); font-size:0.92rem; margin-bottom:12px;">
+        Click any row to filter the All-7,471 Clinic Lookup above to that operator. Notice how the real data is far more nuanced than simple stereotypes: non-profits lead on transplant waitlists and hospitalizations, while standardized major chains actually beat unstandardized small independent for-profit clinics on mortality and long-term catheters.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Chain / Operator Group</th>
+              <th class="num">Clinics</th>
+              <th class="num">Share</th>
+              <th class="num">Avg Stars</th>
+              <th class="num">Mortality*</th>
+              <th class="num">Hosp. Rate*</th>
+              <th class="num">Waitlist %</th>
+              <th class="num">Catheter %</th>
+              <th class="num">Home Dialysis</th>
+              <th class="num">Late Shift</th>
+            </tr>
+          </thead>
+          <tbody id="chain-tbody"></tbody>
+        </table>
+      </div>
+      <p class="muted" style="font-size:0.8rem; margin-top:8px;">
+        *Mortality = deaths per 100 patient-years (2022–2025); Hospitalization = admissions per 100 patient-years (2025). Lower is better for Mortality, Hospitalization, and Catheter %; higher is better for Stars and Transplant Waitlist %.
+      </p>
+    </section>
+
+    <!-- Key Findings -->
+    <section class="card" id="findings">
+      <h2>3. Five Verified Findings (Including What Surprised Us)</h2>
+      <div class="findings-grid">
+        <div class="finding">
+          <h3>1. The Two-Company Dialysis Duopoly (73.5%)</h3>
+          <p>
+            <strong>89.5% (6,689)</strong> of U.S. dialysis clinics are for-profit. Just two corporations—<strong>DaVita (2,801 clinics, 37.5%)</strong> and <strong>Fresenius Medical Care (2,688 clinics, 36.0%)</strong>—operate nearly three out of four clinics nationwide. In many counties, patients have no non-duopoly clinic nearby.
+          </p>
+        </div>
+
+        <div class="finding">
+          <h3>2. The Kidney Transplant Waitlist Gap</h3>
+          <p>
+            A kidney transplant is the gold-standard treatment for kidney failure, yet waitlisting varies dramatically by clinic. Non-profit clinics waitlist <strong>19.3%</strong> of prevalent patients vs. <strong>16.3%</strong> at for-profits (Fresenius: <strong>15.7%</strong>, DaVita: <strong>16.8%</strong>). Integrated non-profit <strong>Kaiser Permanente</strong> achieves <strong>41.9%</strong> waitlisted and <strong>100%</strong> home-dialysis availability.
+          </p>
+        </div>
+
+        <div class="finding">
+          <h3>3. Honest Plot Twist: Small Independent For-Profits Perform Worst</h3>
+          <p>
+            Contrary to simplistic "big chain = always worst" narratives, <strong>Independent For-Profit clinics (n=449)</strong> post the worst national averages: <strong>2.04★</strong>, <strong>24.2</strong> mortality per 100 patient-years, and <strong>28.1%</strong> long-term catheter use (vs. 17.3% at DaVita and 19.2% at Fresenius). Non-profits also show higher raw infection SIR (0.57 vs 0.30), partly reflecting sicker hospital-based acute starts. Always evaluate the <em>specific clinic</em>, not just the brand logo.
+          </p>
+        </div>
+
+        <div class="finding">
+          <h3>4. The Long-Term Catheter Risk (39% of Clinics &ge; 20%)</h3>
+          <p>
+            Nephrology guidelines strongly favor an arteriovenous (AV) fistula over a long-term central venous catheter, which carries much higher bloodstream infection and death risk. Yet <strong>2,915 clinics (39.0%)</strong> still have 20% or more of adult patients on long-term catheters.
+          </p>
+        </div>
+
+        <div class="finding" style="grid-column: 1 / -1;">
+          <h3>5. Working-Age Access Gap: Only 15.2% Offer Evening Shifts</h3>
+          <p>
+            In-center hemodialysis takes ~4 hours, three days a week. Only <strong>1,136 clinics (15.2%)</strong> offer late/evening shifts—forcing many working-age adults out of jobs unless they can switch to <strong>Peritoneal Dialysis (PD) or Home Hemodialysis</strong> (offered by 56.6% of clinics). Use the <em>Evening / Late Shift</em> and <em>Offers Home Dialysis</em> filter chips above to find compatible clinics in your ZIP code.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 50-State Table -->
+    <section class="card" id="states">
+      <h2>4. 50-State + DC Dialysis Explorer</h2>
+      <div class="controls">
+        <input type="search" id="st-search" placeholder="Filter state (e.g. CA, TX, NY, FL)..." aria-label="Filter states" />
+        <select id="st-sort" aria-label="Sort states">
+          <option value="pppw_desc">Highest Transplant Waitlist % First</option>
+          <option value="duo_desc">Highest DaVita+Fresenius Duopoly % First</option>
+          <option value="mort_asc">Lowest Mortality First</option>
+          <option value="cath_desc">Highest Long-Term Catheter % First</option>
+          <option value="state_asc">State (A–Z)</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>State</th>
+              <th class="num">Clinics</th>
+              <th class="num">Duopoly %</th>
+              <th class="num">Avg Stars</th>
+              <th class="num">Mortality</th>
+              <th class="num">Waitlist %</th>
+              <th class="num">Catheter %</th>
+              <th class="num">Home Dialysis</th>
+            </tr>
+          </thead>
+          <tbody id="st-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Patient Rights & Open Data -->
+    <section class="card" id="rights">
+      <h2>5. Practical Patient Rights &amp; Open Data Downloads</h2>
+      <div class="callout warn">
+        <strong>Five rights every dialysis patient &amp; caregiver should know:</strong>
+        (1) You can <strong>self-refer directly to a kidney transplant center</strong> (check wait times at <a href="https://www.srtr.org/" target="_blank" rel="noopener">SRTR.org</a>) without waiting on your clinic;
+        (2) Ask your nephrologist early about switching from a <strong>catheter to an AV fistula</strong>;
+        (3) Ask whether <strong>Home Peritoneal Dialysis (PD) or Home Hemodialysis</strong> fits your lifestyle and work schedule;
+        (4) You have the right to <strong>switch dialysis clinics</strong> if your current facility has poor outcomes or staffing;
+        (5) Every clinic must post its <strong>ESRD Network grievance phone number</strong> if you face unsafe care or pressure.
+      </div>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin:14px 0;">
+        <a class="btn btn-primary" href="../../data/dialysis/cms-dialysis-clinics-linked.csv.gz" download>Download Full Dataset (.csv.gz, 7,471 clinics)</a>
+        <a class="btn" href="../../data/dialysis/summary.json" target="_blank" rel="noopener">View summary.json</a>
+        <a class="btn" href="https://github.com/tinhnhatpham/open-research-guides/blob/main/data/dialysis/analyze_cms_dialysis.py" target="_blank" rel="noopener">Inspect Python Pipeline on GitHub</a>
+      </div>
+      <ol class="sources">
+        <li><strong>CMS Provider Data Catalog — Dialysis Facility Compare (<code>23ew-n7w9</code>):</strong> All 7,471 Medicare-certified clinics (SMR 2022–2025, SHR/SRR/SIR 2025, PPPW/FYSWR transplant waitlists 2022–2024, vascular access &amp; shift availability).</li>
+        <li><strong>Scientific Registry of Transplant Recipients (SRTR):</strong> Official public kidney transplant center wait-time and survival comparisons (<a href="https://www.srtr.org/" target="_blank" rel="noopener">srtr.org</a>).</li>
+        <li><strong>Clinical Caveat:</strong> Hospital-based and academic non-profit clinics sometimes treat a higher share of newly diagnosed, medically complex patients transitioning from acute hospital stays—which can raise raw catheter or infection ratios even when transplant access is strong. CMS's "Better / As / Worse than Expected" ratings are risk-adjusted for patient case mix.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research &bull; Guide #09 (Flagship Investigation #03)</span>
+      <span>Data: Live CMS Dialysis Facility Compare (7,471 Clinics) &bull; CC BY 4.0 / MIT</span>
+    </footer>
+  </main>
+
+  <script src="../../data/dialysis/summary-data.js"></script>
+  <script>
+    const D = window.CMS_DIALYSIS_DATA;
+    const I = {
+      ccn: 0, name: 1, city: 2, state: 3, zip: 4, profit: 5, chain: 6, stars: 7, stations: 8,
+      offers_home: 9, late_shift: 10, mort: 11, mort_cat: 12, hosp: 13, hosp_cat: 14, sir: 15,
+      fistula: 16, catheter: 17, pppw: 18, pppw_cat: 19, flags: 20
+    };
+
+    const PAGE_SIZE = 50;
+    let ALL_ROWS = [];
+    let FILTERED = [];
+    const ui = { page: 0, preset: "ALL", selectedCcn: null };
+
+    function esc(s) { return String(s ?? "").replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#39;" }[m])); }
+    function hasFlag(r, t) { return r[I.flags] ? r[I.flags].split("|").includes(t) : false; }
+    function cmpDesc(a, b) { const av = a == null, bv = b == null; return av && bv ? 0 : av ? 1 : bv ? -1 : b - a; }
+    function cmpAsc(a, b) { const av = a == null, bv = b == null; return av && bv ? 0 : av ? 1 : bv ? -1 : a - b; }
+
+    // Hydrate KPIs & chip counts from live JSON
+    document.getElementById("kpi-duo").textContent = `${D.duopoly.combined_share_pct}%`;
+    document.getElementById("kpi-duo-sub").textContent = `${D.duopoly.combined_clinics.toLocaleString()} of ${D.metadata.total_clinics.toLocaleString()} clinics (${D.by_profit[1].share_pct}% For-Profit)`;
+    document.getElementById("kpi-wl").textContent = `${D.by_profit[0].avg_pppw}% vs ${D.by_profit[1].avg_pppw}%`;
+    document.getElementById("kpi-cath").textContent = `${D.counts.high_catheter_20plus.toLocaleString()} clinics`;
+    document.getElementById("kpi-late").textContent = `${D.national.pct_late_shift}%`;
+    document.getElementById("cnt-all").textContent = D.metadata.total_clinics.toLocaleString();
+    document.getElementById("cnt-wm").textContent = D.counts.worse_mortality.toLocaleString();
+    document.getElementById("cnt-wh").textContent = D.counts.worse_hosp.toLocaleString();
+    document.getElementById("cnt-wt").textContent = D.counts.worse_transplant.toLocaleString();
+    document.getElementById("cnt-hc").textContent = D.counts.high_catheter_20plus.toLocaleString();
+    document.getElementById("cnt-hd").textContent = D.counts.offers_home.toLocaleString();
+    document.getElementById("cnt-ls").textContent = D.counts.late_shift.toLocaleString();
+    document.getElementById("cnt-np").textContent = D.counts.nonprofit.toLocaleString();
+
+    // Render Chain Scorecard
+    document.getElementById("chain-tbody").innerHTML = D.major_chains.map((c) => `
+      <tr class="clickable" tabindex="0" data-grp="${esc(c.group)}" title="Click to filter clinic lookup to ${esc(c.group)}">
+        <td><strong>${esc(c.group)}</strong> ${c.nonprofit_pct >= 50 ? '<span class="badge b-np">Non-Profit</span>' : '<span class="badge b-fp">For-Profit</span>'}</td>
+        <td class="num">${c.clinics.toLocaleString()}</td>
+        <td class="num">${c.share_pct}%</td>
+        <td class="num">${c.avg_stars !== null ? c.avg_stars.toFixed(2) + "★" : "—"}</td>
+        <td class="num ${c.avg_mort >= 23 ? "bad-txt" : ""}">${c.avg_mort !== null ? c.avg_mort.toFixed(1) : "—"}</td>
+        <td class="num">${c.avg_hosp !== null ? c.avg_hosp.toFixed(1) : "—"}</td>
+        <td class="num ${c.avg_pppw >= 20 ? "good-txt" : ""}">${c.avg_pppw !== null ? c.avg_pppw.toFixed(1) + "%" : "—"}</td>
+        <td class="num ${c.avg_catheter >= 22 ? "bad-txt" : ""}">${c.avg_catheter !== null ? c.avg_catheter.toFixed(1) + "%" : "—"}</td>
+        <td class="num">${c.pct_offers_home}%</td>
+        <td class="num">${c.pct_late_shift}%</td>
+      </tr>
+    `).join("");
+
+    document.querySelectorAll("#chain-tbody tr.clickable").forEach((tr) => {
+      const go = () => {
+        const g = tr.dataset.grp;
+        document.getElementById("d-search").value = "";
+        document.getElementById("d-state").value = "ALL";
+        if (g.startsWith("Independent (")) {
+          document.getElementById("d-chain").value = "Independent";
+          setPreset(g.includes("Non-Profit") ? "NONPROFIT" : "ALL", false);
+        } else {
+          setPreset("ALL", false);
+          document.getElementById("d-chain").value = g;
+        }
+        applyFilters();
+        document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
+      };
+      tr.addEventListener("click", go);
+      tr.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+    });
+
+    // State Explorer
+    const stSearch = document.getElementById("st-search");
+    const stSort = document.getElementById("st-sort");
+    function renderStates() {
+      const q = stSearch.value.trim().toLowerCase();
+      const s = stSort.value;
+      let rows = D.by_state.filter((x) => !q || x.state.toLowerCase().includes(q));
+      if (s === "pppw_desc") rows.sort((a, b) => cmpDesc(a.avg_pppw, b.avg_pppw));
+      else if (s === "duo_desc") rows.sort((a, b) => cmpDesc(a.duopoly_pct, b.duopoly_pct));
+      else if (s === "mort_asc") rows.sort((a, b) => cmpAsc(a.avg_mort, b.avg_mort));
+      else if (s === "cath_desc") rows.sort((a, b) => cmpDesc(a.avg_catheter, b.avg_catheter));
+      else rows.sort((a, b) => a.state.localeCompare(b.state));
+
+      document.getElementById("st-tbody").innerHTML = rows.map((r) => `
+        <tr class="clickable" tabindex="0" data-st="${r.state}">
+          <td><strong>${r.state}</strong></td>
+          <td class="num">${r.clinics}</td>
+          <td class="num">${r.duopoly_pct}%</td>
+          <td class="num">${r.avg_stars !== null ? r.avg_stars.toFixed(2) + "★" : "—"}</td>
+          <td class="num">${r.avg_mort !== null ? r.avg_mort.toFixed(1) : "—"}</td>
+          <td class="num ${r.avg_pppw >= 22 ? "good-txt" : ""}">${r.avg_pppw !== null ? r.avg_pppw.toFixed(1) + "%" : "—"}</td>
+          <td class="num ${r.avg_catheter >= 22 ? "bad-txt" : ""}">${r.avg_catheter !== null ? r.avg_catheter.toFixed(1) + "%" : "—"}</td>
+          <td class="num">${r.pct_offers_home}%</td>
+        </tr>
+      `).join("");
+
+      document.querySelectorAll("#st-tbody tr.clickable").forEach((tr) => {
+        const go = () => {
+          document.getElementById("d-search").value = "";
+          document.getElementById("d-chain").value = "ALL";
+          setPreset("ALL", false);
+          document.getElementById("d-state").value = tr.dataset.st;
+          applyFilters();
+          document.getElementById("lookup").scrollIntoView({ behavior: "smooth" });
+        };
+        tr.addEventListener("click", go);
+        tr.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); go(); } });
+      });
+    }
+    stSearch.addEventListener("input", renderStates);
+    stSort.addEventListener("change", renderStates);
+    renderStates();
+
+    // Lookup + Dossier
+    function closeDossier() {
+      ui.selectedCcn = null;
+      document.getElementById("d-dossier").classList.remove("open");
+      document.querySelectorAll("#d-tbody tr.selected").forEach((tr) => tr.classList.remove("selected"));
+    }
+
+    function openDossier(r) {
+      ui.selectedCcn = r[I.ccn];
+      document.querySelectorAll("#d-tbody tr").forEach((tr) => tr.classList.toggle("selected", tr.dataset.ccn === r[I.ccn]));
+      const d = document.getElementById("d-dossier");
+      const pCls = r[I.profit] === "Non-Profit" ? "b-np" : "b-fp";
+      d.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+          <div>
+            <span class="badge ${pCls}">${esc(r[I.profit])}</span>
+            <span class="muted" style="font-size:0.82rem;">CCN: <code>${esc(r[I.ccn])}</code> &bull; Chain: <strong>${esc(r[I.chain])}</strong> ${r[I.stations] ? `&bull; ${r[I.stations]} stations` : ""}</span>
+            <h3 style="margin:4px 0 2px; font-size:1.2rem; color:var(--ink);">${esc(r[I.name])}</h3>
+            <p class="muted" style="font-size:0.86rem; margin:0;">${esc(r[I.city])}, ${esc(r[I.state])} ${esc(r[I.zip])} &bull; ${r[I.offers_home] ? "Offers Home Dialysis" : "In-Center Only"} &bull; ${r[I.late_shift] ? "Evening/Late Shift Available" : "No Late Shift"}</p>
+          </div>
+          <button type="button" class="btn" id="close-d-btn">Close &times;</button>
+        </div>
+        <div class="dossier-grid">
+          <div class="d-box"><div class="d-label">CMS Overall Rating</div><div class="d-val">${r[I.stars] !== null ? r[I.stars] + " / 5 ★" : "Not Rated"}</div><div class="muted" style="font-size:0.78rem;">Clinical quality composite</div></div>
+          <div class="d-box"><div class="d-label">Mortality / 100 PY</div><div class="d-val ${r[I.mort_cat] === "Worse than Expected" ? "bad-txt" : ""}">${r[I.mort] !== null ? r[I.mort].toFixed(1) : "—"}</div><div class="muted" style="font-size:0.78rem;">${esc(r[I.mort_cat] || "Not Available")}</div></div>
+          <div class="d-box"><div class="d-label">Kidney Waitlist (PPPW)</div><div class="d-val ${r[I.pppw_cat] === "Worse than Expected" ? "bad-txt" : r[I.pppw] >= 22 ? "good-txt" : ""}">${r[I.pppw] !== null ? r[I.pppw].toFixed(1) + "%" : "—"}</div><div class="muted" style="font-size:0.78rem;">${esc(r[I.pppw_cat] || "Not Available")}</div></div>
+          <div class="d-box"><div class="d-label">Catheter / Fistula / SIR</div><div class="d-val ${r[I.catheter] >= 20 ? "bad-txt" : ""}">${r[I.catheter] !== null ? r[I.catheter].toFixed(1) + "%" : "—"} cath</div><div class="muted" style="font-size:0.78rem;">Fistula: ${r[I.fistula] !== null ? r[I.fistula].toFixed(1) + "%" : "—"} &bull; SIR: ${r[I.sir] !== null ? r[I.sir].toFixed(2) : "—"}</div></div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+          <a class="btn btn-primary" href="https://www.medicare.gov/care-compare/details/dialysis-facility/${encodeURIComponent(r[I.ccn])}" target="_blank" rel="noopener">Open Official Medicare Care Compare &rarr;</a>
+          <a class="btn" href="https://www.srtr.org/" target="_blank" rel="noopener">Compare Transplant Centers (SRTR) &rarr;</a>
+        </div>
+      `;
+      d.classList.add("open");
+      document.getElementById("close-d-btn").addEventListener("click", closeDossier);
+      d.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape" && ui.selectedCcn) closeDossier(); });
+
+    function setPreset(p, doApply = true) {
+      ui.preset = p;
+      document.querySelectorAll("#preset-bar .chip").forEach((c) => c.classList.toggle("active", c.dataset.preset === p));
+      if (doApply) applyFilters();
+    }
+    document.querySelectorAll("#preset-bar .chip").forEach((c) => c.addEventListener("click", () => setPreset(c.dataset.preset, true)));
+
+    function applyFilters() {
+      const q = document.getElementById("d-search").value.trim().toLowerCase();
+      const st = document.getElementById("d-state").value;
+      const ch = document.getElementById("d-chain").value;
+      const sort = document.getElementById("d-sort").value;
+
+      FILTERED = ALL_ROWS.filter((r) => {
+        if (st !== "ALL" && r[I.state] !== st) return false;
+        if (ch !== "ALL" && r[I.chain] !== ch) return false;
+        if (ui.preset !== "ALL" && !hasFlag(r, ui.preset)) return false;
+        if (q) {
+          const hay = `${r[I.name]} ${r[I.city]} ${r[I.state]} ${r[I.zip]} ${r[I.ccn]} ${r[I.chain]}`.toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      if (sort === "stars_desc") FILTERED.sort((a, b) => cmpDesc(a[I.stars], b[I.stars]));
+      else if (sort === "pppw_desc") FILTERED.sort((a, b) => cmpDesc(a[I.pppw], b[I.pppw]));
+      else if (sort === "mort_asc") FILTERED.sort((a, b) => cmpAsc(a[I.mort], b[I.mort]));
+      else if (sort === "mort_desc") FILTERED.sort((a, b) => cmpDesc(a[I.mort], b[I.mort]));
+      else if (sort === "cath_desc") FILTERED.sort((a, b) => cmpDesc(a[I.catheter], b[I.catheter]));
+      else if (sort === "hosp_asc") FILTERED.sort((a, b) => cmpAsc(a[I.hosp], b[I.hosp]));
+
+      ui.page = 0;
+      renderPage();
+    }
+
+    function renderPage() {
+      const start = ui.page * PAGE_SIZE;
+      const slice = FILTERED.slice(start, start + PAGE_SIZE);
+      const tbody = document.getElementById("d-tbody");
+      if (!slice.length) {
+        tbody.innerHTML = `<tr><td colspan="8" class="muted">No clinics match those filters. Try clearing a filter or preset chip.</td></tr>`;
+      } else {
+        tbody.innerHTML = slice.map((r) => {
+          const pCls = r[I.profit] === "Non-Profit" ? "b-np" : "b-fp";
+          const mCls = r[I.mort_cat] === "Worse than Expected" ? "bad-txt" : "";
+          const wCls = r[I.pppw_cat] === "Worse than Expected" ? "bad-txt" : r[I.pppw] >= 22 ? "good-txt" : "";
+          const cCls = r[I.catheter] >= 20 ? "bad-txt" : "";
+          const opts = [r[I.offers_home] ? '<span class="badge b-good">Home</span>' : "", r[I.late_shift] ? '<span class="badge b-np">Late</span>' : ""].join("") || '<span class="muted">Day only</span>';
+          return `
+            <tr class="clickable ${ui.selectedCcn === r[I.ccn] ? "selected" : ""}" tabindex="0" data-ccn="${esc(r[I.ccn])}">
+              <td><strong>${esc(r[I.name])}</strong><br /><span class="muted" style="font-size:0.77rem;">${esc(r[I.city])}, ${esc(r[I.state])} ${esc(r[I.zip])} &bull; <code>${esc(r[I.ccn])}</code></span></td>
+              <td><span class="badge ${pCls}">${esc(r[I.profit])}</span><br /><span class="muted" style="font-size:0.77rem;">${esc(r[I.chain])}</span></td>
+              <td class="num">${r[I.stars] !== null ? r[I.stars] + "★" : "—"}</td>
+              <td class="num ${mCls}">${r[I.mort] !== null ? r[I.mort].toFixed(1) : "—"}</td>
+              <td class="num">${r[I.hosp] !== null ? r[I.hosp].toFixed(1) : "—"}</td>
+              <td class="num ${wCls}">${r[I.pppw] !== null ? r[I.pppw].toFixed(1) + "%" : "—"}</td>
+              <td class="num ${cCls}">${r[I.catheter] !== null ? r[I.catheter].toFixed(1) + "%" : "—"}</td>
+              <td>${opts}</td>
+            </tr>
+          `;
+        }).join("");
+
+        const byCcn = Object.fromEntries(slice.map((r) => [r[I.ccn], r]));
+        tbody.querySelectorAll("tr.clickable").forEach((tr) => {
+          const open = () => openDossier(byCcn[tr.dataset.ccn]);
+          tr.addEventListener("click", open);
+          tr.addEventListener("keydown", (e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(); } });
+        });
+      }
+
+      const pages = Math.max(1, Math.ceil(FILTERED.length / PAGE_SIZE));
+      document.getElementById("d-status").textContent = `Showing ${FILTERED.length ? start + 1 : 0}–${Math.min(start + PAGE_SIZE, FILTERED.length)} of ${FILTERED.length.toLocaleString()} matched clinics (Page ${ui.page + 1} / ${pages})`;
+      document.getElementById("btn-prev").disabled = ui.page === 0;
+      document.getElementById("btn-next").disabled = ui.page >= pages - 1;
+    }
+
+    document.getElementById("btn-prev").addEventListener("click", () => { if (ui.page > 0) { ui.page--; renderPage(); } });
+    document.getElementById("btn-next").addEventListener("click", () => {
+      const pages = Math.max(1, Math.ceil(FILTERED.length / PAGE_SIZE));
+      if (ui.page < pages - 1) { ui.page++; renderPage(); }
+    });
+    document.getElementById("btn-csv").addEventListener("click", () => {
+      const headers = ["ccn", "name", "city", "state", "zip", "profit", "chain", "stars", "stations", "offers_home", "late_shift", "mortality", "hospitalization", "sir", "fistula_pct", "catheter_pct", "waitlist_pct"];
+      const lines = [headers.join(",")];
+      FILTERED.forEach((r) => {
+        const vals = [r[I.ccn], r[I.name], r[I.city], r[I.state], r[I.zip], r[I.profit], r[I.chain], r[I.stars], r[I.stations], r[I.offers_home], r[I.late_shift], r[I.mort], r[I.hosp], r[I.sir], r[I.fistula], r[I.catheter], r[I.pppw]];
+        lines.push(vals.map((v) => `"${String(v ?? "").replace(/"/g, "\"\"")}"`).join(","));
+      });
+      const blob = new Blob([lines.join("\n")], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `cms-dialysis-filtered-${FILTERED.length}.csv`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    ["d-search", "d-state", "d-chain", "d-sort"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", applyFilters);
+      document.getElementById(id).addEventListener("change", applyFilters);
+    });
+
+    fetch("../../data/dialysis/clinics.json")
+      .then((r) => r.json())
+      .then((payload) => {
+        ALL_ROWS = payload.rows || [];
+        const states = [...new Set(ALL_ROWS.map((r) => r[I.state]).filter(Boolean))].sort();
+        document.getElementById("d-state").innerHTML =
+          `<option value="ALL">All States &amp; Territories (${states.length})</option>` +
+          states.map((s) => `<option value="${s}">${s}</option>`).join("");
+        const chains = [...new Set(ALL_ROWS.map((r) => r[I.chain]).filter(Boolean))].sort();
+        document.getElementById("d-chain").innerHTML =
+          `<option value="ALL">All Chains &amp; Independents (${chains.length})</option>` +
+          chains.map((c) => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+        applyFilters();
+      })
+      .catch(() => {
+        document.getElementById("d-tbody").innerHTML = `<tr><td colspan="8" class="bad-txt">Failed to load clinics.json.</td></tr>`;
+      });
+  </script>
+</body>
+</html>
