@@ -1,0 +1,44 @@
+name: Monthly CMS Nursing Home Data Refresh
+
+on:
+  schedule:
+    # Run at 09:00 UTC on the 5th of every month (after CMS monthly PDC release)
+    - cron: "0 9 5 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-cms-nursing-homes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run 5-dataset CMS nursing home pipeline
+        run: |
+          python data/nursing-homes/analyze_cms_nursing_homes.py --export-csv cms-nursing-homes-linked.csv.gz
+
+      - name: Validate generated JS and JSON artifacts
+        run: |
+          node --check data/nursing-homes/summary-data.js
+          python -c "import json; s=json.load(open('data/nursing-homes/summary.json')); f=json.load(open('data/nursing-homes/facilities.json')); assert len(f['rows']) >= 14000; print('Verified facilities:', len(f['rows']))"
+
+      - name: Commit and push if CMS data changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/nursing-homes/summary.json data/nursing-homes/summary-data.js data/nursing-homes/chains.json data/nursing-homes/facilities.json data/nursing-homes/cms-nursing-homes-linked.csv.gz
+          if git diff --cached --quiet; then
+            echo "No CMS data changes detected."
+          else
+            DATE_STR=$(date -u +%Y-%m-%d)
+            git commit -m "chore(data): monthly CMS nursing home snapshot refresh ($DATE_STR)"
+            git push
+          fi

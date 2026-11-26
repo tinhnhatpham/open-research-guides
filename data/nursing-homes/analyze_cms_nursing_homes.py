@@ -27,6 +27,7 @@ import csv
 import gzip
 import json
 import math
+import shutil
 import statistics
 import subprocess
 import time
@@ -86,11 +87,14 @@ US_STATES_DC = {
 }
 
 
+CURL_BIN = shutil.which("curl.exe") or shutil.which("curl") or "curl"
+
+
 def curl_json(url: str, timeout: int = 60, retries: int = 3) -> Any:
     last_err = None
     for attempt in range(retries):
         try:
-            raw = subprocess.check_output(["curl.exe", "-sS", "--fail", url], timeout=timeout)
+            raw = subprocess.check_output([CURL_BIN, "-sS", "--fail", url], timeout=timeout)
             return json.loads(raw.decode("utf-8"))
         except Exception as exc:
             last_err = exc
