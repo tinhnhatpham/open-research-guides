@@ -16,8 +16,10 @@ A small, independent public-interest project turning peer-reviewed studies and p
 - **Interactive Decision Calculator:** [`microplastics-calculator/index.html`](./microplastics-calculator/index.html) — Open directly in any web browser (zero setup, runs 100% locally) to get a tailored household recommendation and 3-year cost comparison.
 - **1-Minute Shareable Summary:** [`microplastics-shareable-summary.md`](./microplastics-shareable-summary.md) — Ready to share with family or community groups.
 
-### 2. Global Traffic Safety: Which Countries Cut Road Deaths Fastest — and How? *(In Progress)*
-- Upcoming data-driven research brief analyzing real public road-fatality datasets alongside concrete policy case studies.
+### 2. Global Traffic Safety: Which Countries Cut Road Deaths Fastest — and How?
+- **Interactive Data Guide & 158-Country Explorer:** [`guides/traffic-safety/index.html`](./guides/traffic-safety/index.html) — Live multi-country SVG trend chart, regional progress breakdown, searchable 158-country table, and 5 proven policy lessons.
+- **Markdown Brief:** [`traffic-safety-global-guide.md`](./traffic-safety-global-guide.md)
+- **Reproducible Analysis Code & Data:** [`data/traffic-safety/analyze_who_road_deaths.py`](./data/traffic-safety/analyze_who_road_deaths.py) & [`data/traffic-safety/summary.json`](./data/traffic-safety/summary.json) (pulls directly from the WHO Global Health Observatory `RS_198` & World Bank APIs).
 
 ---
 

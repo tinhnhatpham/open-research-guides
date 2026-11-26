@@ -23,20 +23,20 @@ window.RESEARCH_GUIDES = [
   {
     id: "global-traffic-safety",
     number: "Guide #02",
-    status: "upcoming",
-    date: "In Progress",
+    status: "published",
+    date: "November 2026",
     category: "Society & Public Data",
     title: "Global Traffic Safety: Which Countries Cut Road Deaths Fastest — and How?",
     summary:
-      "An upcoming public-data investigation analyzing international road-fatality datasets alongside the concrete street design, speed, and enforcement policies that saved the most lives.",
+      "A reproducible public-data investigation across 158 countries (WHO Global Health Observatory + ITF/IRTAD & NHTSA) examining how leaders like Norway, Japan, South Korea, Lithuania, Poland, and Oman slashed road deaths—and why the U.S. diverged.",
     highlights: [
-      "Reproducible analysis of open international road-fatality data",
-      "Before-and-after policy case studies from top improvers",
-      "Interactive charts & plain-language takeaways"
+      "Interactive 158-country trend chart & searchable data explorer (WHO 2010–2021)",
+      "5 proven policies: Safe System engineering, 50/30 urban speed caps, cameras & crosswalk priority",
+      "Includes reproducible Python analysis code & data-literacy caveats on modeled projections"
     ],
-    guideUrl: null,
-    toolUrl: null,
-    toolLabel: null,
-    sourcesCount: "Public data analysis upcoming"
+    guideUrl: "./guides/traffic-safety/",
+    toolUrl: "./guides/traffic-safety/#explorer",
+    toolLabel: "Explore 158-Country Data",
+    sourcesCount: "WHO GHO (158 countries) + ITF/IRTAD + NHTSA"
   }
 ];

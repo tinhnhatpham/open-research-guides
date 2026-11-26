@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Traffic Safety: Which Countries Cut Road Deaths Fastest — Open Plain-Language Research</title>
+  <meta name="description" content="A reproducible public-data investigation across 158 countries (WHO 2010–2021 + ITF/IRTAD) examining which countries cut road deaths fastest and the concrete policies that worked." />
+  <style>
+    :root {
+      --bg: #f6f7f5;
+      --surface: #ffffff;
+      --surface-alt: #f0f4f3;
+      --ink: #17212b;
+      --ink-muted: #52606d;
+      --border: #d9e2e0;
+      --accent: #0f6b6e;
+      --accent-dark: #0a4f52;
+      --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5;
+      --good-ink: #065f46;
+      --warn-bg: #fff8eb;
+      --warn-border: #f59e0b;
+      --warn-ink: #8a4b08;
+      --danger-ink: #b91c1c;
+      --danger-bg: #fef2f2;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.62;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .topbar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 13px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+
+    .topbar a {
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-weight: 650;
+    }
+
+    .topbar a:hover { text-decoration: underline; }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 30px 20px 72px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    @media (max-width: 640px) {
+      .card { padding: 20px 16px; }
+    }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.65rem, 3.2vw, 2.3rem);
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+    }
+
+    .meta {
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      margin: 0 0 18px;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin: 18px 0 8px;
+    }
+
+    @media (max-width: 800px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-grid { grid-template-columns: 1fr; }
+    }
+
+    .kpi {
+      background: var(--surface-alt);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .kpi-val {
+      font-size: 1.45rem;
+      font-weight: 800;
+      margin: 3px 0 2px;
+      color: var(--ink);
+    }
+
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-val.bad { color: var(--danger-ink); }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-size: 1.28rem;
+      letter-spacing: -0.015em;
+    }
+
+    h3 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+      color: var(--accent-dark);
+    }
+
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+
+    .callout {
+      background: var(--surface-alt);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 0.92rem;
+      color: var(--ink-muted);
+    }
+
+    .callout strong { color: var(--ink); }
+
+    .callout.warn {
+      background: var(--warn-bg);
+      border-left-color: var(--warn-border);
+      color: var(--warn-ink);
+    }
+
+    .callout.warn strong { color: var(--warn-ink); }
+
+    /* Interactive Chart Controls */
+    .chart-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      border-radius: 999px;
+      padding: 5px 11px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink);
+    }
+
+    .chip.active {
+      background: var(--surface-alt);
+      border-color: currentColor;
+    }
+
+    .chip-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .country-select {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.85rem;
+      background: var(--surface);
+      color: var(--ink);
+      min-width: 210px;
+    }
+
+    .svg-wrap {
+      width: 100%;
+      overflow-x: auto;
+      background: #fcfdfd;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+    }
+
+    svg.trend-chart {
+      width: 100%;
+      min-width: 560px;
+      height: auto;
+      display: block;
+    }
+
+    .chart-caption {
+      font-size: 0.81rem;
+      color: var(--ink-muted);
+      margin-top: 8px;
+    }
+
+    /* Policy grid */
+    .policy-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    @media (max-width: 720px) {
+      .policy-grid { grid-template-columns: 1fr; }
+    }
+
+    .policy-box {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      background: #fcfdfd;
+    }
+
+    .policy-box p {
+      font-size: 0.9rem;
+      color: var(--ink-muted);
+    }
+
+    /* Regional bars */
+    .region-bars {
+      display: grid;
+      gap: 11px;
+      margin-top: 12px;
+    }
+
+    .rbar-head {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.87rem;
+      margin-bottom: 4px;
+      gap: 8px;
+    }
+
+    .rbar-track {
+      height: 11px;
+      background: #e9efee;
+      border-radius: 999px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .rbar-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .rbar-base {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: #64748b;
+    }
+
+    /* Explorer table */
+    .explorer-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .explorer-controls input,
+    .explorer-controls select {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 0.88rem;
+      background: var(--surface);
+      color: var(--ink);
+    }
+
+    .explorer-controls input { flex: 1; min-width: 190px; }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      max-height: 440px;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.87rem;
+      min-width: 620px;
+    }
+
+    th, td {
+      padding: 9px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--surface-alt);
+      position: sticky;
+      top: 0;
+      font-weight: 700;
+      z-index: 2;
+    }
+
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+
+    .delta-good { color: var(--good-ink); font-weight: 700; }
+    .delta-bad { color: var(--danger-ink); font-weight: 700; }
+
+    .sources {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 0.88rem;
+      color: var(--ink-muted);
+    }
+
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+
+    footer {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--ink-muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <a href="#explorer">Jump to 158-Country Explorer &darr;</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero Card -->
+    <section class="card">
+      <span class="eyebrow">Guide #02 &bull; Society &amp; Public Data</span>
+      <h1>Global Traffic Safety: Which Countries Cut Road Deaths Fastest — and How?</h1>
+      <p class="meta">
+        Reproducible analysis of 158 countries (WHO Global Health Observatory <code>RS_198</code>, finalized 2010–2021) + ITF/IRTAD (2024–2025) &amp; NHTSA FARS &bull; Compiled November 2026
+      </p>
+
+      <div class="callout">
+        <strong>Why this matters:</strong> Road traffic crashes kill roughly <strong>1.19 million people every year</strong> and remain the <strong>#1 killer of children and young adults aged 5–29</strong> (WHO, 2023). Yet our analysis of 158 countries shows road deaths are not inevitable: nations from Norway and Japan to South Korea, Lithuania, Poland, and Oman slashed death rates by <strong>45% to 67%</strong> in a single decade.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Global Rate (2010&rarr;2021)</div>
+          <div class="kpi-val good">-16.8%</div>
+          <div class="kpi-sub">17.9 &rarr; 14.9 per 100k</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Fastest Region (Europe)</div>
+          <div class="kpi-val good">-38.5%</div>
+          <div class="kpi-sub">10.9 &rarr; 6.7 per 100k</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Safest Country (Norway)</div>
+          <div class="kpi-val good">1.5 / 100k</div>
+          <div class="kpi-sub">-65.9% from 4.4 in 2010</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">U.S. Outlier (2010&rarr;2021)</div>
+          <div class="kpi-val bad">+23.5%</div>
+          <div class="kpi-sub">11.5 &rarr; 14.2 (NHTSA 2023: ~12.2)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Trend Chart -->
+    <section class="card">
+      <h2>1. Interactive Trend Chart: Road Deaths per 100,000 People (2010–2021)</h2>
+      <p style="color: var(--ink-muted); font-size: 0.93rem;">
+        Click a country chip to toggle it on or off, or add any of the 158 countries from the dropdown to compare trajectories directly.
+      </p>
+
+      <div class="chart-controls" id="chip-bar"></div>
+      <div class="chart-controls">
+        <label for="add-country-select" style="font-size:0.85rem; font-weight:650;">Add any country:</label>
+        <select id="add-country-select" class="country-select"></select>
+        <button type="button" class="chip" id="reset-chart-btn">Reset Default Comparison</button>
+      </div>
+
+      <div class="svg-wrap">
+        <svg id="trend-svg" class="trend-chart" viewBox="0 0 820 360" role="img" aria-label="Road traffic mortality trends from 2010 to 2021"></svg>
+      </div>
+      <p class="chart-caption">
+        Source: WHO Global Health Observatory indicator <code>RS_198</code> (both sexes, deaths per 100,000 population, finalized empirical series 2010–2021). Note: In 2023 actual police counts (ITF/IRTAD &amp; NHTSA), Lithuania, Poland, Norway, and Japan kept improving while the U.S. eased slightly to 40,901 deaths (~12.2/100k)—still 5&times; to 8&times; higher than Norway or Japan.
+      </p>
+    </section>
+
+    <!-- Regional & Income Progress -->
+    <section class="card">
+      <h2>2. Uneven Global Progress by WHO Region &amp; Income</h2>
+      <p style="color: var(--ink-muted); font-size: 0.93rem;">
+        Solid bars show the 2021 mortality rate per 100,000; vertical markers show where each region started in 2010. Low-income countries still experience nearly <strong>3&times; higher</strong> road death rates than high-income nations.
+      </p>
+      <div class="region-bars" id="region-bars"></div>
+    </section>
+
+    <!-- Concrete Policies -->
+    <section class="card">
+      <h2>3. What Actually Worked: Five Proven Policy Lessons</h2>
+      <p style="color: var(--ink-muted); font-size: 0.94rem;">
+        The fastest improvers did not rely on public-service slogans telling drivers to "be careful." They redesigned streets, speed rules, enforcement, and vehicles so human error is survivable.
+      </p>
+
+      <div class="policy-grid">
+        <div class="policy-box">
+          <h3>1. "Vision Zero / Safe System" Engineering (Norway, Sweden)</h3>
+          <p>
+            Instead of blaming individual drivers or pedestrians, road authorities take structural responsibility for lethal crashes. Oslo paired <strong>30 km/h (~19 mph)</strong> city-center limits with removing thousands of street parking spots and building protected bike lanes—achieving <strong>zero pedestrian and cyclist deaths</strong> in both 2019 and 2023.
+          </p>
+        </div>
+
+        <div class="policy-box">
+          <h3>2. Nationwide Urban Speed Caps (South Korea's "Safe Speed 5030")</h3>
+          <p>
+            South Korea cut its road death rate by <strong>51.7%</strong> (14.3 &rarr; 6.9). Its nationwide <em>Safe Speed 5030</em> policy dropped urban arterials to 50 km/h and residential/school zones to 30 km/h—cutting urban pedestrian hospital casualties sharply while taxi-probe studies showed minimal travel-time impact.
+          </p>
+        </div>
+
+        <div class="policy-box">
+          <h3>3. Automated Cameras + Crosswalk Priority (Poland, Lithuania)</h3>
+          <p>
+            Both countries overcame high post-Soviet crash rates (dropping ~45–47% in WHO 2010–2021 and up to <strong>-54% in Lithuania</strong> in ITF/IRTAD's 2025 decade data) by replacing deadly intersections with roundabouts, rolling out automated speed cameras, and strictly enforcing pedestrian right-of-way at crosswalks.
+          </p>
+        </div>
+
+        <div class="policy-box">
+          <h3>4. High-Level Governance &amp; "Black Spot" Fixes (Saudi Arabia, Oman)</h3>
+          <p>
+            Oman (-66.7%) and Saudi Arabia (-41.8%) reversed high highway fatality rates by creating cross-ministerial safety bodies, deploying automated AI/camera violation systems, upgrading crash databases, and engineering out deadly highway "black spots" to iRAP 3-star+ standards.
+          </p>
+        </div>
+
+        <div class="policy-box" style="grid-column: 1 / -1;">
+          <h3>5. Why the United States Diverged (+23.5% in 2010–2021)</h3>
+          <p>
+            ITF/IRTAD reports show that across member nations, aggregate road deaths only looked flat because of the U.S. surge (excluding the U.S., member deaths fell ~12.8%). Researchers point to three concrete structural differences: (1) wide, multi-lane suburban "stroads" designed for 40–55 mph next to unprotected crosswalks, (2) a fleet shift toward heavy, tall, blunt-front SUVs and pickup trucks with large front blind spots (unlike Japan and Euro NCAP's pedestrian-impact rules), and (3) weak adoption of automated speed enforcement.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Data Literacy / Caveats -->
+    <section class="card">
+      <h2>4. Read the Data Critically: Two Traps We Caught While Analyzing</h2>
+      <div class="callout warn">
+        <strong>Trap 1 — Modeled Projections vs. Observed Reality:</strong> The WHO GHO API includes forward-extrapolated rows for 2022–2023 with much wider uncertainty intervals. For example, WHO's automated model projected the U.S. 2020–2021 pandemic spike straight up to <strong>18.4 per 100,000 in 2023</strong> (95% CI: 16.4–20.3), whereas actual NHTSA FARS deaths declined slightly to <strong>40,901 (~12.2 per 100,000)</strong>. That is why this guide plots WHO's finalized empirical 2010–2021 series and cross-checks 2023–2024 against NHTSA and ITF/IRTAD.
+      </div>
+      <div class="callout">
+        <strong>Trap 2 — Economic Confounders in Raw Rankings:</strong> When you sort all 158 countries strictly by percentage drop, countries like <strong>Venezuela (-54.4%)</strong> and <strong>Lebanon (-54.2%)</strong> rank near the top. Severe economic contraction and fuel shortages sharply reduced total driving volume there—meaning raw percentage drops can reflect fewer cars on the road rather than safer street engineering. Always pair numbers with real-world context.
+      </div>
+    </section>
+
+    <!-- 158-Country Explorer Table -->
+    <section class="card" id="explorer">
+      <h2>5. Explore All 158 Countries (WHO Finalized 2010–2021)</h2>
+      <p style="color: var(--ink-muted); font-size: 0.91rem; margin-bottom: 12px;">
+        Includes every country with population &ge; 1 million and complete WHO <code>RS_198</code> coverage. Click any country name to add it to the trend chart above!
+      </p>
+
+      <div class="explorer-controls">
+        <input type="search" id="search-input" placeholder="Search country (e.g., Japan, Brazil, Vietnam, Kenya)..." aria-label="Search countries" />
+        <select id="region-filter" aria-label="Filter by World Bank region"></select>
+        <select id="sort-select" aria-label="Sort countries">
+          <option value="pct_asc">Fastest % Reduction First</option>
+          <option value="latest_asc">Safest in 2021 (Lowest Rate)</option>
+          <option value="latest_desc">Highest Rate in 2021</option>
+          <option value="name_asc">Country Name (A–Z)</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Region</th>
+              <th class="num">2010 Rate</th>
+              <th class="num">2021 Rate</th>
+              <th class="num">Change</th>
+            </tr>
+          </thead>
+          <tbody id="country-tbody"></tbody>
+        </table>
+      </div>
+      <p class="chart-caption" id="table-count"></p>
+    </section>
+
+    <!-- Sources -->
+    <section class="card">
+      <h2>6. Primary Sources &amp; Open Reproducibility</h2>
+      <ol class="sources">
+        <li><strong>WHO Global Health Observatory (GHO) API:</strong> Indicator <code>RS_198</code> — Estimated road traffic death rate per 100,000 population (both sexes, finalized 2010–2021) &amp; <em>Global Status Report on Road Safety 2023</em>.</li>
+        <li><strong>World Bank Open Data API:</strong> Population indicator <code>SP.POP.TOTL</code> and country region/income metadata.</li>
+        <li><strong>ITF / OECD:</strong> <em>IRTAD Road Safety Annual Reports (2024 &amp; 2025)</em> — 2013–2023/2024 national fatality trends across Lithuania, Poland, Norway, Japan, and the United States.</li>
+        <li><strong>U.S. NHTSA (FARS):</strong> Official U.S. motor vehicle crash fatalities (42,939 in 2021; 40,901 in 2023).</li>
+        <li><strong>Policy Evidence:</strong> South Korea <em>Safe Speed 5030</em> emergency-medicine &amp; traffic-flow studies; Oslo <em>Bilfritt byliv</em> evaluations; Saudi Arabia Vision 2030 &amp; Oman Safe System / iRAP reports.</li>
+        <li><strong>Reproducible Code:</strong> Full Python data-fetching script (<code>data/traffic-safety/analyze_who_road_deaths.py</code>) and dataset (<code>summary.json</code>) are open in the GitHub repository so anyone can re-run and verify every number.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research &bull; Guide #02</span>
+      <span>Data: WHO GHO RS_198 (2010–2021) &bull; CC BY 4.0 / MIT</span>
+    </footer>
+  </main>
+
+  <script src="../../data/traffic-safety/summary-data.js"></script>
+  <script>
+    const DATA = window.TRAFFIC_SAFETY_DATA;
+    const COUNTRIES = DATA.all_countries;
+    const BY_CODE = Object.fromEntries(COUNTRIES.map((c) => [c.code, c]));
+
+    const PALETTE = [
+      "#0f6b6e", "#dc2626", "#2563eb", "#d97706", "#7c3aed",
+      "#059669", "#db2777", "#475569", "#0891b2", "#ea580c"
+    ];
+
+    const DEFAULT_CODES = ["USA", "KOR", "POL", "LTU", "JPN", "NOR"];
+    let selectedCodes = [...DEFAULT_CODES];
+
+    function colorForIndex(i) {
+      return PALETTE[i % PALETTE.length];
+    }
+
+    // Populate "Add any country" dropdown
+    const addSelect = document.getElementById("add-country-select");
+    const sortedAlpha = [...COUNTRIES].sort((a, b) => a.name.localeCompare(b.name));
+    addSelect.innerHTML =
+      `<option value="">+ Pick a country to compare...</option>` +
+      sortedAlpha.map((c) => `<option value="${c.code}">${c.name} (${c.latest_rate}/100k)</option>`).join("");
+
+    addSelect.addEventListener("change", () => {
+      const code = addSelect.value;
+      if (code && !selectedCodes.includes(code)) {
+        if (selectedCodes.length >= 8) selectedCodes.shift();
+        selectedCodes.push(code);
+        renderChartAndChips();
+      }
+      addSelect.value = "";
+    });
+
+    document.getElementById("reset-chart-btn").addEventListener("click", () => {
+      selectedCodes = [...DEFAULT_CODES];
+      renderChartAndChips();
+    });
+
+    function renderChartAndChips() {
+      const chipBar = document.getElementById("chip-bar");
+      chipBar.innerHTML = selectedCodes
+        .map((code, idx) => {
+          const c = BY_CODE[code];
+          if (!c) return "";
+          const col = colorForIndex(idx);
+          return `
+            <button type="button" class="chip active" data-code="${code}" style="color:${col}" title="Click to remove">
+              <span class="chip-dot" style="background:${col}"></span>
+              <span>${c.name} (${c.pct_change > 0 ? "+" : ""}${c.pct_change}%) &times;</span>
+            </button>
+          `;
+        })
+        .join("");
+
+      chipBar.querySelectorAll(".chip").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          if (selectedCodes.length <= 1) return;
+          selectedCodes = selectedCodes.filter((x) => x !== btn.dataset.code);
+          renderChartAndChips();
+        });
+      });
+
+      drawTrendSVG();
+    }
+
+    function drawTrendSVG() {
+      const svg = document.getElementById("trend-svg");
+      const years = [2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021];
+      const W = 820, H = 360;
+      const padL = 52, padR = 135, padT = 22, padB = 38;
+      const plotW = W - padL - padR;
+      const plotH = H - padT - padB;
+
+      const activeSeries = selectedCodes.map((c) => BY_CODE[c]).filter(Boolean);
+      const globalSeries = DATA.aggregates.GLOBAL ? DATA.aggregates.GLOBAL.series : null;
+
+      let maxVal = 16;
+      activeSeries.forEach((c) => {
+        years.forEach((y) => {
+          const v = c.series[String(y)];
+          if (v !== undefined && v > maxVal) maxVal = v;
+        });
+      });
+      if (globalSeries) {
+        years.forEach((y) => {
+          const v = globalSeries[String(y)];
+          if (v !== undefined && v > maxVal) maxVal = v;
+        });
+      }
+      maxVal = Math.ceil(maxVal / 5) * 5;
+
+      const xScale = (yr) => padL + ((yr - years[0]) / (years[years.length - 1] - years[0])) * plotW;
+      const yScale = (val) => padT + plotH - (val / maxVal) * plotH;
+
+      let parts = [];
+
+      // Grid lines + Y ticks
+      const steps = 5;
+      for (let i = 0; i <= steps; i++) {
+        const val = (maxVal / steps) * i;
+        const y = yScale(val);
+        parts.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e5ecea" stroke-width="1" />`);
+        parts.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#64748b">${val.toFixed(0)}</text>`);
+      }
+
+      // X ticks
+      years.forEach((yr) => {
+        const x = xScale(yr);
+        parts.push(`<text x="${x}" y="${H - 14}" text-anchor="middle" font-size="11" fill="#64748b">${yr}</text>`);
+      });
+
+      // Y-axis label
+      parts.push(`<text x="14" y="${padT + plotH / 2}" transform="rotate(-90 14 ${padT + plotH / 2})" text-anchor="middle" font-size="11" fill="#64748b">Deaths per 100,000</text>`);
+
+      // Dashed Global Average reference line
+      if (globalSeries) {
+        const pts = years
+          .filter((y) => globalSeries[String(y)] !== undefined)
+          .map((y) => `${xScale(y).toFixed(1)},${yScale(globalSeries[String(y)]).toFixed(1)}`)
+          .join(" ");
+        parts.push(`<polyline fill="none" stroke="#94a3b8" stroke-width="2" stroke-dasharray="5,4" points="${pts}" />`);
+        const gLast = globalSeries["2021"];
+        if (gLast !== undefined) {
+          parts.push(`<text x="${W - padR + 8}" y="${yScale(gLast) + 4}" font-size="11" font-weight="600" fill="#64748b">World avg (${gLast})</text>`);
+        }
+      }
+
+      // Country lines + non-overlapping end labels
+      const endLabels = [];
+      activeSeries.forEach((c, idx) => {
+        const col = colorForIndex(idx);
+        const pts = years
+          .filter((y) => c.series[String(y)] !== undefined)
+          .map((y) => `${xScale(y).toFixed(1)},${yScale(c.series[String(y)]).toFixed(1)}`)
+          .join(" ");
+        parts.push(`<polyline fill="none" stroke="${col}" stroke-width="2.6" stroke-linejoin="round" points="${pts}" />`);
+
+        const lastV = c.series["2021"];
+        const lx = xScale(2021);
+        const ly = yScale(lastV);
+        parts.push(`<circle cx="${lx}" cy="${ly}" r="3.6" fill="${col}" />`);
+        endLabels.push({ y: ly, text: `${c.code} (${lastV})`, color: col });
+      });
+
+      // Nudge colliding labels vertically
+      endLabels.sort((a, b) => a.y - b.y);
+      for (let i = 1; i < endLabels.length; i++) {
+        if (endLabels[i].y - endLabels[i - 1].y < 14) {
+          endLabels[i].y = endLabels[i - 1].y + 14;
+        }
+      }
+      endLabels.forEach((lb) => {
+        parts.push(`<text x="${W - padR + 8}" y="${lb.y + 4}" font-size="11.5" font-weight="700" fill="${lb.color}">${lb.text}</text>`);
+      });
+
+      svg.innerHTML = parts.join("");
+    }
+
+    // Regional Bars
+    function renderRegions() {
+      const regionMap = [
+        ["EUR", "Europe (WHO EUR)"],
+        ["WB_HI", "High-Income Countries"],
+        ["AMR", "Americas (WHO AMR)"],
+        ["WPR", "Western Pacific (WHO WPR)"],
+        ["GLOBAL", "World Average"],
+        ["SEAR", "South-East Asia (WHO SEAR)"],
+        ["EMR", "Eastern Mediterranean (WHO EMR)"],
+        ["AFR", "Africa (WHO AFR)"],
+        ["WB_LI", "Low-Income Countries"]
+      ];
+      const maxR = 26;
+      const container = document.getElementById("region-bars");
+      container.innerHTML = regionMap
+        .map(([code, label]) => {
+          const a = DATA.aggregates[code];
+          if (!a) return "";
+          const w2021 = Math.min(100, (a.latest_rate / maxR) * 100);
+          const pos2010 = Math.min(99, (a.baseline_rate / maxR) * 100);
+          return `
+            <div>
+              <div class="rbar-head">
+                <strong>${label}</strong>
+                <span style="color:var(--ink-muted)">2010: ${a.baseline_rate} &rarr; <strong>2021: ${a.latest_rate}</strong>/100k (<span class="delta-good">${a.pct_change}%</span>)</span>
+              </div>
+              <div class="rbar-track">
+                <div class="rbar-fill" style="width:${w2021}%"></div>
+                <div class="rbar-base" style="left:${pos2010}%" title="2010 baseline: ${a.baseline_rate}"></div>
+              </div>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    // 158-Country Explorer Table
+    const searchInput = document.getElementById("search-input");
+    const regionFilter = document.getElementById("region-filter");
+    const sortSelect = document.getElementById("sort-select");
+
+    const regions = ["All Regions", ...new Set(COUNTRIES.map((c) => c.region))].sort((a, b) =>
+      a === "All Regions" ? -1 : b === "All Regions" ? 1 : a.localeCompare(b)
+    );
+    regionFilter.innerHTML = regions.map((r) => `<option value="${r}">${r}</option>`).join("");
+
+    function renderTable() {
+      const q = searchInput.value.trim().toLowerCase();
+      const reg = regionFilter.value;
+      const sort = sortSelect.value;
+
+      let rows = COUNTRIES.filter((c) => {
+        const matchQ = !q || c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
+        const matchR = reg === "All Regions" || c.region === reg;
+        return matchQ && matchR;
+      });
+
+      if (sort === "pct_asc") rows.sort((a, b) => a.pct_change - b.pct_change);
+      else if (sort === "latest_asc") rows.sort((a, b) => a.latest_rate - b.latest_rate);
+      else if (sort === "latest_desc") rows.sort((a, b) => b.latest_rate - a.latest_rate);
+      else if (sort === "name_asc") rows.sort((a, b) => a.name.localeCompare(b.name));
+
+      const tbody = document.getElementById("country-tbody");
+      tbody.innerHTML = rows
+        .map((c) => {
+          const cls = c.pct_change <= 0 ? "delta-good" : "delta-bad";
+          const sign = c.pct_change > 0 ? "+" : "";
+          return `
+            <tr>
+              <td><a href="#trend-svg" class="plot-link" data-code="${c.code}" style="color:var(--accent-dark); font-weight:650; text-decoration:none;">${c.name}</a></td>
+              <td style="color:var(--ink-muted)">${c.region}</td>
+              <td class="num">${c.baseline_rate.toFixed(1)}</td>
+              <td class="num"><strong>${c.latest_rate.toFixed(1)}</strong></td>
+              <td class="num ${cls}">${sign}${c.pct_change.toFixed(1)}%</td>
+            </tr>
+          `;
+        })
+        .join("");
+
+      tbody.querySelectorAll(".plot-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          const code = link.dataset.code;
+          if (!selectedCodes.includes(code)) {
+            if (selectedCodes.length >= 8) selectedCodes.shift();
+            selectedCodes.push(code);
+            renderChartAndChips();
+          }
+        });
+      });
+
+      document.getElementById("table-count").textContent = `Showing ${rows.length} of ${COUNTRIES.length} countries (population ≥ 1M).`;
+    }
+
+    searchInput.addEventListener("input", renderTable);
+    regionFilter.addEventListener("change", renderTable);
+    sortSelect.addEventListener("change", renderTable);
+
+    renderChartAndChips();
+    renderRegions();
+    renderTable();
+  </script>
+</body>
+</html>
