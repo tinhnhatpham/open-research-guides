@@ -1,7 +1,7 @@
 window.CMS_HOSPITAL_DATA = {
   "metadata": {
-    "generated_at_utc": "2026-11-26T20:15:33Z",
-    "runtime_sec": 4.6,
+    "generated_at_utc": "2026-11-26T20:36:31Z",
+    "runtime_sec": 5.4,
     "endpoints": {
       "cost_report": {
         "title": "Hospital Provider Cost Report : 2024-01-02",
