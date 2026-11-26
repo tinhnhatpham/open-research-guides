@@ -139,3 +139,18 @@
 > - **Honest caveats included:** Legacy public hydro allocations (NYPA/BPA), wildfire-prone rural transmission mileage, urban vs. rural line density, and strict separation of `Bundled` vs. `Delivery`-only deregulated rates.
 >
 > Search by utility name or U.S. county + open `.csv.gz`: https://open-research-guides.vercel.app/guides/utilities/
+
+### C. America's Workplace Injury & Amputation Reality — 377,415 OSHA Workplaces (`r/datasets` / `r/workreform` / Labor Journalists / HN)
+
+**Title:**
+`[OC] I deduplicated 400,288 OSHA 2025 workplace injury filings (catching 3,837 exact duplicates) and joined them with 105,996 Severe Injury Reports (27,978 amputations)`
+
+**Body:**
+> OSHA publishes establishment-level 2025 Form 300A injury logs (`400,288` rows) and 2015–2025 Severe Injury Reports (`105,996` hospitalizations & amputations) as separate raw CSVs with fragmented corporate LLC names—and thousands of unflagged duplicate submissions (e.g., Costco submitted 1,513 rows for 731 U.S. locations; H-E-B submitted 894 rows for 459 locations with extra spaces).
+>
+> After removing 3,837 exact duplicate filings and 19,036 clerical hours/size outliers (leaving 377,415 clean workplaces covering 44.9M workers, 1.35M injuries, and 780 deaths), a few stark findings stood out:
+> - **Same-industry corporate gaps:** Southwest Airlines (`10.78` DART) and American Airlines (`8.92`) post 2.5×–3.1× higher serious injury rates than Delta (`3.45`) and United (`3.99`). FedEx (`9.86` DART, 1.41× peer) vs. UPS (`6.51`, 0.89× peer). Costco (`5.19` DART, 1.80× peer) vs. Walmart (`2.53`) and Target (`2.88`). Amazon's `4.57` DART represents 92% of all its recordable injuries.
+> - **The Meatpacking Amputation Paradox:** Tyson Foods (`3.35` TCR), JBS/Pilgrim's Pride (`3.21`), and Smithfield (`2.48`) post below-average Form 300A rates yet account for **318 worker amputations** in Federal OSHA jurisdictions alone.
+> - **Honest caveat:** Form 300A covers all 50 states, while Federal OSHA Severe Injury Reports cover the 29 Federal OSHA jurisdictions (21 State-Plan states report separately).
+>
+> Interactive lookup across 5,744 employers, 267 industries & 1,000 injury hotspots + open `.csv.gz`: https://open-research-guides.vercel.app/guides/workplace-safety/

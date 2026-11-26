@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>America's Workplace Injury &amp; Amputation Reality: 377,415 Workplaces &amp; 5,744 Employers (OSHA 2025) — Open Plain-Language Research</title>
+  <meta name="description" content="Zero-affiliate, deduplicated analysis of 377,415 U.S. workplaces (44.9M workers, 2025 OSHA Form 300A) joined with 105,996 Federal OSHA Severe Injury Reports (27,978 amputations, 86,518 hospitalizations, 2015–2025). Search 5,744 employers, 267 industries, and 1,000 injury hotspots." />
+  <meta property="og:title" content="America's Workplace Injury & Amputation Reality — OSHA 2025 Form 300A + Severe Injury Reports" />
+  <meta property="og:description" content="Search 5,744 U.S. employers, 267 industries, and 1,000 high-injury facilities: deduplicated 2025 OSHA injury rates (TCR & DART vs. peer industry) plus 11 years of amputations and hospitalizations." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://open-research-guides.vercel.app/guides/workplace-safety/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://open-research-guides.vercel.app/guides/workplace-safety/" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    section[id] { scroll-margin-top: 68px; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+    @media (max-width: 720px) { .topbar { position: static; } }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.88rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .nav-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 28px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 18px 15px; } }
+    .eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: #134e4a; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.3rem); line-height: 1.18; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.89rem; margin-bottom: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 820px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.91rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .calc-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: 18px; align-items: start; }
+    @media (max-width: 780px) { .calc-grid { grid-template-columns: 1fr; } }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-weight: 650; font-size: 0.86rem; margin-bottom: 5px; }
+    .field input, .field select { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.89rem; background: var(--surface); color: var(--ink); }
+    .calc-out { border: 1.5px solid var(--accent); border-radius: 12px; padding: 18px; background: #fbfdfd; }
+    .calc-nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+    @media (max-width: 560px) { .calc-nums { grid-template-columns: 1fr; } }
+    .c-box { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; }
+    .c-lbl { font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); font-weight: 700; }
+    .c-val { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+    .c-sub { font-size: 0.76rem; color: var(--ink-muted); margin-top: 2px; }
+    .tab-bar { display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 2px solid var(--border); margin-bottom: 14px; padding-bottom: 10px; }
+    .tab-btn { border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 9px; padding: 8px 14px; font-size: 0.87rem; font-weight: 700; cursor: pointer; }
+    .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 12px; }
+    .controls input, .controls select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.87rem; background: var(--surface); color: var(--ink); }
+    .controls input { flex: 1; min-width: 220px; }
+    .chip-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+    .chip { border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 0.81rem; font-weight: 600; cursor: pointer; }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 460px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 820px; }
+    th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-alt); position: sticky; top: 0; font-weight: 700; z-index: 2; }
+    tbody tr.clickable { cursor: pointer; }
+    tbody tr.clickable:hover, tbody tr.clickable:focus-visible { background: #f3f9f9; outline: 2px solid var(--accent); outline-offset: -2px; }
+    tbody tr.selected { background: var(--accent-soft); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .good-txt { color: var(--good-ink); font-weight: 700; }
+    .bad-txt { color: var(--bad-ink); font-weight: 700; }
+    .muted { color: var(--ink-muted); }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-right: 4px; white-space: nowrap; }
+    .b-bad { background: var(--bad-bg); color: var(--bad-ink); }
+    .b-good { background: var(--good-bg); color: var(--good-ink); }
+    .b-soft { background: var(--accent-soft); color: var(--accent-dark); }
+    .b-warn { background: var(--warn-bg); color: var(--warn-ink); }
+    .pager { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; font-size: 0.85rem; color: var(--ink-muted); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 13px; font-size: 0.84rem; font-weight: 650; cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+    .findings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 780px) { .findings-grid { grid-template-columns: 1fr; } }
+    .finding { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: #fcfdfd; }
+    .finding p { font-size: 0.89rem; color: var(--ink-muted); }
+    .bar-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+    .bar-item { display: grid; grid-template-columns: 200px 1fr 90px; align-items: center; gap: 10px; font-size: 0.84rem; }
+    @media (max-width: 640px) { .bar-item { grid-template-columns: 1fr; gap: 3px; } }
+    .bar-track { background: #e8efee; border-radius: 999px; height: 16px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; background: var(--accent); }
+    .bar-fill.bad { background: #dc2626; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.87rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <nav class="nav-links" aria-label="Section navigation">
+        <a href="#checker">Employer Risk Checker</a>
+        <a href="#lookup">Search 5,744 Employers &amp; Sites</a>
+        <a href="#scorecard">Corporate Scorecard</a>
+        <a href="#amputations">Amputations &amp; Industries</a>
+        <a href="#methodology">Data Forensics &amp; CSV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Flagship Investigation #06 &bull; Guide #12 &bull; Labor &amp; Workplace Safety</span>
+      <h1>America's Workplace Injury &amp; Amputation Reality: 377,415 Workplaces &amp; 105,996 Severe Injuries</h1>
+      <p class="meta">
+        Deduplicated audit joining <strong>2025 OSHA Form 300A</strong> establishment filings (<strong>377,415</strong> clean workplaces, <strong>44.9M</strong> workers) with <strong>11 years</strong> of Federal OSHA <strong>Severe Injury Reports</strong> (Jan 2015 – Nov 2025) &bull; Updated November 2026
+      </p>
+
+      <div class="callout">
+        <strong>Why this doesn't exist anywhere else:</strong> OSHA dumps Form 300A injury logs and Severe Injury amputation reports into separate raw multi-megabyte CSVs with fragmented subsidiary spellings (e.g., Walmart split across 10+ LLCs, USPS across 12+ spellings) and <strong>3,837 exact duplicate filings</strong> (such as Costco and H-E-B double-submitting sites under new IDs). Here, any worker, job seeker, or journalist can search <strong>5,744 corporate employers</strong>, <strong>267 industries</strong>, and <strong>1,000 injury hotspots</strong>—benchmarked against each employer's exact industry mix.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">2025 Workplace Injuries (300A)</div>
+          <div class="kpi-val bad" id="kpi-inj">1.35M</div>
+          <div class="kpi-sub" id="kpi-inj-sub">854k serious DART cases &bull; 780 deaths across 44.9M workers</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Federal Severe Injuries (11 Yr)</div>
+          <div class="kpi-val bad" id="kpi-sir">105,996</div>
+          <div class="kpi-sub" id="kpi-sir-sub">86,518 hospitalizations &bull; 27,978 amputations (29 Fed states)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">U.S. Baseline Injury Rates</div>
+          <div class="kpi-val" id="kpi-rates">3.51 / 2.22</div>
+          <div class="kpi-sub">Total (TCR) / Serious (DART) per 100 full-time workers</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">OSHA Data Forensics Cleaned</div>
+          <div class="kpi-val good" id="kpi-clean">22,873 rows</div>
+          <div class="kpi-sub" id="kpi-clean-sub">3,837 exact duplicates + 19,036 clerical outliers removed</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Employer Risk Checker -->
+    <section class="card" id="checker">
+      <h2>1. Interactive Tool: Check an Employer's Injury Risk vs. Industry Peers</h2>
+      <p style="color:var(--ink-muted); font-size:0.91rem; margin-bottom:14px;">
+        Choose a major U.S. employer below—or click <em>any</em> of the 5,744 employers in Section 2—to inspect its deduplicated 2025 injury rate (<code>TCR</code> &amp; <code>DART</code>), exact ratio vs. its NAICS industry peers, estimated cumulative 5-year serious injury odds for a full-time worker, and 11-year Federal OSHA amputation/hospitalization record.
+      </p>
+      <div class="calc-grid">
+        <div>
+          <div class="field">
+            <label for="c-emp">Choose a Major Employer (or click any row in Section 2)</label>
+            <select id="c-emp"></select>
+          </div>
+          <div class="field">
+            <label for="c-yrs">Years Working Full-Time at This Employer (for cumulative odds)</label>
+            <input type="number" id="c-yrs" value="5" min="1" max="30" step="1" />
+          </div>
+          <p class="muted" style="font-size:0.81rem;">
+            <strong>TCR</strong> = Total Recordable Cases per 100 full-time workers/yr. <strong>DART</strong> = serious cases causing Days Away from work, Job Restriction, or Transfer per 100 full-time workers/yr.
+          </p>
+        </div>
+
+        <div class="calc-out" id="calc-out" aria-live="polite">
+          <div style="font-size:0.84rem; color:var(--ink-muted);" id="co-hdr">Loading employer data...</div>
+          <div class="calc-nums">
+            <div class="c-box">
+              <div class="c-lbl">2025 Serious Rate (DART)</div>
+              <div class="c-val" id="co-dart">--</div>
+              <div class="c-sub" id="co-dart-sub">--</div>
+            </div>
+            <div class="c-box">
+              <div class="c-lbl">vs. Exact Industry Peers</div>
+              <div class="c-val" id="co-peer">--</div>
+              <div class="c-sub" id="co-peer-sub">--</div>
+            </div>
+            <div class="c-box">
+              <div class="c-lbl" id="co-odds-lbl">5-Yr Serious Injury Odds</div>
+              <div class="c-val" id="co-odds">--</div>
+              <div class="c-sub" id="co-odds-sub">--</div>
+            </div>
+          </div>
+          <div style="font-size:0.86rem; color:var(--ink-muted);" id="co-sir">--</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Multi-Tab Search Database -->
+    <section class="card" id="lookup">
+      <h2>2. Search 5,744 U.S. Employers, 267 Industries &amp; 1,000 High-Injury Workplaces</h2>
+      <div class="tab-bar" role="tablist">
+        <button type="button" class="tab-btn active" data-tab="employers">Employers (5,744 &ge;1k workers)</button>
+        <button type="button" class="tab-btn" data-tab="industries">Industries (267 NAICS-4)</button>
+        <button type="button" class="tab-btn" data-tab="hotspots">Top 1,000 High-Injury Sites</button>
+      </div>
+
+      <div class="controls">
+        <input type="search" id="q" placeholder="Search employer, facility, city, state, or industry..." aria-label="Search workplace safety records" />
+        <select id="f-state" aria-label="Filter by state"><option value="">All States (51)</option></select>
+        <select id="f-sort" aria-label="Sort results"></select>
+      </div>
+
+      <div class="chip-bar" id="chip-bar"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead id="tbl-head"></thead>
+          <tbody id="tbl-body">
+            <tr><td colspan="8" class="muted">Loading OSHA datasets...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <span id="pg-info">--</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn" id="pg-prev">&larr; Prev</button>
+          <button type="button" class="btn" id="pg-next">Next &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Corporate Safety Scorecard -->
+    <section class="card" id="scorecard">
+      <h2>3. Major U.S. Corporate Safety Scorecard (Deduplicated 2025 300A + 2015–2025 SIR)</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:12px;">
+        Parent-normalized totals across major national employers (eliminating subsidiary splits and duplicate OSHA filings). Notice the stark gaps <strong>inside the exact same industry</strong>: Southwest (<code>10.78</code> DART) &amp; American (<code>8.92</code>) vs. Delta (<code>3.45</code>) &amp; United (<code>3.99</code>); FedEx (<code>9.86</code>) vs. UPS (<code>6.51</code>); Costco (<code>5.19</code>, 1.80&times; peer) vs. Walmart (<code>2.53</code>) &amp; Target (<code>2.88</code>). Click any row to load it in the Risk Checker above.
+      </p>
+      <div class="table-wrap" style="max-height:480px;">
+        <table style="min-width:860px;">
+          <thead>
+            <tr>
+              <th>Corporate Parent</th>
+              <th class="num">Sites</th>
+              <th class="num">2025 Workers</th>
+              <th class="num">TCR</th>
+              <th class="num">DART</th>
+              <th class="num">DART %</th>
+              <th class="num">vs. Peer</th>
+              <th class="num">SIR Hosp (11y)</th>
+              <th class="num">SIR Amp (11y)</th>
+            </tr>
+          </thead>
+          <tbody id="major-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Amputations & Most Dangerous Industries -->
+    <section class="card" id="amputations">
+      <h2>4. The Amputation Paradox &amp; Most Dangerous U.S. Industries</h2>
+      <div class="findings-grid">
+        <div class="finding">
+          <h3>Top Corporate Parents by Federal OSHA Amputations (2015–2025)</h3>
+          <p>Notice the <strong>Meatpacking Paradox</strong>: Tyson Foods (<code>3.35</code> TCR), JBS/Pilgrim's Pride (<code>3.21</code>), and Smithfield (<code>2.48</code>) report below-average Form 300A injury rates—yet account for <strong>318 documented worker amputations</strong> in Federal OSHA jurisdictions alone.</p>
+          <div class="bar-list" id="amp-bars"></div>
+        </div>
+        <div class="finding">
+          <h3>Top 10 Physical Sources of Workplace Amputations (27,978 Total)</h3>
+          <p>Unguarded power saws, slicers, conveyors, presses, and pinch-points drive thousands of preventable permanent injuries every year.</p>
+          <div class="bar-list" id="src-bars"></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:20px;">Top 15 Highest-DART Industries in America (2025 OSHA 300A, &ge;5,000 Workers)</h3>
+      <div class="table-wrap" style="max-height:none; margin-top:8px;">
+        <table style="min-width:760px;">
+          <thead>
+            <tr>
+              <th>NAICS</th>
+              <th>Industry</th>
+              <th class="num">2025 Workers</th>
+              <th class="num">TCR</th>
+              <th class="num">DART</th>
+              <th class="num">Deaths</th>
+              <th class="num">SIR Hosp (11y)</th>
+              <th class="num">SIR Amp (11y)</th>
+            </tr>
+          </thead>
+          <tbody id="ind-top-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 5. Data Forensics, Honest Caveats & Open Data -->
+    <section class="card" id="methodology">
+      <h2>5. Data Forensics, Honest Caveats &amp; Open Dataset Downloads</h2>
+      <div class="callout warn">
+        <strong>Critical Methodological Caveats (Read Before Citing):</strong>
+        <ul style="margin:6px 0 0; padding-left:18px;">
+          <li><strong>29 Federal OSHA Jurisdictions vs. 21 State-Plan States (SIR):</strong> OSHA's 2025 Form 300A dataset covers <strong>all 50 states</strong>, but Federal OSHA's <em>Severe Injury Reports (SIR)</em> cover only the 29 Federal OSHA jurisdictions (plus federal agencies like USPS). Private employers in 21 State-Plan states (including CA, WA, OR, MI, MN, NC, VA, IN, TN, AZ, MD) report severe injuries to state agencies, not Federal SIR—so national employers heavily concentrated in CA/WA/MI have <em>undercounted</em> SIR totals here.</li>
+          <li><strong>3,837 Exact Duplicate Filings Caught &amp; Removed:</strong> Raw <code>ITA_300A_Summary_Data_2025</code> contains 400,288 rows, including thousands of duplicate submissions filed on consecutive days under different <code>establishment_ID</code>s (e.g., Costco submitted 1,513 rows for 731 sites; H-E-B submitted 894 rows for 459 sites with extra whitespace). We deduplicated on normalized street address + ZIP5 + state + employees + hours + injuries (retaining the latest filing) and removed 19,036 clerical hours/size outliers.</li>
+          <li><strong>Reporting Coverage &amp; Underreporting:</strong> Electronic Form 300A submission is mandatory for establishments with &ge;250 workers (or 20–249 workers in designated high-hazard industries), not tiny low-hazard offices. Furthermore, academic studies and OSHA audits show some employers under-record injuries or shift cases to "light duty" (<code>DJTR</code>) rather than days away (<code>DAFW</code>)—which is why we highlight <strong>DART</strong> (both combined) alongside <strong>SIR amputations</strong>.</li>
+        </ul>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 18px;">
+        <a class="btn btn-primary" href="../../data/workplace-safety/osha-employers-2025.csv.gz" download>Download 5,744 Employers (.csv.gz)</a>
+        <a class="btn btn-primary" href="../../data/workplace-safety/osha-industries-2025.csv.gz" download>Download 267 Industries (.csv.gz)</a>
+        <a class="btn" href="../../data/workplace-safety/summary.json" target="_blank" rel="noopener">View summary.json</a>
+        <a class="btn" href="https://github.com/tinhnhatpham/open-research-guides/blob/main/data/workplace-safety/analyze_osha_safety.py" target="_blank" rel="noopener">Reproducible Python Pipeline (GitHub)</a>
+      </div>
+
+      <ul class="sources">
+        <li><strong>U.S. Occupational Safety and Health Administration (OSHA):</strong> <a href="https://www.osha.gov/Establishment-Specific-Injury-and-Illness-Data" target="_blank" rel="noopener">Establishment-Specific Injury and Illness Data (ITA 2025 Form 300A Summary)</a>.</li>
+        <li><strong>U.S. OSHA Severe Injury Reports:</strong> <a href="https://www.osha.gov/severe-injury-reports" target="_blank" rel="noopener">Severe Injury Reports Dataset (January 2015 – November 2025)</a>.</li>
+        <li><strong>Worker Rights:</strong> Workers have a federal right to request their workplace's Form 300A summary and file confidential safety complaints via <a href="https://www.osha.gov/workers/file-complaint" target="_blank" rel="noopener">OSHA Online Complaint Portal</a>.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research Guides &bull; Zero ads, zero affiliates, open federal data</span>
+      <span><a href="../../" style="color:var(--accent-dark); text-decoration:none; font-weight:600;">All 12 Research Guides &rarr;</a></span>
+    </footer>
+  </main>
+
+  <script src="../../data/workplace-safety/summary-data.js"></script>
+  <script>
+  (function () {
+    const S = window.OSHA_SUMMARY;
+    if (!S) return;
+
+    const fmtN = (n) => n == null ? "—" : Number(n).toLocaleString("en-US");
+    const fmt2 = (n) => n == null ? "—" : Number(n).toFixed(2);
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    function peerBadge(ratio) {
+      if (ratio == null) return '<span class="muted">—</span>';
+      if (ratio >= 1.5) return `<span class="badge b-bad">${ratio.toFixed(2)}× peer</span>`;
+      if (ratio >= 1.15) return `<span class="badge b-warn">${ratio.toFixed(2)}× peer</span>`;
+      if (ratio <= 0.8) return `<span class="badge b-good">${ratio.toFixed(2)}× peer</span>`;
+      return `<span class="badge b-soft">${ratio.toFixed(2)}× peer</span>`;
+    }
+
+    // Hydrate KPIs
+    const N = S.national, H = S.data_hygiene;
+    document.getElementById("kpi-inj").textContent = (N.total_injuries / 1e6).toFixed(2) + "M";
+    document.getElementById("kpi-inj-sub").textContent = `${Math.round(N.dart_cases / 1000)}k serious DART cases • ${fmtN(N.deaths)} deaths across ${(N.workers / 1e6).toFixed(1)}M workers`;
+    document.getElementById("kpi-sir").textContent = fmtN(N.sir_events);
+    document.getElementById("kpi-sir-sub").textContent = `${fmtN(N.sir_hosp)} hospitalizations • ${fmtN(N.sir_amp)} amputations (29 Fed states)`;
+    document.getElementById("kpi-rates").textContent = `${N.tcr.toFixed(2)} / ${N.dart.toFixed(2)}`;
+    const removed = H.raw_300a_rows - H.clean_establishments;
+    document.getElementById("kpi-clean").textContent = fmtN(removed) + " rows";
+    document.getElementById("kpi-clean-sub").textContent = `${fmtN(H.exact_duplicates_removed)} exact duplicates + ${fmtN(removed - H.exact_duplicates_removed)} clerical outliers removed`;
+
+    // Render Major Corporate Scorecard
+    const majorBody = document.getElementById("major-body");
+    majorBody.innerHTML = S.major_scorecard.map((r, i) => `
+      <tr class="clickable" tabindex="0" data-major="${i}">
+        <td><strong>${esc(r.name)}</strong><div class="muted" style="font-size:0.75rem;">${esc(r.industry)}</div></td>
+        <td class="num">${fmtN(r.sites)}</td>
+        <td class="num">${fmtN(r.emp)}</td>
+        <td class="num">${fmt2(r.tcr)}</td>
+        <td class="num ${r.dart >= 5 ? 'bad-txt' : r.dart <= 2.2 ? 'good-txt' : ''}"><strong>${fmt2(r.dart)}</strong></td>
+        <td class="num">${r.dart_share.toFixed(0)}%</td>
+        <td class="num">${peerBadge(r.dart_vs_peer)}</td>
+        <td class="num">${fmtN(r.sir_hosp)}</td>
+        <td class="num ${r.sir_amp >= 50 ? 'bad-txt' : ''}">${fmtN(r.sir_amp)}</td>
+      </tr>
+    `).join("");
+
+    // Render Amputation Bars
+    const maxAmp = Math.max(...S.top_amp_employers.map(x => x.amp), 1);
+    document.getElementById("amp-bars").innerHTML = S.top_amp_employers.slice(0, 10).map(x => `
+      <div class="bar-item">
+        <div><strong>${esc(x.name)}</strong></div>
+        <div class="bar-track"><div class="bar-fill bad" style="width:${(x.amp / maxAmp * 100).toFixed(1)}%"></div></div>
+        <div class="num bad-txt">${fmtN(x.amp)} amp</div>
+      </div>
+    `).join("");
+
+    const maxSrc = Math.max(...S.top_amp_sources.map(x => x.amputations), 1);
+    document.getElementById("src-bars").innerHTML = S.top_amp_sources.slice(0, 10).map(x => `
+      <div class="bar-item">
+        <div style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${esc(x.source)}">${esc(x.source)}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(x.amputations / maxSrc * 100).toFixed(1)}%"></div></div>
+        <div class="num">${fmtN(x.amputations)}</div>
+      </div>
+    `).join("");
+
+    // Top 15 Dangerous Industries
+    document.getElementById("ind-top-body").innerHTML = S.top_dangerous_industries.slice(0, 15).map(r => `
+      <tr>
+        <td><code>${esc(r.naics4)}</code></td>
+        <td><strong>${esc(r.desc)}</strong><div class="muted" style="font-size:0.75rem;">${esc(r.sector)}</div></td>
+        <td class="num">${fmtN(r.emp)}</td>
+        <td class="num">${fmt2(r.tcr)}</td>
+        <td class="num bad-txt">${fmt2(r.dart)}</td>
+        <td class="num">${fmtN(r.deaths)}</td>
+        <td class="num">${fmtN(r.sir_hosp)}</td>
+        <td class="num ${r.sir_amp >= 500 ? 'bad-txt' : ''}">${fmtN(r.sir_amp)}</td>
+      </tr>
+    `).join("");
+
+    // Employer Risk Checker
+    const cEmp = document.getElementById("c-emp");
+    const cYrs = document.getElementById("c-yrs");
+    let CURRENT_REC = S.major_scorecard[0];
+    S.major_scorecard.forEach((r, idx) => {
+      const opt = document.createElement("option");
+      opt.value = idx;
+      opt.textContent = `${r.name} (${fmtN(r.emp)} workers — DART ${fmt2(r.dart)})`;
+      cEmp.appendChild(opt);
+    });
+
+    function renderChecker(rec) {
+      if (!rec) return;
+      CURRENT_REC = rec;
+      const yrs = Math.max(1, Math.min(40, Number(cYrs.value) || 5));
+      const pAnn = Math.min(0.99, (rec.dart || 0) / 100);
+      const cumPct = (1 - Math.pow(1 - pAnn, yrs)) * 100;
+
+      document.getElementById("co-hdr").innerHTML =
+        `<strong style="color:var(--ink); font-size:0.98rem;">${esc(rec.name)}</strong> &bull; ${fmtN(rec.emp)} workers across ${fmtN(rec.sites)} deduplicated 2025 sites (${esc(rec.industry || "Multi-sector")})`;
+      const dEl = document.getElementById("co-dart");
+      dEl.textContent = `${fmt2(rec.dart)} / 100`;
+      dEl.className = "c-val " + (rec.dart >= 5 ? "bad-txt" : rec.dart <= 2.2 ? "good-txt" : "");
+      document.getElementById("co-dart-sub").textContent = `Total TCR: ${fmt2(rec.tcr)} (${rec.dart_share.toFixed(0)}% are serious DART cases)`;
+
+      const pEl = document.getElementById("co-peer");
+      pEl.textContent = rec.dart_vs_peer != null ? `${rec.dart_vs_peer.toFixed(2)}× peer` : "—";
+      pEl.className = "c-val " + ((rec.dart_vs_peer || 1) >= 1.3 ? "bad-txt" : (rec.dart_vs_peer || 1) <= 0.8 ? "good-txt" : "");
+      document.getElementById("co-peer-sub").textContent = `NAICS-weighted peer DART: ${fmt2(rec.peer_dart)} (U.S. avg: ${N.dart.toFixed(2)})`;
+
+      document.getElementById("co-odds-lbl").textContent = `${yrs}-Yr Serious Injury Odds`;
+      const oEl = document.getElementById("co-odds");
+      oEl.textContent = `${cumPct.toFixed(1)}%`;
+      oEl.className = "c-val " + (cumPct >= 25 ? "bad-txt" : cumPct <= 10 ? "good-txt" : "");
+      document.getElementById("co-odds-sub").textContent = `Est. ~1 in ${Math.max(1, Math.round(100 / Math.max(0.1, cumPct)))} workers over ${yrs} yrs`;
+
+      document.getElementById("co-sir").innerHTML =
+        `<strong>2015–2025 Federal OSHA Severe Injuries (29 Fed States):</strong> <strong>${fmtN(rec.sir_events)}</strong> events &mdash; <strong>${fmtN(rec.sir_hosp)}</strong> hospitalizations &amp; <strong>${fmtN(rec.sir_amp)}</strong> amputations. (2025 300A fatalities: <strong>${fmtN(rec.deaths)}</strong>.)`;
+    }
+
+    const fedexIdx = S.major_scorecard.findIndex(r => r.name === "FedEx");
+    cEmp.value = fedexIdx >= 0 ? fedexIdx : 0;
+    renderChecker(S.major_scorecard[Number(cEmp.value)]);
+    cEmp.addEventListener("change", () => renderChecker(S.major_scorecard[Number(cEmp.value)]));
+    cYrs.addEventListener("input", () => renderChecker(CURRENT_REC));
+
+    majorBody.addEventListener("click", (e) => {
+      const tr = e.target.closest("tr[data-major]");
+      if (!tr) return;
+      const idx = Number(tr.dataset.major);
+      cEmp.value = idx;
+      renderChecker(S.major_scorecard[idx]);
+      document.getElementById("checker").scrollIntoView({ behavior: "smooth" });
+    });
+
+    // State filter
+    const fState = document.getElementById("f-state");
+    S.by_state.forEach(st => {
+      const o = document.createElement("option");
+      o.value = st.state;
+      o.textContent = `${st.state} — ${st.name}${st.state_plan ? ' (State Plan)' : ''}`;
+      fState.appendChild(o);
+    });
+
+    // Multi-tab interactive explorer
+    let TAB = "employers", PRESET = "all", PAGE = 1, PAGE_SIZE = 25;
+    const DATA = { employers: null, industries: null, hotspots: null };
+    let FILTERED = [];
+
+    const TAB_META = {
+      employers: {
+        sorts: [["emp_desc", "Sort: Most Workers"], ["dart_desc", "Sort: Highest Serious Rate (DART)"], ["peer_desc", "Sort: Worst vs. Industry Peers"], ["amp_desc", "Sort: Most Amputations (11y)"], ["hosp_desc", "Sort: Most Hospitalizations (11y)"], ["dart_asc", "Sort: Lowest DART Rate"]],
+        chips: [["all", "All 5,744 Employers"], ["major", "31 Major National Giants"], ["badpeer", "≥1.5× Industry Average"], ["amp", "Has Amputations"], ["safe", "Safest Large (DART <1.5)"]],
+        head: "<tr><th>Employer &amp; Primary Industry</th><th>HQ St</th><th class='num'>Sites</th><th class='num'>Workers</th><th class='num'>TCR</th><th class='num'>DART</th><th class='num'>vs. Peer</th><th class='num'>SIR Amp</th></tr>"
+      },
+      industries: {
+        sorts: [["dart_desc", "Sort: Highest DART Rate"], ["tcr_desc", "Sort: Highest Total Rate (TCR)"], ["amp_desc", "Sort: Most Amputations (11y)"], ["emp_desc", "Sort: Most Workers"], ["deaths_desc", "Sort: Most 2025 Deaths"]],
+        chips: [["all", "All 267 Industries"], ["highdart", "High Danger (DART ≥4.0)"], ["highamp", "Heavy Amputations (≥200)"]],
+        head: "<tr><th>NAICS</th><th>Industry &amp; Sector</th><th class='num'>Sites</th><th class='num'>2025 Workers</th><th class='num'>TCR</th><th class='num'>DART</th><th class='num'>Deaths</th><th class='num'>SIR Amp</th></tr>"
+      },
+      hotspots: {
+        sorts: [["dart_desc", "Sort: Highest Site DART"], ["inj_desc", "Sort: Most Total Injuries"], ["emp_desc", "Sort: Largest Workforce"], ["days_desc", "Sort: Most Days Away"]],
+        chips: [["all", "All Top 1,000 Hotspots"], ["big", "≥500 Workers"], ["extreme", "DART ≥15.0"]],
+        head: "<tr><th>Facility &amp; Company</th><th>City, St</th><th>Industry</th><th class='num'>Workers</th><th class='num'>Injuries</th><th class='num'>TCR</th><th class='num'>DART</th><th class='num'>vs. Peer</th></tr>"
+      }
+    };
+
+    function setupTabUI() {
+      const m = TAB_META[TAB];
+      document.getElementById("f-sort").innerHTML = m.sorts.map(([v, t]) => `<option value="${v}">${t}</option>`).join("");
+      document.getElementById("chip-bar").innerHTML = m.chips.map(([v, t], i) => `<button type="button" class="chip ${i === 0 ? 'active' : ''}" data-preset="${v}">${t}</button>`).join("");
+      document.getElementById("tbl-head").innerHTML = m.head;
+      fState.style.display = TAB === "industries" ? "none" : "";
+      PRESET = "all";
+      document.querySelectorAll("#chip-bar .chip").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll("#chip-bar .chip").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          PRESET = btn.dataset.preset;
+          applyFilters();
+        });
+      });
+    }
+
+    function applyFilters() {
+      const ds = DATA[TAB];
+      if (!ds) return;
+      const C = ds.C, rows = ds.rows;
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      const st = fState.value;
+      const sort = document.getElementById("f-sort").value;
+
+      FILTERED = rows.filter(r => {
+        if (TAB === "employers") {
+          if (st && r[C.state] !== st) return false;
+          if (PRESET === "major" && !r[C.is_major]) return false;
+          if (PRESET === "badpeer" && (r[C.dart_vs_peer] == null || r[C.dart_vs_peer] < 1.5)) return false;
+          if (PRESET === "amp" && (r[C.sir_amp] || 0) < 1) return false;
+          if (PRESET === "safe" && (r[C.dart] >= 1.5 || r[C.emp] < 5000)) return false;
+          if (q && !(r[C.name] + " " + r[C.industry] + " " + r[C.state]).toLowerCase().includes(q)) return false;
+        } else if (TAB === "industries") {
+          if (PRESET === "highdart" && r[C.dart] < 4.0) return false;
+          if (PRESET === "highamp" && (r[C.sir_amp] || 0) < 200) return false;
+          if (q && !(r[C.naics4] + " " + r[C.desc] + " " + r[C.sector]).toLowerCase().includes(q)) return false;
+        } else {
+          if (st && r[C.state] !== st) return false;
+          if (PRESET === "big" && r[C.emp] < 500) return false;
+          if (PRESET === "extreme" && r[C.dart] < 15.0) return false;
+          if (q && !(r[C.est] + " " + r[C.co] + " " + r[C.city] + " " + r[C.state] + " " + r[C.ind]).toLowerCase().includes(q)) return false;
+        }
+        return true;
+      });
+
+      const desc = (k) => (a, b) => (b[k] == null ? -1e9 : b[k]) - (a[k] == null ? -1e9 : a[k]);
+      if (TAB === "employers") {
+        if (sort === "emp_desc") FILTERED.sort(desc(C.emp));
+        else if (sort === "dart_desc") FILTERED.sort(desc(C.dart));
+        else if (sort === "peer_desc") FILTERED.sort(desc(C.dart_vs_peer));
+        else if (sort === "amp_desc") FILTERED.sort(desc(C.sir_amp));
+        else if (sort === "hosp_desc") FILTERED.sort(desc(C.sir_hosp));
+        else if (sort === "dart_asc") FILTERED.sort((a, b) => a[C.dart] - b[C.dart]);
+      } else if (TAB === "industries") {
+        if (sort === "dart_desc") FILTERED.sort(desc(C.dart));
+        else if (sort === "tcr_desc") FILTERED.sort(desc(C.tcr));
+        else if (sort === "amp_desc") FILTERED.sort(desc(C.sir_amp));
+        else if (sort === "emp_desc") FILTERED.sort(desc(C.emp));
+        else if (sort === "deaths_desc") FILTERED.sort(desc(C.deaths));
+      } else {
+        if (sort === "dart_desc") FILTERED.sort(desc(C.dart));
+        else if (sort === "inj_desc") FILTERED.sort(desc(C.inj));
+        else if (sort === "emp_desc") FILTERED.sort(desc(C.emp));
+        else if (sort === "days_desc") FILTERED.sort(desc(C.dafw_days));
+      }
+
+      PAGE = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const ds = DATA[TAB];
+      if (!ds) return;
+      const C = ds.C;
+      const total = FILTERED.length;
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (PAGE > pages) PAGE = pages;
+      const start = (PAGE - 1) * PAGE_SIZE;
+      const slice = FILTERED.slice(start, start + PAGE_SIZE);
+
+      document.getElementById("pg-info").textContent =
+        total ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${fmtN(total)} records (Page ${PAGE}/${pages})` : "No matching records.";
+      document.getElementById("pg-prev").disabled = PAGE <= 1;
+      document.getElementById("pg-next").disabled = PAGE >= pages;
+
+      const tb = document.getElementById("tbl-body");
+      if (!slice.length) {
+        tb.innerHTML = '<tr><td colspan="8" class="muted">No matching records. Try a broader search.</td></tr>';
+        return;
+      }
+
+      if (TAB === "employers") {
+        tb.innerHTML = slice.map((r, i) => `
+          <tr class="clickable" tabindex="0" data-eidx="${start + i}">
+            <td><strong>${esc(r[C.name])}</strong>${r[C.is_major] ? ' <span class="badge b-soft">Major</span>' : ''}<div class="muted" style="font-size:0.75rem;">${esc(r[C.industry])}</div></td>
+            <td>${esc(r[C.state])}${r[C.n_states] > 1 ? ` <span class="muted">(+${r[C.n_states] - 1})</span>` : ''}</td>
+            <td class="num">${fmtN(r[C.sites])}</td>
+            <td class="num">${fmtN(r[C.emp])}</td>
+            <td class="num">${fmt2(r[C.tcr])}</td>
+            <td class="num ${r[C.dart] >= 5 ? 'bad-txt' : r[C.dart] <= 2 ? 'good-txt' : ''}"><strong>${fmt2(r[C.dart])}</strong></td>
+            <td class="num">${peerBadge(r[C.dart_vs_peer])}</td>
+            <td class="num ${r[C.sir_amp] >= 20 ? 'bad-txt' : ''}">${fmtN(r[C.sir_amp])}</td>
+          </tr>
+        `).join("");
+      } else if (TAB === "industries") {
+        tb.innerHTML = slice.map(r => `
+          <tr>
+            <td><code>${esc(r[C.naics4])}</code></td>
+            <td><strong>${esc(r[C.desc])}</strong><div class="muted" style="font-size:0.75rem;">${esc(r[C.sector])}</div></td>
+            <td class="num">${fmtN(r[C.sites])}</td>
+            <td class="num">${fmtN(r[C.emp])}</td>
+            <td class="num">${fmt2(r[C.tcr])}</td>
+            <td class="num ${r[C.dart] >= 4 ? 'bad-txt' : ''}"><strong>${fmt2(r[C.dart])}</strong></td>
+            <td class="num">${fmtN(r[C.deaths])}</td>
+            <td class="num">${fmtN(r[C.sir_amp])}</td>
+          </tr>
+        `).join("");
+      } else {
+        tb.innerHTML = slice.map(r => `
+          <tr>
+            <td><strong>${esc(r[C.est])}</strong><div class="muted" style="font-size:0.75rem;">${esc(r[C.co])}</div></td>
+            <td>${esc(r[C.city])}, ${esc(r[C.state])}</td>
+            <td class="muted" style="font-size:0.78rem;">${esc(r[C.ind])}</td>
+            <td class="num">${fmtN(r[C.emp])}</td>
+            <td class="num">${fmtN(r[C.inj])}</td>
+            <td class="num">${fmt2(r[C.tcr])}</td>
+            <td class="num bad-txt"><strong>${fmt2(r[C.dart])}</strong></td>
+            <td class="num">${peerBadge(r[C.vs_peer])}</td>
+          </tr>
+        `).join("");
+      }
+    }
+
+    document.getElementById("tbl-body").addEventListener("click", (e) => {
+      if (TAB !== "employers") return;
+      const tr = e.target.closest("tr[data-eidx]");
+      if (!tr) return;
+      const r = FILTERED[Number(tr.dataset.eidx)];
+      const C = DATA.employers.C;
+      renderChecker({
+        name: r[C.name], industry: r[C.industry], sites: r[C.sites], emp: r[C.emp],
+        tcr: r[C.tcr], dart: r[C.dart], dart_share: r[C.dart_share], peer_dart: r[C.peer_dart],
+        dart_vs_peer: r[C.dart_vs_peer], sir_events: r[C.sir_events], sir_hosp: r[C.sir_hosp],
+        sir_amp: r[C.sir_amp], deaths: r[C.deaths],
+      });
+      document.getElementById("checker").scrollIntoView({ behavior: "smooth" });
+    });
+
+    document.querySelectorAll(".tab-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        TAB = btn.dataset.tab;
+        setupTabUI();
+        applyFilters();
+      });
+    });
+
+    ["q", "f-state", "f-sort"].forEach(id => {
+      document.getElementById(id).addEventListener(id === "q" ? "input" : "change", applyFilters);
+    });
+    document.getElementById("pg-prev").addEventListener("click", () => { if (PAGE > 1) { PAGE--; renderTable(); } });
+    document.getElementById("pg-next").addEventListener("click", () => { PAGE++; renderTable(); });
+
+    setupTabUI();
+    Promise.all([
+      fetch("../../data/workplace-safety/employers.json").then(r => r.json()),
+      fetch("../../data/workplace-safety/industries.json").then(r => r.json()),
+      fetch("../../data/workplace-safety/hotspots.json").then(r => r.json()),
+    ]).then(([empD, indD, hotD]) => {
+      for (const [k, d] of [["employers", empD], ["industries", indD], ["hotspots", hotD]]) {
+        const C = {};
+        d.cols.forEach((c, i) => { C[c] = i; });
+        DATA[k] = { C, rows: d.rows };
+      }
+      applyFilters();
+    }).catch(() => {
+      document.getElementById("tbl-body").innerHTML = '<tr><td colspan="8" class="bad-txt">Failed to load OSHA JSON files.</td></tr>';
+    });
+  })();
+  </script>
+</body>
+</html>

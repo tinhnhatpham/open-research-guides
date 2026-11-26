@@ -6,12 +6,12 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 
 ### Project Principles
 - **Step 0 Prior-Art Check:** Before building, we check what already exists and target real gaps where ordinary people face clunky government portals, paywalls, or SEO/affiliate spam.
-- **Primary Data & Open Code:** Every data-driven guide includes the reproducible Python script pulling directly from official open APIs and bulk filings (WHO, CMS, FDIC, EIA, openFDA, OpenFEMA, World Bank).
+- **Primary Data & Open Code:** Every data-driven guide includes the reproducible Python script pulling directly from official open APIs and bulk filings (WHO, CMS, FDIC, EIA, OSHA, openFDA, OpenFEMA, World Bank).
 - **Honest About Traps & Uncertainty:** Every guide explicitly flags data artifacts, confounders, and what science or agencies still haven't settled.
 
 ---
 
-## Published Guides & Interactive Tools (11)
+## Published Guides & Interactive Tools (12)
 
 1. **Guide #01 — Microplastics in Drinking Water:** [`guides/microplastics/`](./guides/microplastics/) + [Interactive Decision Calculator](./microplastics-calculator/) + [Markdown Guide](./microplastics-drinking-water-guide.md) + [1-Min Shareable Summary](./microplastics-shareable-summary.md)
 2. **Guide #02 — Global Traffic Safety (158 Countries):** [`guides/traffic-safety/`](./guides/traffic-safety/) + [Python WHO Analysis](./data/traffic-safety/analyze_who_road_deaths.py)
@@ -24,6 +24,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 9. **Guide #09 (Flagship #03) — The U.S. Dialysis Duopoly & Clinic Accountability Platform (7,471 Clinics):** [`guides/dialysis/`](./guides/dialysis/) + [Python CMS Dialysis Pipeline](./data/dialysis/analyze_cms_dialysis.py) + [Linked Dataset (.csv.gz)](./data/dialysis/cms-dialysis-clinics-linked.csv.gz) *(auto-refreshed monthly)*
 10. **Guide #10 (Flagship #04) — The Great Bank Deposit Skim: All 4,204 FDIC U.S. Banks (2021–2025 Call Reports):** [`guides/banks/`](./guides/banks/) + [Python FDIC Pipeline](./data/banks/analyze_fdic_banks.py) + [Linked Dataset (.csv.gz)](./data/banks/fdic-banks-2021-2025.csv.gz) *(auto-refreshed monthly)*
 11. **Guide #11 (Flagship #05) — The Power Bill Divide: All 1,390 U.S. Electric Utilities (2020–2025 EIA Form 861):** [`guides/utilities/`](./guides/utilities/) + [Python EIA-861 Pipeline](./data/utilities/analyze_eia_utilities.py) + [Linked Dataset (.csv.gz)](./data/utilities/eia-861-utilities-2020-2025.csv.gz) *(auto-refreshed monthly)*
+12. **Guide #12 (Flagship #06) — America's Workplace Injury & Amputation Reality (377,415 OSHA Workplaces & 5,744 Employers):** [`guides/workplace-safety/`](./guides/workplace-safety/) + [Python OSHA Pipeline](./data/workplace-safety/analyze_osha_safety.py) + [Linked Dataset (.csv.gz)](./data/workplace-safety/osha-employers-2025.csv.gz) *(auto-refreshed monthly)*
 
 ---
 

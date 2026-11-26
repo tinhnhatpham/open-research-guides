@@ -1,4 +1,4 @@
-name: Monthly Flagship Open Data Refresh (33,186 U.S. Institutions)
+name: Monthly Flagship Open Data Refresh (410,000+ U.S. Institutions)
 
 on:
   schedule:
@@ -39,6 +39,9 @@ jobs:
       - name: Run EIA Form 861 U.S. electric utility pipeline (1,390 utilities)
         run: python data/utilities/analyze_eia_utilities.py
 
+      - name: Run OSHA 300A + Severe Injury pipeline (377,415 workplaces)
+        run: python data/workplace-safety/analyze_osha_safety.py
+
       - name: Validate generated JS and JSON artifacts
         run: |
           node --check data/nursing-homes/summary-data.js
@@ -46,13 +49,14 @@ jobs:
           node --check data/dialysis/summary-data.js
           node --check data/banks/summary-data.js
           node --check data/utilities/summary-data.js
-          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); b=json.load(open('data/banks/banks.json')); u=json.load(open('data/utilities/utilities.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000 and len(b['rows']) >= 4000 and len(u['rows']) >= 1300; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals,', len(d['rows']), 'dialysis,', len(b['rows']), 'banks,', len(u['rows']), 'utilities')"
+          node --check data/workplace-safety/summary-data.js
+          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); b=json.load(open('data/banks/banks.json')); u=json.load(open('data/utilities/utilities.json')); o=json.load(open('data/workplace-safety/employers.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000 and len(b['rows']) >= 4000 and len(u['rows']) >= 1300 and len(o['rows']) >= 5000; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals,', len(d['rows']), 'dialysis,', len(b['rows']), 'banks,', len(u['rows']), 'utilities,', len(o['rows']), 'employers')"
 
       - name: Commit and push if federal data changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/nursing-homes/ data/hospitals/ data/dialysis/ data/banks/ data/utilities/
+          git add data/nursing-homes/ data/hospitals/ data/dialysis/ data/banks/ data/utilities/ data/workplace-safety/
           if git diff --cached --quiet; then
             echo "No federal data changes detected."
           else

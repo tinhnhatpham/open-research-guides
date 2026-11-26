@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "workplace-safety-osha",
+    number: "Guide #12",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Labor & Workplace Safety",
+    title: "America's Workplace Injury & Amputation Reality: 377,415 Workplaces & 5,744 Employers (OSHA 2025)",
+    summary:
+      "Deduplicated audit joining 2025 OSHA Form 300A filings (377,415 workplaces, 44.9M workers, 1.35M injuries, 780 deaths) with 11 years of Federal OSHA Severe Injury Reports (105,996 events; 86,518 hospitalizations; 27,978 amputations)—exposing 3,837 duplicate OSHA submissions, massive intra-industry gaps (Southwest 10.78 & American 8.92 vs. Delta 3.45 DART; FedEx 9.86 vs. UPS 6.51), and the Meatpacking Amputation Paradox.",
+    highlights: [
+      "Interactive Employer Risk Checker + searchable database of 5,744 employers, 267 industries & 1,000 injury hotspots",
+      "NAICS-weighted peer industry benchmarks + 11-year Federal OSHA amputation & hospitalization counts",
+      "Open bulk datasets (.csv.gz) & reproducible OSHA Python pipeline with duplicate/outlier forensics"
+    ],
+    guideUrl: "./guides/workplace-safety/",
+    toolUrl: "./guides/workplace-safety/#checker",
+    toolLabel: "Check an Employer",
+    sourcesCount: "Live OSHA 300A (377k sites) + SIR (106k)"
+  },
+  {
     id: "electric-utility-divide",
     number: "Guide #11",
     flagship: true,
