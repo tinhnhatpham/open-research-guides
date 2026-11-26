@@ -1,7 +1,7 @@
 window.CMS_DIALYSIS_DATA = {
   "metadata": {
-    "generated_at_utc": "2026-11-26T20:43:44Z",
-    "runtime_sec": 2.3,
+    "generated_at_utc": "2026-11-26T20:48:16Z",
+    "runtime_sec": 1.3,
     "source": "CMS Provider Data Catalog \u2014 Dialysis Facility Compare (23ew-n7w9, clinical windows through Dec 2025)",
     "total_clinics": 7471
   },

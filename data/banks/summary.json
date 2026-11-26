@@ -1,7 +1,7 @@
 {
   "metadata": {
-    "generated_at_utc": "2026-11-26T20:43:48Z",
-    "runtime_sec": 4.4,
+    "generated_at_utc": "2026-11-26T20:48:22Z",
+    "runtime_sec": 5.0,
     "source": "FDIC BankFind API v2 (Active Institutions + FY2021 & FY2025 Year-End Call Reports)",
     "total_active_banks": 4204,
     "banks_with_fy25_call_report": 4165
