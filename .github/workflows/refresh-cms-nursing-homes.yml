@@ -1,8 +1,8 @@
-name: Monthly CMS Flagship Data Refresh (27,592 U.S. Healthcare Facilities)
+name: Monthly Flagship Open Data Refresh (31,796 U.S. Institutions)
 
 on:
   schedule:
-    # Run at 09:00 UTC on the 5th of every month (after CMS monthly PDC release)
+    # Run at 09:00 UTC on the 5th of every month
     - cron: "0 9 5 * *"
   workflow_dispatch:
 
@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  refresh-cms-flagships:
+  refresh-flagships:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,33 +22,34 @@ jobs:
           python-version: "3.11"
 
       - name: Run 5-dataset CMS nursing home pipeline (14,686 homes)
-        run: |
-          python data/nursing-homes/analyze_cms_nursing_homes.py --export-csv cms-nursing-homes-linked.csv.gz
+        run: python data/nursing-homes/analyze_cms_nursing_homes.py --export-csv cms-nursing-homes-linked.csv.gz
 
       - name: Run 4-dataset CMS hospital pipeline (5,435 hospitals)
-        run: |
-          python data/hospitals/analyze_cms_hospitals.py --export-csv cms-hospitals-linked.csv.gz
+        run: python data/hospitals/analyze_cms_hospitals.py --export-csv cms-hospitals-linked.csv.gz
 
       - name: Run CMS dialysis clinic pipeline (7,471 clinics)
-        run: |
-          python data/dialysis/analyze_cms_dialysis.py --export-csv cms-dialysis-clinics-linked.csv.gz
+        run: python data/dialysis/analyze_cms_dialysis.py --export-csv cms-dialysis-clinics-linked.csv.gz
+
+      - name: Run FDIC U.S. bank Call Report pipeline (4,204 banks)
+        run: python data/banks/analyze_fdic_banks.py --export-csv fdic-banks-2021-2025.csv.gz
 
       - name: Validate generated JS and JSON artifacts
         run: |
           node --check data/nursing-homes/summary-data.js
           node --check data/hospitals/summary-data.js
           node --check data/dialysis/summary-data.js
-          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals,', len(d['rows']), 'dialysis clinics')"
+          node --check data/banks/summary-data.js
+          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); b=json.load(open('data/banks/banks.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000 and len(b['rows']) >= 4000; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals,', len(d['rows']), 'dialysis,', len(b['rows']), 'banks')"
 
-      - name: Commit and push if CMS data changed
+      - name: Commit and push if federal data changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/nursing-homes/summary.json data/nursing-homes/summary-data.js data/nursing-homes/chains.json data/nursing-homes/facilities.json data/nursing-homes/cms-nursing-homes-linked.csv.gz data/hospitals/summary.json data/hospitals/summary-data.js data/hospitals/hospitals.json data/hospitals/cms-hospitals-linked.csv.gz data/dialysis/summary.json data/dialysis/summary-data.js data/dialysis/clinics.json data/dialysis/cms-dialysis-clinics-linked.csv.gz
+          git add data/nursing-homes/ data/hospitals/ data/dialysis/ data/banks/
           if git diff --cached --quiet; then
-            echo "No CMS data changes detected."
+            echo "No federal data changes detected."
           else
             DATE_STR=$(date -u +%Y-%m-%d)
-            git commit -m "chore(data): monthly CMS nursing home, hospital & dialysis refresh ($DATE_STR)"
+            git commit -m "chore(data): monthly federal flagship data refresh ($DATE_STR)"
             git push
           fi

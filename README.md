@@ -11,7 +11,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 
 ---
 
-## Published Guides & Interactive Tools (9)
+## Published Guides & Interactive Tools (10)
 
 1. **Guide #01 — Microplastics in Drinking Water:** [`guides/microplastics/`](./guides/microplastics/) + [Interactive Decision Calculator](./microplastics-calculator/) + [Markdown Guide](./microplastics-drinking-water-guide.md) + [1-Min Shareable Summary](./microplastics-shareable-summary.md)
 2. **Guide #02 — Global Traffic Safety (158 Countries):** [`guides/traffic-safety/`](./guides/traffic-safety/) + [Python WHO Analysis](./data/traffic-safety/analyze_who_road_deaths.py)
@@ -22,6 +22,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 7. **Guide #07 — Flood Insurance Payout Reality & Zone X Risk (5,000 OpenFEMA v3 Claims):** [`guides/flood-claims/`](./guides/flood-claims/) + [Python OpenFEMA v3 Analysis](./data/flood-claims/analyze_openfema_flood_claims.py)
 8. **Guide #08 (Flagship #02) — U.S. Hospital Charity Care, Chargemaster Markups & Financial Reality (5,435 Hospitals):** [`guides/hospitals/`](./guides/hospitals/) + [4-Dataset Python CMS Pipeline](./data/hospitals/analyze_cms_hospitals.py) + [Linked Dataset (.csv.gz)](./data/hospitals/cms-hospitals-linked.csv.gz) *(auto-refreshed monthly)*
 9. **Guide #09 (Flagship #03) — The U.S. Dialysis Duopoly & Clinic Accountability Platform (7,471 Clinics):** [`guides/dialysis/`](./guides/dialysis/) + [Python CMS Dialysis Pipeline](./data/dialysis/analyze_cms_dialysis.py) + [Linked Dataset (.csv.gz)](./data/dialysis/cms-dialysis-clinics-linked.csv.gz) *(auto-refreshed monthly)*
+10. **Guide #10 (Flagship #04) — The Great Bank Deposit Skim: All 4,204 FDIC U.S. Banks (2021–2025 Call Reports):** [`guides/banks/`](./guides/banks/) + [Python FDIC Pipeline](./data/banks/analyze_fdic_banks.py) + [Linked Dataset (.csv.gz)](./data/banks/fdic-banks-2021-2025.csv.gz) *(auto-refreshed monthly)*
 
 ---
 

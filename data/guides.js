@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "bank-deposit-skim",
+    number: "Guide #10",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Consumer Finance & Banking",
+    title: "The Great Bank Deposit Skim: All 4,204 FDIC U.S. Banks (2021–2025)",
+    summary:
+      "Zero-affiliate audit of all 4,204 active FDIC-insured U.S. banks ($18.06T domestic deposits, FY2021 & FY2025 Call Reports): exposing the $38B/yr Big 4 interest gap (1.71% weighted paid vs. 2.30% p75), $34.38B in deposit service fees (65% from 16 megabanks), 2021–2025 rate pass-through, and uninsured deposit exposure.",
+    highlights: [
+      "Interactive 'How Much Is YOUR Bank Costing You?' calculator across all 4,204 U.S. banks",
+      "Reports BOTH blended & interest-bearing deposit rates plus exact ISERCHG service fees",
+      "Open linked dataset (.csv.gz) & reproducible FDIC Call Report Python pipeline"
+    ],
+    guideUrl: "./guides/banks/",
+    toolUrl: "./guides/banks/#calculator",
+    toolLabel: "Check Your Bank",
+    sourcesCount: "Live FDIC Call Reports (4,204 banks)"
+  },
+  {
     id: "dialysis-accountability",
     number: "Guide #09",
     flagship: true,
