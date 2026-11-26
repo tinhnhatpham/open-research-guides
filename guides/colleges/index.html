@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The College Debt &amp; Parent PLUS Reality: All 6,232 U.S. Colleges (2026 Scorecard) — Open Plain-Language Research</title>
+  <meta name="description" content="Zero-affiliate analysis of all 6,232 active U.S. colleges (June 2026 U.S. Dept. of Education College Scorecard; 14.5M undergrads): exact net price for YOUR family income bracket, hidden Parent PLUS loan traps ($100k+), 914 colleges failing the High-School Earnings Test, and interactive payback calculator." />
+  <meta property="og:title" content="The College Debt & Parent PLUS Reality — All 6,232 U.S. Colleges (2026 Scorecard)" />
+  <meta property="og:description" content="Look up your real net price by family income bracket, student + Parent PLUS debt, 10-year earnings, and payback years across all 6,232 active U.S. colleges." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://open-research-guides.vercel.app/guides/colleges/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://open-research-guides.vercel.app/guides/colleges/" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    section[id] { scroll-margin-top: 68px; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+    @media (max-width: 720px) { .topbar { position: static; } }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.88rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .nav-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 28px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 18px 15px; } }
+    .eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: #134e4a; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.3rem); line-height: 1.18; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.89rem; margin-bottom: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 820px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.91rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .calc-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: 18px; align-items: start; }
+    @media (max-width: 780px) { .calc-grid { grid-template-columns: 1fr; } }
+    .field { margin-bottom: 12px; }
+    .field label { display: block; font-weight: 650; font-size: 0.86rem; margin-bottom: 5px; }
+    .field input, .field select { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.89rem; background: var(--surface); color: var(--ink); }
+    .calc-out { border: 1.5px solid var(--accent); border-radius: 12px; padding: 18px; background: #fbfdfd; }
+    .calc-nums { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+    @media (max-width: 560px) { .calc-nums { grid-template-columns: 1fr; } }
+    .c-box { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; }
+    .c-lbl { font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); font-weight: 700; }
+    .c-val { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+    .c-sub { font-size: 0.76rem; color: var(--ink-muted); margin-top: 2px; }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 12px; }
+    .controls input, .controls select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.87rem; background: var(--surface); color: var(--ink); }
+    .controls input { flex: 1; min-width: 220px; }
+    .chip-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+    .chip { border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 0.81rem; font-weight: 600; cursor: pointer; }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 460px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 840px; }
+    th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-alt); position: sticky; top: 0; font-weight: 700; z-index: 2; }
+    tbody tr.clickable { cursor: pointer; }
+    tbody tr.clickable:hover { background: #f3f9f9; }
+    tbody tr.selected { background: var(--accent-soft); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .good-txt { color: var(--good-ink); font-weight: 700; }
+    .bad-txt { color: var(--bad-ink); font-weight: 700; }
+    .muted { color: var(--ink-muted); }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-right: 4px; white-space: nowrap; }
+    .b-pub { background: var(--good-bg); color: var(--good-ink); }
+    .b-priv { background: var(--accent-soft); color: var(--accent-dark); }
+    .b-fp { background: var(--bad-bg); color: var(--bad-ink); }
+    .b-warn { background: var(--warn-bg); color: var(--warn-ink); }
+    .pager { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; font-size: 0.85rem; color: var(--ink-muted); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 13px; font-size: 0.84rem; font-weight: 650; cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+    .split-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 820px) { .split-grid { grid-template-columns: 1fr; } }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.87rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <nav class="nav-links" aria-label="Section navigation">
+        <a href="#calculator">Income-Bracket ROI Calculator</a>
+        <a href="#lookup">All-6,232 College Lookup</a>
+        <a href="#stratified">Public vs Private vs For-Profit</a>
+        <a href="#traps">Parent PLUS Traps &amp; Best ROI</a>
+        <a href="#methodology">Open CSV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Flagship Investigation #08 &bull; Guide #14 &bull; Higher Education &amp; Family Finance</span>
+      <h1>The College Debt &amp; Parent PLUS Reality: All 6,232 Active U.S. Colleges (2026 Federal Scorecard)</h1>
+      <p class="meta">
+        Zero-affiliate analysis of the <strong>June 2026 U.S. Department of Education College Scorecard</strong> covering all <strong>6,232</strong> active institutions (<strong>14.46 Million</strong> undergrads)—stratified cleanly by degree level with exact family income-bracket net prices and hidden Parent PLUS debt &bull; Updated November 2026
+      </p>
+
+      <div class="callout">
+        <strong>Why this doesn't exist anywhere else:</strong> Commercial college rankings reward prestige and ad budgets, while the federal Scorecard portal only displays 10 cards per page and hides <strong>Parent PLUS debt</strong> inside buried tabs. Here you can filter all <strong>6,232 U.S. colleges</strong> by <strong>your exact family income bracket</strong>, compare Student + Parent PLUS debt against 10-year earnings, and spot the <strong>914 colleges</strong> where most students earn less than a high school graduate a decade later.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Failing High-School Earnings Test</div>
+          <div class="kpi-val bad" id="kpi-fail">914 schools</div>
+          <div class="kpi-sub" id="kpi-fail-sub">781 are For-Profit (85.4%) &mdash; &lt;50% earn above HS grad at 10 yrs</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Public vs. Private 4-Yr Earnings</div>
+          <div class="kpi-val good" id="kpi-pub">$54.7k vs $54.1k</div>
+          <div class="kpi-sub">Public 4-yr costs $14.6k/yr net vs Private $22.6k/yr</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Hidden Parent PLUS Debt (&ge;$40k)</div>
+          <div class="kpi-val bad" id="kpi-plus">392 schools</div>
+          <div class="kpi-sub">Median Private 4-yr Parent PLUS: $31,346 (peaks &gt;$108k!)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">For-Profit 4-Yr Trap</div>
+          <div class="kpi-val bad" id="kpi-fp">$30.7k/yr net</div>
+          <div class="kpi-sub">33.7% grad rate &bull; $40.1k earnings &bull; 10% repay progress</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. Income-Bracket ROI Calculator -->
+    <section class="card" id="calculator">
+      <h2>1. Interactive Tool: What Will THIS College Actually Cost YOUR Family &amp; Pay Back?</h2>
+      <p style="color:var(--ink-muted); font-size:0.91rem; margin-bottom:14px;">
+        Choose your family income bracket and click <em>any</em> of the 6,232 colleges in Section 2 (or pick a sample below) to see your actual net price after grants/scholarships, Student + Parent PLUS median debt, 10-year median earnings, and estimated years to recover your net cost.
+      </p>
+      <div class="calc-grid">
+        <div>
+          <div class="field">
+            <label for="c-inc">Your Family Annual Income Bracket</label>
+            <select id="c-inc">
+              <option value="npt1">$0 – $30,000 / year</option>
+              <option value="npt2">$30,001 – $48,000 / year</option>
+              <option value="npt3" selected>$48,001 – $75,000 / year</option>
+              <option value="npt4">$75,001 – $110,000 / year</option>
+              <option value="npt5">$110,001+ / year</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="c-school">Featured Sample Colleges (or click any of the 6,232 rows below)</label>
+            <select id="c-school"></select>
+          </div>
+          <p class="muted" style="font-size:0.81rem;">
+            Net price = official federal Title IV average annual cost (tuition + fees + housing/food minus grant/scholarship aid) for your income bracket.
+          </p>
+        </div>
+
+        <div class="calc-out" id="calc-out" aria-live="polite">
+          <div style="font-size:0.84rem; color:var(--ink-muted);" id="co-hdr">Loading college data...</div>
+          <div class="calc-nums">
+            <div class="c-box">
+              <div class="c-lbl">Your Bracket Net Price</div>
+              <div class="c-val" id="co-npt">--</div>
+              <div class="c-sub" id="co-npt-sub">--</div>
+            </div>
+            <div class="c-box">
+              <div class="c-lbl">10-Yr Median Earnings</div>
+              <div class="c-val good-txt" id="co-earn">--</div>
+              <div class="c-sub" id="co-earn-sub">--</div>
+            </div>
+            <div class="c-box">
+              <div class="c-lbl">Student + Parent PLUS Debt</div>
+              <div class="c-val" id="co-debt">--</div>
+              <div class="c-sub" id="co-debt-sub">--</div>
+            </div>
+          </div>
+          <div style="font-size:0.86rem; color:var(--ink-muted);" id="co-verdict">--</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. Search All 6,232 Active U.S. Colleges -->
+    <section class="card" id="lookup">
+      <h2>2. Search All 6,232 Active U.S. Colleges &amp; Trade Schools</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:12px;">
+        Click any row to load its income-bracket cost breakdown into the calculator above. Notice the direct link to each school's official federal Scorecard profile.
+      </p>
+
+      <div class="controls">
+        <input type="search" id="q" placeholder="Search college name, city, or state (e.g. Georgia Tech, Baruch, Berklee, Phoenix)..." aria-label="Search U.S. colleges" />
+        <select id="f-state" aria-label="Filter by state"><option value="">All States (52)</option></select>
+        <select id="f-ctrl" aria-label="Filter by ownership">
+          <option value="">All Ownerships</option>
+          <option value="Public">Public</option>
+          <option value="Private Non-Profit">Private Non-Profit</option>
+          <option value="For-Profit">For-Profit</option>
+        </select>
+        <select id="f-deg" aria-label="Filter by degree level">
+          <option value="">All Degree Levels</option>
+          <option value="Bachelor's">4-Year Bachelor's</option>
+          <option value="Associate's">2-Year Associate's</option>
+          <option value="Certificate">Certificate / Trade</option>
+          <option value="Graduate-Only">Graduate-Only</option>
+        </select>
+        <select id="f-sort" aria-label="Sort colleges">
+          <option value="ugds_desc">Sort: Largest Enrollment</option>
+          <option value="earn_desc">Sort: Highest 10-Yr Earnings</option>
+          <option value="payback_asc">Sort: Fastest Payback (Best ROI)</option>
+          <option value="plus_desc">Sort: Highest Parent PLUS Debt</option>
+          <option value="gt_asc">Sort: Lowest % Earning &gt; HS Grad</option>
+          <option value="npt_asc">Sort: Lowest Net Price</option>
+          <option value="dte_desc">Sort: Worst Debt-to-Earnings %</option>
+        </select>
+      </div>
+
+      <div class="chip-bar">
+        <button type="button" class="chip active" data-preset="all">All 6,232 Schools</button>
+        <button type="button" class="chip" data-preset="pub4">Public 4-Yr (593)</button>
+        <button type="button" class="chip" data-preset="bestroi">Best ROI (&le;3 yr payback, &ge;60% grad)</button>
+        <button type="button" class="chip" data-preset="failhs">Failing HS Test (&lt;50% &gt; HS)</button>
+        <button type="button" class="chip" data-preset="plustrap">Parent PLUS &ge;$40k (392)</button>
+        <button type="button" class="chip" data-preset="fp4">For-Profit 4-Yr (144)</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Institution</th>
+              <th>Type &amp; Level</th>
+              <th class="num">Undergrads</th>
+              <th class="num">Net Price/yr</th>
+              <th class="num">Student Debt</th>
+              <th class="num">Parent PLUS</th>
+              <th class="num">10-Yr Earn</th>
+              <th class="num">&gt;HS Grad</th>
+              <th class="num">Grad %</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body">
+            <tr><td colspan="9" class="muted">Loading all 6,232 U.S. colleges...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <span id="pg-info">--</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn" id="pg-prev">&larr; Prev</button>
+          <button type="button" class="btn" id="pg-next">Next &rarr;</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Stratified Ownership Comparison -->
+    <section class="card" id="stratified">
+      <h2>3. Apples-to-Apples: Public vs. Private Non-Profit vs. For-Profit (Stratified by Degree)</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:12px;">
+        Mixing 9-month trade certificates with 4-year universities distorts completion and debt averages. Stratifying cleanly to <strong>4-Year Bachelor's</strong> and <strong>2-Year Associate's</strong> reveals the stark truth: Public 4-year universities beat Private Non-Profits on median 10-year earnings while costing <strong>$7,938/yr less</strong> and carrying <strong>$12,660 less Parent PLUS debt</strong>.
+      </p>
+      <div class="table-wrap" style="max-height:none;">
+        <table style="min-width:820px;">
+          <thead>
+            <tr>
+              <th>Sector &amp; Degree Level</th>
+              <th class="num">Schools</th>
+              <th class="num">Undergrads</th>
+              <th class="num">Med Net Price</th>
+              <th class="num">Student Debt</th>
+              <th class="num">Parent PLUS</th>
+              <th class="num">10-Yr Earn</th>
+              <th class="num">Grad %</th>
+              <th class="num">2-Yr Repay</th>
+            </tr>
+          </thead>
+          <tbody id="strat-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Parent PLUS Debt Traps vs Best-Value Public Universities -->
+    <section class="card" id="traps">
+      <h2>4. Two Extremes: Highest Parent PLUS Debt Traps vs. Fastest-Payback Public Universities</h2>
+      <div class="split-grid">
+        <div>
+          <h3>Top 12 Parent PLUS Debt Traps (4-Yr, &ge;1,000 UGDS)</h3>
+          <div class="table-wrap" style="max-height:420px;">
+            <table style="min-width:440px;">
+              <thead>
+                <tr><th>College</th><th class="num">Parent PLUS</th><th class="num">Student Debt</th><th class="num">10-Yr Earn</th></tr>
+              </thead>
+              <tbody id="plus-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div>
+          <h3>Top 12 Best-Value Public 4-Yr Universities (&ge;60% Grad)</h3>
+          <div class="table-wrap" style="max-height:420px;">
+            <table style="min-width:440px;">
+              <thead>
+                <tr><th>University</th><th class="num">Net/yr</th><th class="num">10-Yr Earn</th><th class="num">Payback</th></tr>
+              </thead>
+              <tbody id="roi-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Caveats & Open Data -->
+    <section class="card" id="methodology">
+      <h2>5. Honest Methodological Caveats &amp; Open Dataset Downloads</h2>
+      <div class="callout warn">
+        <strong>Important Caveats (Read Before Deciding):</strong>
+        <ul style="margin:6px 0 0; padding-left:18px;">
+          <li><strong>Major Matters Huge:</strong> Institution-wide earnings reflect what students major in (engineering/nursing-heavy schools like Georgia Tech post $100k+ medians; arts/music schools post lower early-career salaries). Always check program-level earnings for your intended major on the <a href="https://collegescorecard.ed.gov/" target="_blank" rel="noopener">official College Scorecard</a>.</li>
+          <li><strong>Parent PLUS Debt Applies Only to PLUS Borrowers:</strong> Federal Parent PLUS medians reflect families who <em>took out</em> Parent PLUS loans—not every student on campus—and carry uncapped borrowing limits up to the full cost of attendance, making them the biggest hidden family-retirement debt trap in U.S. higher education.</li>
+          <li><strong>Title IV Cohort Scope:</strong> Scorecard earnings (`MD_EARN_WNE_P10`) cover former federal financial-aid recipients who are working and not enrolled 10 years after entry, and <code>GT_THRESHOLD_P10</code> measures the share earning more than a typical high school graduate (~$32k).</li>
+        </ul>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 18px;">
+        <a class="btn btn-primary" href="../../data/colleges/college-scorecard-2026.csv.gz" download>Download All 6,232 Colleges (.csv.gz)</a>
+        <a class="btn" href="../../data/colleges/summary.json" target="_blank" rel="noopener">View summary.json</a>
+        <a class="btn" href="https://github.com/tinhnhatpham/open-research-guides/blob/main/data/colleges/analyze_college_scorecard.py" target="_blank" rel="noopener">Reproducible Python Pipeline (GitHub)</a>
+      </div>
+
+      <ul class="sources">
+        <li><strong>U.S. Department of Education:</strong> <a href="https://collegescorecard.ed.gov/data/" target="_blank" rel="noopener">College Scorecard Institution-Level Data (June 2026 Release)</a>.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research Guides &bull; Zero ads, zero affiliates, open federal data</span>
+      <span><a href="../../" style="color:var(--accent-dark); text-decoration:none; font-weight:600;">All 14 Research Guides &rarr;</a></span>
+    </footer>
+  </main>
+
+  <script src="../../data/colleges/summary-data.js"></script>
+  <script>
+  (function () {
+    const S = window.COLLEGE_SUMMARY;
+    if (!S) return;
+
+    const fmtN = (n) => n == null ? "—" : Number(n).toLocaleString("en-US");
+    const fmtD = (n) => n == null ? "—" : "$" + Math.round(n).toLocaleString("en-US");
+    const fmtP = (n) => n == null ? "—" : Number(n).toFixed(1) + "%";
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    function ctrlBadge(c) {
+      if (c === "Public") return '<span class="badge b-pub">Public</span>';
+      if (c === "Private Non-Profit") return '<span class="badge b-priv">Private NP</span>';
+      return '<span class="badge b-fp">For-Profit</span>';
+    }
+
+    // Hydrate Hero KPIs
+    const N = S.national;
+    document.getElementById("kpi-fail").textContent = `${fmtN(N.fail_hs_total)} schools`;
+    document.getElementById("kpi-fail-sub").textContent = `${fmtN(N.fail_hs_forprofit)} are For-Profit (${N.fail_hs_forprofit_pct}%) — <50% earn above HS grad at 10 yrs`;
+    document.getElementById("kpi-plus").textContent = `${fmtN(N.plus_over_40k_schools)} schools`;
+
+    // Render Stratified Table
+    const stratRows = [...S.by_ctrl_bach, ...S.by_ctrl_assoc];
+    document.getElementById("strat-body").innerHTML = stratRows.map(r => `
+      <tr>
+        <td><strong>${esc(r.label)}</strong></td>
+        <td class="num">${fmtN(r.schools)}</td>
+        <td class="num">${(r.ugds / 1e6).toFixed(2)}M</td>
+        <td class="num">${fmtD(r.med_npt)}</td>
+        <td class="num">${fmtD(r.med_debt)}</td>
+        <td class="num ${(r.med_plus_debt || 0) >= 25000 ? 'bad-txt' : ''}">${fmtD(r.med_plus_debt)}</td>
+        <td class="num"><strong>${fmtD(r.med_earn10)}</strong></td>
+        <td class="num">${fmtP(r.med_grad_pct)}</td>
+        <td class="num ${(r.med_makeprog_pct || 0) <= 12 ? 'bad-txt' : ''}">${fmtP(r.med_makeprog_pct)}</td>
+      </tr>
+    `).join("");
+
+    // Render Parent PLUS & Best ROI tables
+    document.getElementById("plus-body").innerHTML = S.top_plus_traps.slice(0, 12).map(r => `
+      <tr>
+        <td><strong>${esc(r.name)}</strong> <span class="muted">(${esc(r.state)})</span></td>
+        <td class="num bad-txt">${fmtD(r.plus_debt)}</td>
+        <td class="num">${fmtD(r.debt)}</td>
+        <td class="num">${fmtD(r.earn10)}</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("roi-body").innerHTML = S.best_roi_public.slice(0, 12).map(r => `
+      <tr>
+        <td><strong>${esc(r.name)}</strong> <span class="muted">(${esc(r.state)})</span></td>
+        <td class="num good-txt">${fmtD(r.npt)}</td>
+        <td class="num"><strong>${fmtD(r.earn10)}</strong></td>
+        <td class="num good-txt">${r.payback_yrs} yrs</td>
+      </tr>
+    `).join("");
+
+    // State filter
+    const fState = document.getElementById("f-state");
+    S.by_state.forEach(st => {
+      const o = document.createElement("option");
+      o.value = st.state; o.textContent = `${st.state} — ${st.name}`;
+      fState.appendChild(o);
+    });
+
+    // Load all 6,232 colleges
+    let C = {}, ROWS = [], FILTERED = [], PAGE = 1, PAGE_SIZE = 25, PRESET = "all", SEL = null;
+    const cInc = document.getElementById("c-inc");
+    const cSch = document.getElementById("c-school");
+
+    function renderCalc(row) {
+      if (!row) return;
+      SEL = row;
+      const incKey = cInc.value;
+      const brNpt = row[C[incKey]] != null ? row[C[incKey]] : row[C.npt];
+      const yrs = row[C.deg] === "Bachelor's" ? 4 : (row[C.deg] === "Associate's" ? 2 : 1);
+      const totCost = brNpt != null ? brNpt * yrs : null;
+      const earn = row[C.earn10];
+      const debt = row[C.debt];
+      const plus = row[C.plus_debt];
+      const pb = (totCost && earn && earn > 32000) ? (totCost / (earn - 32000)) : null;
+
+      document.getElementById("co-hdr").innerHTML =
+        `<strong style="color:var(--ink); font-size:0.98rem;">${esc(row[C.name])}</strong> (${esc(row[C.city])}, ${esc(row[C.state])}) ${ctrlBadge(row[C.ctrl])} <span class="muted">${esc(row[C.deg])} &bull; ${fmtN(row[C.ugds])} undergrads</span>`;
+
+      document.getElementById("co-npt").textContent = brNpt != null ? `${fmtD(brNpt)} / yr` : "N/A";
+      document.getElementById("co-npt-sub").textContent = totCost != null ? `Est. ${yrs}-yr net total: ${fmtD(totCost)} (sticker: ${fmtD(row[C.cost])}/yr)` : "Income-bracket net price suppressed";
+
+      document.getElementById("co-earn").textContent = fmtD(earn);
+      document.getElementById("co-earn-sub").textContent = row[C.gt10_pct] != null ? `${row[C.gt10_pct]}% earn more than HS grad at 10 yrs` : "10-yr threshold not reported";
+
+      const comb = (debt || 0) + (plus || 0);
+      const dEl = document.getElementById("co-debt");
+      dEl.textContent = debt != null ? fmtD(debt) : "N/A";
+      dEl.className = "c-val " + ((plus || 0) >= 40000 ? "bad-txt" : "");
+      document.getElementById("co-debt-sub").textContent = plus != null ? `+ ${fmtD(plus)} Parent PLUS if parents borrow (combined ${fmtD(comb)})` : "Parent PLUS median not reported/low volume";
+
+      let verdict = `<strong>Graduation Rate:</strong> ${fmtP(row[C.grad_pct])} &bull; <strong>2-Yr Loan Principal Progress:</strong> ${fmtP(row[C.makeprog_pct])}`;
+      if (pb != null) verdict += ` &bull; <strong>Est. Payback at Your Income Bracket:</strong> <strong class="${pb <= 3 ? 'good-txt' : pb >= 8 ? 'bad-txt' : ''}">${pb.toFixed(1)} years</strong>`;
+      verdict += ` &bull; <a href="https://collegescorecard.ed.gov/school/?${row[C.unitid]}" target="_blank" rel="noopener" style="color:var(--accent-dark); font-weight:650;">Official Scorecard Page &rarr;</a>`;
+      document.getElementById("co-verdict").innerHTML = verdict;
+    }
+
+    function applyFilters() {
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      const st = fState.value;
+      const ctrl = document.getElementById("f-ctrl").value;
+      const deg = document.getElementById("f-deg").value;
+      const sort = document.getElementById("f-sort").value;
+
+      FILTERED = ROWS.filter(r => {
+        if (st && r[C.state] !== st) return false;
+        if (ctrl && r[C.ctrl] !== ctrl) return false;
+        if (deg && r[C.deg] !== deg) return false;
+        if (PRESET === "pub4" && !(r[C.ctrl] === "Public" && r[C.deg] === "Bachelor's")) return false;
+        if (PRESET === "bestroi" && !(r[C.payback_yrs] != null && r[C.payback_yrs] <= 3.0 && (r[C.grad_pct] || 0) >= 60)) return false;
+        if (PRESET === "failhs" && !(r[C.gt10_pct] != null && r[C.gt10_pct] < 50.0)) return false;
+        if (PRESET === "plustrap" && !(r[C.plus_debt] != null && r[C.plus_debt] >= 40000)) return false;
+        if (PRESET === "fp4" && !(r[C.ctrl] === "For-Profit" && r[C.deg] === "Bachelor's")) return false;
+        if (q && !(r[C.name] + " " + r[C.city] + " " + r[C.state]).toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      const desc = (k) => (a, b) => (b[k] == null ? -1e9 : b[k]) - (a[k] == null ? -1e9 : a[k]);
+      const asc = (k) => (a, b) => (a[k] == null ? 1e9 : a[k]) - (b[k] == null ? 1e9 : b[k]);
+      if (sort === "ugds_desc") FILTERED.sort(desc(C.ugds));
+      else if (sort === "earn_desc") FILTERED.sort(desc(C.earn10));
+      else if (sort === "payback_asc") FILTERED.sort(asc(C.payback_yrs));
+      else if (sort === "plus_desc") FILTERED.sort(desc(C.plus_debt));
+      else if (sort === "gt_asc") FILTERED.sort(asc(C.gt10_pct));
+      else if (sort === "npt_asc") FILTERED.sort(asc(C.npt));
+      else if (sort === "dte_desc") FILTERED.sort(desc(C.dte_pct));
+
+      PAGE = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const total = FILTERED.length;
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (PAGE > pages) PAGE = pages;
+      const start = (PAGE - 1) * PAGE_SIZE;
+      const slice = FILTERED.slice(start, start + PAGE_SIZE);
+      document.getElementById("pg-info").textContent =
+        total ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${fmtN(total)} institutions (Page ${PAGE}/${pages})` : "No matching schools.";
+      document.getElementById("pg-prev").disabled = PAGE <= 1;
+      document.getElementById("pg-next").disabled = PAGE >= pages;
+
+      const tb = document.getElementById("tbl-body");
+      if (!slice.length) {
+        tb.innerHTML = '<tr><td colspan="9" class="muted">No matching colleges found.</td></tr>';
+        return;
+      }
+      tb.innerHTML = slice.map((r, i) => `
+        <tr class="clickable ${SEL && SEL[C.unitid] === r[C.unitid] ? 'selected' : ''}" data-idx="${start + i}">
+          <td><strong>${esc(r[C.name])}</strong><div class="muted" style="font-size:0.75rem;">${esc(r[C.city])}, ${esc(r[C.state])}</div></td>
+          <td>${ctrlBadge(r[C.ctrl])}<div class="muted" style="font-size:0.74rem;">${esc(r[C.deg])}</div></td>
+          <td class="num">${fmtN(r[C.ugds])}</td>
+          <td class="num">${fmtD(r[C.npt])}</td>
+          <td class="num">${fmtD(r[C.debt])}</td>
+          <td class="num ${(r[C.plus_debt] || 0) >= 40000 ? 'bad-txt' : ''}">${fmtD(r[C.plus_debt])}</td>
+          <td class="num"><strong>${fmtD(r[C.earn10])}</strong></td>
+          <td class="num ${r[C.gt10_pct] != null && r[C.gt10_pct] < 50 ? 'bad-txt' : (r[C.gt10_pct] >= 80 ? 'good-txt' : '')}">${fmtP(r[C.gt10_pct])}</td>
+          <td class="num">${fmtP(r[C.grad_pct])}</td>
+        </tr>
+      `).join("");
+    }
+
+    document.getElementById("tbl-body").addEventListener("click", (e) => {
+      const tr = e.target.closest("tr[data-idx]");
+      if (!tr) return;
+      renderCalc(FILTERED[Number(tr.dataset.idx)]);
+      renderTable();
+      document.getElementById("calculator").scrollIntoView({ behavior: "smooth" });
+    });
+
+    ["q", "f-state", "f-ctrl", "f-deg", "f-sort"].forEach(id => {
+      document.getElementById(id).addEventListener(id === "q" ? "input" : "change", applyFilters);
+    });
+    document.querySelectorAll(".chip").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".chip").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        PRESET = btn.dataset.preset;
+        applyFilters();
+      });
+    });
+    document.getElementById("pg-prev").addEventListener("click", () => { if (PAGE > 1) { PAGE--; renderTable(); } });
+    document.getElementById("pg-next").addEventListener("click", () => { PAGE++; renderTable(); });
+    cInc.addEventListener("change", () => renderCalc(SEL));
+    cSch.addEventListener("change", () => {
+      const idx = Number(cSch.value);
+      if (!isNaN(idx) && ROWS[idx]) renderCalc(ROWS[idx]);
+    });
+
+    fetch("../../data/colleges/colleges.json")
+      .then(r => r.json())
+      .then(d => {
+        d.cols.forEach((c, i) => { C[c] = i; });
+        ROWS = d.rows;
+        const featured = ["Georgia Institute of Technology", "University of Florida", "CUNY Bernard M Baruch", "Savannah College of Art and Design", "Berklee College of Music", "New York University", "University of Southern California", "Arizona State University", "University of Phoenix", "Purdue University", "Ohio State University", "University of Texas at Austin"];
+        const picks = [];
+        featured.forEach(fn => {
+          const idx = ROWS.findIndex(r => r[C.name].includes(fn));
+          if (idx >= 0 && !picks.includes(idx)) picks.push(idx);
+        });
+        picks.forEach(idx => {
+          const r = ROWS[idx];
+          const o = document.createElement("option");
+          o.value = idx;
+          o.textContent = `${r[C.name]} (${r[C.state]} — Net ${fmtD(r[C.npt])}/yr)`;
+          cSch.appendChild(o);
+        });
+        const initIdx = picks[0] != null ? picks[0] : 0;
+        cSch.value = initIdx;
+        renderCalc(ROWS[initIdx]);
+        applyFilters();
+      })
+      .catch(() => {
+        document.getElementById("tbl-body").innerHTML = '<tr><td colspan="9" class="bad-txt">Failed to load colleges.json.</td></tr>';
+      });
+  })();
+  </script>
+</body>
+</html>

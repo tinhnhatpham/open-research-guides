@@ -173,7 +173,7 @@ def discover_latest_urls() -> tuple[str, str]:
     ita_url, sir_url = DEFAULT_ITA_URL, DEFAULT_SIR_URL
     try:
         html = subprocess.check_output(
-            [CURL_BIN, "-sL", "-A", UA, ITA_PAGE], text=True, errors="replace"
+            [CURL_BIN, "-sL", "-A", UA, "-H", "Accept: text/html,*/*", ITA_PAGE], text=True, errors="replace"
         )
         m = re.search(r'href=["\']([^"\']*ITA_300A_Summary_Data_202[5-9][^"\']*\.(?:csv|zip))["\']', html, re.I)
         if m:
@@ -183,9 +183,9 @@ def discover_latest_urls() -> tuple[str, str]:
         pass
     try:
         html = subprocess.check_output(
-            [CURL_BIN, "-sL", "-A", UA, SIR_PAGE], text=True, errors="replace"
+            [CURL_BIN, "-sL", "-A", UA, "-H", "Accept: text/html,*/*", SIR_PAGE], text=True, errors="replace"
         )
-        m = re.search(r'href=["\']([^"\']*January2015to[^"\']*\.zip)["\']', html, re.I)
+        m = re.search(r'href=["\']([^"\']*sites/default/files/[^"\']*\.zip)["\']', html, re.I)
         if m:
             href = m.group(1)
             sir_url = href if href.startswith("http") else "https://www.osha.gov" + href
@@ -195,21 +195,31 @@ def discover_latest_urls() -> tuple[str, str]:
 
 
 def fetch_file(url: str, filename: str, referer: str, min_bytes: int = 1_000_000) -> Path:
+    import time
     CACHE_DIR.mkdir(parents=True, exist_ok=True)
     dst = CACHE_DIR / filename
     if dst.exists() and dst.stat().st_size >= min_bytes:
         return dst
-    tmp = dst.with_suffix(dst.suffix + ".tmp")
-    code = subprocess.check_output(
-        [CURL_BIN, "-sL", "-A", UA, "-H", f"Referer: {referer}", "-w", "%{http_code}", "-o", str(tmp), url],
-        text=True,
-    ).strip()
-    if code != "200" or not tmp.exists() or tmp.stat().st_size < min_bytes:
+    last_code = "000"
+    for attempt in range(1, 4):
+        tmp = dst.with_suffix(dst.suffix + ".tmp")
+        last_code = subprocess.check_output(
+            [
+                CURL_BIN, "-sL", "--compressed", "-A", UA,
+                "-H", f"Referer: {referer}",
+                "-H", "Accept: */*",
+                "-H", "Accept-Language: en-US,en;q=0.9",
+                "-w", "%{http_code}", "-o", str(tmp), url,
+            ],
+            text=True,
+        ).strip()
+        if last_code == "200" and tmp.exists() and tmp.stat().st_size >= min_bytes:
+            tmp.replace(dst)
+            print(f"Downloaded {filename} ({dst.stat().st_size:,} bytes) from {url}")
+            return dst
         tmp.unlink(missing_ok=True)
-        raise RuntimeError(f"Failed downloading {url}: HTTP {code}")
-    tmp.replace(dst)
-    print(f"Downloaded {filename} ({dst.stat().st_size:,} bytes) from {url}")
-    return dst
+        time.sleep(2 * attempt)
+    raise RuntimeError(f"Failed downloading {url}: HTTP {last_code}")
 
 
 def main() -> None:

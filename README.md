@@ -6,12 +6,12 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 
 ### Project Principles
 - **Step 0 Prior-Art Check:** Before building, we check what already exists and target real gaps where ordinary people face clunky government portals, paywalls, or SEO/affiliate spam.
-- **Primary Data & Open Code:** Every data-driven guide includes the reproducible Python script pulling directly from official open APIs and bulk filings (WHO, CMS, FDIC, EIA, OSHA, NHTSA, openFDA, OpenFEMA, World Bank).
+- **Primary Data & Open Code:** Every data-driven guide includes the reproducible Python script pulling directly from official open APIs and bulk filings (WHO, CMS, FDIC, EIA, OSHA, NHTSA, Dept. of Ed, openFDA, OpenFEMA, World Bank).
 - **Honest About Traps & Uncertainty:** Every guide explicitly flags data artifacts, confounders, and what science or agencies still haven't settled.
 
 ---
 
-## Published Guides & Interactive Tools (13)
+## Published Guides & Interactive Tools (14)
 
 1. **Guide #01 — Microplastics in Drinking Water:** [`guides/microplastics/`](./guides/microplastics/) + [Interactive Decision Calculator](./microplastics-calculator/) + [Markdown Guide](./microplastics-drinking-water-guide.md) + [1-Min Shareable Summary](./microplastics-shareable-summary.md)
 2. **Guide #02 — Global Traffic Safety (158 Countries):** [`guides/traffic-safety/`](./guides/traffic-safety/) + [Python WHO Analysis](./data/traffic-safety/analyze_who_road_deaths.py)
@@ -26,6 +26,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 11. **Guide #11 (Flagship #05) — The Power Bill Divide: All 1,390 U.S. Electric Utilities (2020–2025 EIA Form 861):** [`guides/utilities/`](./guides/utilities/) + [Python EIA-861 Pipeline](./data/utilities/analyze_eia_utilities.py) + [Linked Dataset (.csv.gz)](./data/utilities/eia-861-utilities-2020-2025.csv.gz) *(auto-refreshed monthly)*
 12. **Guide #12 (Flagship #06) — America's Workplace Injury & Amputation Reality (377,415 OSHA Workplaces & 5,744 Employers):** [`guides/workplace-safety/`](./guides/workplace-safety/) + [Python OSHA Pipeline](./data/workplace-safety/analyze_osha_safety.py) + [Linked Dataset (.csv.gz)](./data/workplace-safety/osha-employers-2025.csv.gz) *(auto-refreshed monthly)*
 13. **Guide #13 (Flagship #07) — Used-Car & Automaker Safety Reality (4,056 Models, 13,785 NHTSA Recalls & 438,178 Complaints):** [`guides/auto-safety/`](./guides/auto-safety/) + [Python NHTSA Pipeline](./data/auto-safety/analyze_nhtsa_safety.py) + [Linked Dataset (.csv.gz)](./data/auto-safety/nhtsa-models-2010-2026.csv.gz) *(auto-refreshed monthly)*
+14. **Guide #14 (Flagship #08) — The College Debt & Parent PLUS Reality (All 6,232 Active U.S. Colleges, 2026 Scorecard):** [`guides/colleges/`](./guides/colleges/) + [Python Scorecard Pipeline](./data/colleges/analyze_college_scorecard.py) + [Linked Dataset (.csv.gz)](./data/colleges/college-scorecard-2026.csv.gz) *(auto-refreshed monthly)*
 
 ---
 

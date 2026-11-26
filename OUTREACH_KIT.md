@@ -169,3 +169,18 @@
 > - **Ford leads total recall volume by >2×:** 657 vehicle recall campaigns (2016–2026) including 77 ODI-forced probes and 18 Do-Not-Drive advisories (vs. Chevy 270, Toyota 203, Honda 180).
 >
 > Compare any car's MY 2010–2026 years side-by-side (zero ads/affiliates) + open `.csv.gz`: https://open-research-guides.vercel.app/guides/auto-safety/
+
+### E. The College Debt & Parent PLUS Reality — All 6,232 Active U.S. Colleges (`r/ApplyingToCollege`, `r/StudentLoans`, `r/personalfinance`)
+
+**Title:**
+`[OC] I analyzed the June 2026 U.S. College Scorecard across all 6,232 active colleges: 914 leave most students earning less than a HS grad (85% For-Profit), and 392 carry ≥$40k in hidden Parent PLUS debt`
+
+**Body:**
+> Most college rankings reward prestige and ad budgets, while the official federal Scorecard hides Parent PLUS loan medians inside buried tabs and only shows 10 schools per page. I built a free, zero-affiliate lookup + income-bracket ROI calculator covering all **6,232 active U.S. colleges (14.46M undergrads)** from the June 2026 Dept. of Education release.
+>
+> Key stratified 4-year findings:
+> - **Public vs. Private Non-Profit 4-Year:** Public universities (`$14,647/yr` median net price) actually beat Private Non-Profits (`$22,585/yr`) on median 10-year earnings (`$54,670` vs `$54,056`) while carrying `$12,660` less Parent PLUS debt (`$18.7k` vs `$31.3k`).
+> - **The Parent PLUS Trap:** 392 schools carry `≥$40k` in median Parent PLUS debt—peaking above `$100k` at Ringling (`$114k`), SCAD (`$109k`), Berklee (`$108k`), Spelman (`$106k`), and Pratt (`$100k`) *on top of* student loans.
+> - **For-Profit 4-Year Reality:** `$30,716/yr` median net price (2.1× Public), `33.7%` graduation rate, `$40,092` 10-yr earnings, and only `10%` making 2-year loan principal progress. Nationwide, 781 of the 914 schools failing the High-School Earnings Test (`85.4%`) are For-Profit.
+>
+> Income-bracket ROI calculator + all 6,232 colleges + `.csv.gz`: https://open-research-guides.vercel.app/guides/colleges/

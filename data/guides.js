@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "college-debt-roi",
+    number: "Guide #14",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Higher Education & Family Finance",
+    title: "The College Debt & Parent PLUS Reality: All 6,232 Active U.S. Colleges (2026 Scorecard)",
+    summary:
+      "Zero-affiliate audit of the June 2026 U.S. Dept. of Education College Scorecard (6,232 active colleges, 14.46M undergrads): exposing 914 schools failing the High-School Earnings Test (85.4% For-Profit), why Public 4-year colleges beat Private Non-Profits on median 10-year earnings ($54.7k vs $54.1k) at $7,938/yr less net price, and 392 schools with ≥$40k Parent PLUS debt traps (peaking >$108k).",
+    highlights: [
+      "Interactive Income-Bracket ROI & Payback Calculator across all 5 federal family income brackets",
+      "Instant searchable lookup of all 6,232 U.S. colleges with Student + Parent PLUS debt & official Scorecard links",
+      "Stratified 4-Yr vs 2-Yr comparison + open .csv.gz & reproducible College Scorecard Python pipeline"
+    ],
+    guideUrl: "./guides/colleges/",
+    toolUrl: "./guides/colleges/#calculator",
+    toolLabel: "Check College ROI",
+    sourcesCount: "Live Dept. of Ed Scorecard (6,232 colleges)"
+  },
+  {
     id: "auto-safety-nhtsa",
     number: "Guide #13",
     flagship: true,
