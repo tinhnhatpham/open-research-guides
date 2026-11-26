@@ -1,4 +1,4 @@
-name: Monthly 11-Flagship Open Data Refresh (495,000+ U.S. Institutions)
+name: Monthly 12-Flagship Open Data Refresh (500,000+ U.S. Institutions)
 
 on:
   schedule:
@@ -57,6 +57,9 @@ jobs:
       - name: Run USACE National Inventory of Dams pipeline (62,569 dams)
         run: python data/dams/analyze_nid_dams.py
 
+      - name: Run NCUA 5300 Credit Union Call Report pipeline (4,363 credit unions)
+        run: python data/credit-unions/analyze_ncua_credit_unions.py
+
       - name: Validate generated JS and JSON artifacts
         run: |
           node --check data/nursing-homes/summary-data.js
@@ -70,13 +73,14 @@ jobs:
           node --check data/weather-risk/summary-data.js
           node --check data/school-finances/summary-data.js
           node --check data/dams/summary-data.js
-          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); b=json.load(open('data/banks/banks.json')); u=json.load(open('data/utilities/utilities.json')); o=json.load(open('data/workplace-safety/employers.json')); a=json.load(open('data/auto-safety/models.json')); c=json.load(open('data/colleges/colleges.json')); w=json.load(open('data/weather-risk/counties.json')); s=json.load(open('data/school-finances/districts.json')); dm=json.load(open('data/dams/high-hazard-dams.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000 and len(b['rows']) >= 4000 and len(u['rows']) >= 1300 and len(o['rows']) >= 5000 and len(a['rows']) >= 3500 and len(c['rows']) >= 6000 and len(w['rows']) >= 3000 and len(s['rows']) >= 13000 and len(dm['rows']) >= 13000; print('Verified all 11 flagships:', len(dm['rows']), 'high-hazard dams')"
+          node --check data/credit-unions/summary-data.js
+          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); b=json.load(open('data/banks/banks.json')); u=json.load(open('data/utilities/utilities.json')); o=json.load(open('data/workplace-safety/employers.json')); a=json.load(open('data/auto-safety/models.json')); c=json.load(open('data/colleges/colleges.json')); w=json.load(open('data/weather-risk/counties.json')); s=json.load(open('data/school-finances/districts.json')); dm=json.load(open('data/dams/high-hazard-dams.json')); cu=json.load(open('data/credit-unions/credit-unions.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000 and len(b['rows']) >= 4000 and len(u['rows']) >= 1300 and len(o['rows']) >= 5000 and len(a['rows']) >= 3500 and len(c['rows']) >= 6000 and len(w['rows']) >= 3000 and len(s['rows']) >= 13000 and len(dm['rows']) >= 13000 and len(cu['rows']) >= 4000; print('Verified all 12 flagships:', len(cu['rows']), 'credit unions')"
 
       - name: Commit and push if federal data changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/nursing-homes/ data/hospitals/ data/dialysis/ data/banks/ data/utilities/ data/workplace-safety/ data/auto-safety/ data/colleges/ data/weather-risk/ data/school-finances/ data/dams/
+          git add data/nursing-homes/ data/hospitals/ data/dialysis/ data/banks/ data/utilities/ data/workplace-safety/ data/auto-safety/ data/colleges/ data/weather-risk/ data/school-finances/ data/dams/ data/credit-unions/
           if git diff --cached --quiet; then
             echo "No federal data changes detected."
           else

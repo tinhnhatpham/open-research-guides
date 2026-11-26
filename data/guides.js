@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "credit-unions-ncua",
+    number: "Guide #18",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Consumer Finance & Banking",
+    title: "The Credit Union Reality Check: All 4,363 U.S. Credit Unions vs. Big Banks (NCUA 2021–2025)",
+    summary:
+      "Zero-affiliate NCUA 5300 Call Report audit of all 4,363 federally insured U.S. credit unions (145.9M members, $2.46T assets) vs. 4,204 FDIC banks: busting the savings-yield myth (1.86% wavg / 1.24% med vs FDIC 1.99%) while proving where CUs truly crush banks—auto loans (5.50%), credit cards (11.57% med APR), and deposit safety (3.7% med uninsured vs 45.2% Megabanks).",
+    highlights: [
+      "Direct Head-to-Head Scorecard: 4,363 Credit Unions vs. 4,204 FDIC Banks vs. Big 4 Megabanks",
+      "Instant lookup across all 4,363 CUs with savings yield, auto & card APRs, fee/member & official NCUA links",
+      "Open bulk dataset (.csv.gz) & reproducible NCUA 5300 Python pipeline"
+    ],
+    guideUrl: "./guides/credit-unions/",
+    toolUrl: "./guides/credit-unions/#lookup",
+    toolLabel: "Check Your Credit Union",
+    sourcesCount: "Live NCUA 5300 (4,363 credit unions)"
+  },
+  {
     id: "aging-dams-usace",
     number: "Guide #17",
     flagship: true,

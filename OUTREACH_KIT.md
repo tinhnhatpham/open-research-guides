@@ -227,3 +227,18 @@
 > - **Private-owner gap:** `34.8%` of private High-Hazard dams lack an EAP (accounting for 70.5% of all missing EAPs nationwide) vs. `4.4%` at Federal dams. Median High-Hazard dam age is **64 years** (`79.7%` ≥50 yrs).
 >
 > Search by county, nearest city, or river + open `.csv.gz`: https://open-research-guides.vercel.app/guides/dams/
+
+### I. The Credit Union Reality Check — All 4,363 U.S. Credit Unions vs. Big Banks (`r/personalfinance`, `r/Bogleheads`, `r/CreditUnions`)
+
+**Title:**
+`[OC] I audited all 4,363 U.S. credit unions (NCUA 5300 Call Reports) against all 4,204 FDIC banks: Credit unions actually pay LESS on savings than overall banks—but crush them on auto loans (5.5%), credit cards (11.6%), and deposit safety (3.7% uninsured)`
+
+**Body:**
+> Everyone tells you "ditch Big Banks and switch to a Credit Union." I pulled the Q4 2021 and Q4 2025 NCUA 5300 Call Reports across all **4,363 U.S. credit unions** (`145.9M` members, `$2.46T` assets) and benchmarked them directly against all **4,204 FDIC banks** (`$18.06T` deposits).
+>
+> What the audited federal filings actually show:
+> - **Savings rate myth:** Credit unions paid `1.86%` weighted (`1.24%` median; `46.9%` pass-through)—beating Big 4 Megabanks (`1.71%`), yet *below* overall FDIC banks (`1.99%` wavg, `1.85%` median) and far below top zero-fee online FDIC banks (`3.5%–4.1%`). Small CUs (`<$100M`) paid just `1.14%`.
+> - **Where CUs genuinely dominate:** Median Credit Card APR is **11.57%**, New Auto APR is **5.50%** (Navy Federal `4.59%`, SchoolsFirst `4.74%`), and median uninsured deposits are just **3.7%** vs **45.2%** at Megabanks.
+> - **Fee watch:** CUs collected `$10.14B` in member fees (`$69.50/member` avg), ranging from `$18.40/member` at BECU and `$20.70` at State Employees' CU (NC) up to `$89.60` avg at mid-size CUs.
+>
+> Search all 4,363 credit unions + open `.csv.gz`: https://open-research-guides.vercel.app/guides/credit-unions/
