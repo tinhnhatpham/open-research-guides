@@ -212,3 +212,18 @@
 > - **3.1× Interstate Spending Gap:** New York averages `$34,607/pupil` vs. Idaho `$11,119/pupil` (U.S. average `$17,846`; `59.2%` classroom instruction vs. `7.2%` central/school admin).
 >
 > Look up your exact district + open `.csv.gz`: https://open-research-guides.vercel.app/guides/school-finances/
+
+### H. America's Aging High-Hazard Dams — All 14,266 Life-Safety Dams (`r/civilengineering`, `r/urbanplanning`, Local Reporters in NC/TX/GA/SC/PA/MS)
+
+**Title:**
+`[OC] I audited all 62,569 public U.S. dams (Nov 2026 USACE NID): 2,447 High-Hazard dams are rated Poor/Unsatisfactory, 3,090 lack an Emergency Action Plan, and 629 fail both`
+
+**Body:**
+> Using the U.S. Army Corps of Engineers' November 20, 2026 National Inventory of Dams release (`62,569` publicly listed dams; `14,266` High-Hazard Potential dams where failure means probable loss of life), I built a free county/city lookup + open `.csv.gz`.
+>
+> Findings:
+> - **2,447 High-Hazard dams (`17.2%`)** are rated Poor (`2,013`) or Unsatisfactory (`434`)—led by NC (`230`), TX (`179`, including `101` Unsatisfactory), GA (`173`), SC (`151`), PA (`136`), MS (`134`), NM (`131`), and OH (`129`).
+> - **3,090 High-Hazard dams (`21.7%`)** lack an Emergency Action Plan, including **629 dams** that are *both* Poor/Unsatisfactory and missing an EAP.
+> - **Private-owner gap:** `34.8%` of private High-Hazard dams lack an EAP (accounting for 70.5% of all missing EAPs nationwide) vs. `4.4%` at Federal dams. Median High-Hazard dam age is **64 years** (`79.7%` ≥50 yrs).
+>
+> Search by county, nearest city, or river + open `.csv.gz`: https://open-research-guides.vercel.app/guides/dams/

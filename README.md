@@ -6,12 +6,12 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 
 ### Project Principles
 - **Step 0 Prior-Art Check:** Before building, we check what already exists and target real gaps where ordinary people face clunky government portals, paywalls, or SEO/affiliate spam.
-- **Primary Data & Open Code:** Every data-driven guide includes the reproducible Python script pulling directly from official open APIs and bulk filings (WHO, CMS, FDIC, EIA, OSHA, NHTSA, Dept. of Ed, NOAA, U.S. Census F-33, openFDA, OpenFEMA, World Bank).
+- **Primary Data & Open Code:** Every data-driven guide includes the reproducible Python script pulling directly from official open APIs and bulk filings (WHO, CMS, FDIC, EIA, OSHA, NHTSA, Dept. of Ed, NOAA, U.S. Census F-33, USACE NID, openFDA, OpenFEMA, World Bank).
 - **Honest About Traps & Uncertainty:** Every guide explicitly flags data artifacts, confounders, and what science or agencies still haven't settled.
 
 ---
 
-## Published Guides & Interactive Tools (16)
+## Published Guides & Interactive Tools (17)
 
 1. **Guide #01 — Microplastics in Drinking Water:** [`guides/microplastics/`](./guides/microplastics/) + [Interactive Decision Calculator](./microplastics-calculator/) + [Markdown Guide](./microplastics-drinking-water-guide.md) + [1-Min Shareable Summary](./microplastics-shareable-summary.md)
 2. **Guide #02 — Global Traffic Safety (158 Countries):** [`guides/traffic-safety/`](./guides/traffic-safety/) + [Python WHO Analysis](./data/traffic-safety/analyze_who_road_deaths.py)
@@ -29,6 +29,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 14. **Guide #14 (Flagship #08) — The College Debt & Parent PLUS Reality (All 6,232 Active U.S. Colleges, 2026 Scorecard):** [`guides/colleges/`](./guides/colleges/) + [Python Scorecard Pipeline](./data/colleges/analyze_college_scorecard.py) + [Linked Dataset (.csv.gz)](./data/colleges/college-scorecard-2026.csv.gz) *(auto-refreshed monthly)*
 15. **Guide #15 (Flagship #09) — America's Extreme Weather & Homebuyer Hazard Map (All 3,259 U.S. Counties, NOAA 2016–2026):** [`guides/weather-risk/`](./guides/weather-risk/) + [Python NOAA Pipeline](./data/weather-risk/analyze_noaa_storms.py) + [Linked Dataset (.csv.gz)](./data/weather-risk/noaa-counties-2016-2026.csv.gz) *(auto-refreshed monthly)*
 16. **Guide #16 (Flagship #10) — Follow the School Dollar (All 13,251 U.S. Public School Districts, Census F-33 FY2019–FY2024):** [`guides/school-finances/`](./guides/school-finances/) + [Python F-33 Pipeline](./data/school-finances/analyze_school_finances.py) + [Linked Dataset (.csv.gz)](./data/school-finances/census-school-districts-2019-2024.csv.gz) *(auto-refreshed monthly)*
+17. **Guide #17 (Flagship #11) — America's Aging High-Hazard Dams (All 14,266 Life-Safety Dams, USACE NID Nov 2026):** [`guides/dams/`](./guides/dams/) + [Python NID Pipeline](./data/dams/analyze_nid_dams.py) + [Linked Dataset (.csv.gz)](./data/dams/usace-high-hazard-dams-2026.csv.gz) *(auto-refreshed monthly)*
 
 ---
 

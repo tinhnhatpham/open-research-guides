@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "aging-dams-usace",
+    number: "Guide #17",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Public Infrastructure & Safety",
+    title: "America's Aging High-Hazard Dams: All 14,266 Life-Safety Dams (USACE NID Nov 2026)",
+    summary:
+      "Live audit of all 62,569 publicly listed U.S. dams and all 14,266 High-Hazard Potential dams (U.S. Army Corps of Engineers NID, Nov 2026): exposing 2,447 rated Poor or Unsatisfactory (17.2%), 3,090 lacking an Emergency Action Plan (629 with BOTH failures), a 64-year median age, and private owners' 34.8% missing-EAP rate vs. 4.4% at Federal dams.",
+    highlights: [
+      "Instant lookup across all 14,266 U.S. High-Hazard dams by county, nearest city, river, or owner",
+      "Direct links to official USACE NID records + 52-state & ownership preparedness scorecards",
+      "Open bulk dataset (.csv.gz) & reproducible USACE NID Python pipeline"
+    ],
+    guideUrl: "./guides/dams/",
+    toolUrl: "./guides/dams/#lookup",
+    toolLabel: "Check Dams Near You",
+    sourcesCount: "Live USACE NID (62,569 dams; 14,266 High-Hazard)"
+  },
+  {
     id: "school-district-finances",
     number: "Guide #16",
     flagship: true,
