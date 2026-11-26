@@ -103,3 +103,39 @@
 >
 > Best,
 > [Your Name]
+
+---
+
+## 5. Personal Finance & Energy Communities (`r/personalfinance`, `r/Bogleheads`, `r/dataisbeautiful`, Hacker News)
+
+### A. The Great Bank Deposit Skim — All 4,204 FDIC Banks (`r/personalfinance` / `r/Bogleheads` / HN)
+
+**Title:**
+`I audited all 4,204 FDIC-insured U.S. banks (2021 vs 2025 Call Reports): The Big 4 hold 35.7% of deposits, paid 1.71% weighted interest, and extracted 47% of all U.S. deposit fees ($16.2B)`
+
+**Body:**
+> Most "best savings account" lists are affiliate ads for ~15 sponsor banks. I pulled the official FY2021 and FY2025 FDIC Call Reports across all 4,204 active U.S. banks ($18.06T in domestic deposits) to see what every bank *actually* paid depositors vs. kept after Fed rate hikes—zero ads, zero affiliates, open Python script + `.csv.gz`.
+>
+> A few findings from the raw federal filings:
+> - **The Big 4 interest gap:** JPMorgan ($2.17T), Bank of America ($1.96T), Wells Fargo ($1.48T), and Citibank ($832B) hold 35.7% of U.S. domestic deposits and paid a weighted **1.71%** in FY2025 (JPM 1.60%, BofA 1.56%, WF 1.44%, Citi 2.80%). Just matching the 75th-percentile bank (2.30%) equals **$38.0B/yr** in extra interest—and >$100B/yr vs. zero-fee large FDIC online banks (Synchrony 4.10%, Sallie Mae 3.92%, Barclays 3.84%, Goldman Sachs Bank USA 3.49%).
+> - **Rate pass-through ("Deposit Beta"):** From 2021→2025, Megabanks ($250B+) passed through a median **68.9%** of asset yield gains (JPM 49.2%, WF 53.0%) vs. **85.7%** at Mid-Size banks ($1B–$10B).
+> - **Deposit fee concentration (`ISERCHG`):** U.S. banks collected **$34.38B** in deposit account service charges in FY2025; the Big 4 alone took **$16.16B (47.0%)** while top high-yield online banks reported **$0.0M**.
+> - **Methodological note:** We report *both* blended domestic deposit rate (`EDEPDOM/DEPDOM`) and interest-bearing-only rate (`EDEPDOM/DEPIDOM`) so free checking balances don't skew comparisons.
+>
+> Interactive lookup + personal savings cost calculator + `.csv.gz`: https://open-research-guides.vercel.app/guides/banks/
+
+### B. The Power Bill Divide — All 1,390 U.S. Electric Utilities (`r/personalfinance` / `r/energy` / Local CA, NY, MA, TX, FL Subreddits)
+
+**Title:**
+`[OC] I joined 2020–2025 EIA Form 861 filings across 1,390 U.S. electric utilities (140.8M homes): For-profit IOUs charge more than Public Power in 41 of 44 states ($33.5B/yr gap) with 3.5× more blackout minutes`
+
+**Body:**
+> Electricity bills are one of the fastest-rising household costs in America, jumping **+31.0%** nationwide from 2020 to 2025 (13.15¢ → 17.23¢/kWh, adding **+$69.2B/yr** to residential bills). I built a free, ad-free lookup tool + open `.csv.gz` joining EIA Form 861 sales, reliability (`SAIDI`/`SAIFI`), and county service territories across 1,390 full-form U.S. utilities (98.1% of U.S. households).
+>
+> Key numbers from the official 2020–2025 EIA filings:
+> - **Same-state Investor-Owned vs. Public Power gap:** In **41 of 44 states (93.2%)** with both major IOUs and Public Power utilities, IOUs charge higher residential rates—totaling **$33.54B/yr** in higher same-state bills (e.g., PG&E 37.52¢ & 273 min blackouts vs. SMUD 18.93¢ & 50 min in CA; SDG&E 45.77¢ vs. SMUD 18.93¢; Duke FL 18.36¢ vs. JEA 13.84¢; TXU 19.36¢ vs. San Antonio CPS 12.40¢).
+> - **14 of the 15 steepest large-utility rate hikes (≥100k homes)** since 2020 were Investor-Owned Utilities (led by NYSEG +96.6%, SDG&E +79.4%, Pepco DC +76.2%, RG&E +74.6%, SCE +72.8%, Tampa Electric +71.9%, Ameren IL +71.5%, BGE +66.7%).
+> - **Reliability:** 2025 median SAIDI was **57.3 min/yr** at Municipal utilities (37.5 min routine non-storm) vs. **205.7 min/yr** at IOUs (109.0 min routine) and **232.4 min** at Rural Co-ops (sparse rural lines).
+> - **Honest caveats included:** Legacy public hydro allocations (NYPA/BPA), wildfire-prone rural transmission mileage, urban vs. rural line density, and strict separation of `Bundled` vs. `Delivery`-only deregulated rates.
+>
+> Search by utility name or U.S. county + open `.csv.gz`: https://open-research-guides.vercel.app/guides/utilities/

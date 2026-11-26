@@ -1,4 +1,4 @@
-name: Monthly Flagship Open Data Refresh (31,796 U.S. Institutions)
+name: Monthly Flagship Open Data Refresh (33,186 U.S. Institutions)
 
 on:
   schedule:
@@ -21,6 +21,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install openpyxl for EIA-861 Excel archives
+        run: pip install --quiet openpyxl
+
       - name: Run 5-dataset CMS nursing home pipeline (14,686 homes)
         run: python data/nursing-homes/analyze_cms_nursing_homes.py --export-csv cms-nursing-homes-linked.csv.gz
 
@@ -33,19 +36,23 @@ jobs:
       - name: Run FDIC U.S. bank Call Report pipeline (4,204 banks)
         run: python data/banks/analyze_fdic_banks.py --export-csv fdic-banks-2021-2025.csv.gz
 
+      - name: Run EIA Form 861 U.S. electric utility pipeline (1,390 utilities)
+        run: python data/utilities/analyze_eia_utilities.py
+
       - name: Validate generated JS and JSON artifacts
         run: |
           node --check data/nursing-homes/summary-data.js
           node --check data/hospitals/summary-data.js
           node --check data/dialysis/summary-data.js
           node --check data/banks/summary-data.js
-          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); b=json.load(open('data/banks/banks.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000 and len(b['rows']) >= 4000; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals,', len(d['rows']), 'dialysis,', len(b['rows']), 'banks')"
+          node --check data/utilities/summary-data.js
+          python -c "import json; f=json.load(open('data/nursing-homes/facilities.json')); h=json.load(open('data/hospitals/hospitals.json')); d=json.load(open('data/dialysis/clinics.json')); b=json.load(open('data/banks/banks.json')); u=json.load(open('data/utilities/utilities.json')); assert len(f['rows']) >= 14000 and len(h['rows']) >= 5000 and len(d['rows']) >= 7000 and len(b['rows']) >= 4000 and len(u['rows']) >= 1300; print('Verified:', len(f['rows']), 'homes,', len(h['rows']), 'hospitals,', len(d['rows']), 'dialysis,', len(b['rows']), 'banks,', len(u['rows']), 'utilities')"
 
       - name: Commit and push if federal data changed
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/nursing-homes/ data/hospitals/ data/dialysis/ data/banks/
+          git add data/nursing-homes/ data/hospitals/ data/dialysis/ data/banks/ data/utilities/
           if git diff --cached --quiet; then
             echo "No federal data changes detected."
           else

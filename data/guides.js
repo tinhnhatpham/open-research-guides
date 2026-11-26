@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "electric-utility-divide",
+    number: "Guide #11",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Energy & Cost of Living",
+    title: "The Power Bill Divide: U.S. Electric Utility Rate Hikes, Blackouts & The Monopoly Premium (2020–2025)",
+    summary:
+      "Zero-affiliate EIA Form 861 audit of all 1,390 full-form U.S. residential electric utilities (140.8M households; 98.1% of U.S. homes): exposing the +31.0% 5-year rate surge (+$69.2B/yr), why Investor-Owned Utilities charge more than Public Power in 41 of 44 states ($33.54B/yr same-state excess), and Municipal utilities' 3.5× lower median blackout minutes (57.3 vs 205.7 SAIDI).",
+    highlights: [
+      "Interactive Power Bill & Monopoly Premium calculator + county-level search across all 1,390 U.S. utilities",
+      "Same-state head-to-head showdowns (PG&E vs SMUD +$2,008/yr, SDG&E vs SMUD +$2,899/yr, TXU vs San Antonio +$752/yr)",
+      "Open linked dataset (.csv.gz) & reproducible EIA-861 Python pipeline (Bundled vs Delivery safeguarded)"
+    ],
+    guideUrl: "./guides/utilities/",
+    toolUrl: "./guides/utilities/#calculator",
+    toolLabel: "Check Your Utility",
+    sourcesCount: "Live EIA Form 861 (1,390 utilities)"
+  },
+  {
     id: "bank-deposit-skim",
     number: "Guide #10",
     flagship: true,
