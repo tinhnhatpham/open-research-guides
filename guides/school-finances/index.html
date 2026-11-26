@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Follow the School Dollar: All 13,251 U.S. Public School Districts (Census F-33 FY2019–FY2024) — Open Plain-Language Research</title>
+  <meta name="description" content="Zero-ad audit of all 13,251 operating U.S. public school districts (46.4M students, $990.2B revenue, Census F-33 FY2019 vs FY2024): per-pupil spending, classroom instruction share vs. admin overhead, the 1.65M-student post-COVID enrollment cliff, and local property-tax inequality." />
+  <meta property="og:title" content="Follow the School Dollar — All 13,251 U.S. Public School Districts (FY2019–FY2024)" />
+  <meta property="og:description" content="Look up your exact public school district out of all 13,251 U.S. districts: per-pupil spending, classroom vs. admin share, 5-year enrollment cliff, local property-tax funding, and debt per student." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://open-research-guides.vercel.app/guides/school-finances/" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="canonical" href="https://open-research-guides.vercel.app/guides/school-finances/" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    section[id] { scroll-margin-top: 68px; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 20; }
+    @media (max-width: 720px) { .topbar { position: static; } }
+    .topbar-inner { max-width: 1120px; margin: 0 auto; padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 0.88rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .nav-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .container { max-width: 1120px; margin: 0 auto; padding: 28px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 26px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 18px 15px; } }
+    .eyebrow { display: inline-block; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #fff; background: #134e4a; padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.3rem); line-height: 1.18; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.89rem; margin-bottom: 16px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 820px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.91rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .controls { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 12px; }
+    .controls input, .controls select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.87rem; background: var(--surface); color: var(--ink); }
+    .controls input { flex: 1; min-width: 220px; }
+    .chip-bar { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 14px; }
+    .chip { border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 6px 12px; font-size: 0.81rem; font-weight: 600; cursor: pointer; }
+    .chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 460px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.84rem; min-width: 840px; }
+    th, td { padding: 9px 10px; text-align: left; border-bottom: 1px solid var(--border); vertical-align: top; }
+    th { background: var(--surface-alt); position: sticky; top: 0; font-weight: 700; z-index: 2; }
+    tbody tr.clickable { cursor: pointer; }
+    tbody tr.clickable:hover { background: #f3f9f9; }
+    tbody tr.selected { background: var(--accent-soft); }
+    .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .good-txt { color: var(--good-ink); font-weight: 700; }
+    .bad-txt { color: var(--bad-ink); font-weight: 700; }
+    .muted { color: var(--ink-muted); }
+    .badge { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-right: 4px; white-space: nowrap; }
+    .b-bad { background: var(--bad-bg); color: var(--bad-ink); }
+    .b-good { background: var(--good-bg); color: var(--good-ink); }
+    .b-soft { background: var(--accent-soft); color: var(--accent-dark); }
+    .dossier { display: none; margin-top: 16px; border: 2px solid var(--accent); border-radius: 14px; padding: 20px; background: #fbfdfd; }
+    .dossier.open { display: block; }
+    .dossier-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+    @media (max-width: 780px) { .dossier-grid { grid-template-columns: repeat(2, 1fr); } }
+    .c-box { background: var(--surface); border: 1px solid var(--border); border-radius: 9px; padding: 10px 12px; }
+    .c-lbl { font-size: 0.71rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); font-weight: 700; }
+    .c-val { font-size: 1.15rem; font-weight: 800; margin-top: 2px; }
+    .c-sub { font-size: 0.76rem; color: var(--ink-muted); margin-top: 2px; }
+    .pager { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; font-size: 0.85rem; color: var(--ink-muted); }
+    .btn { display: inline-flex; align-items: center; gap: 6px; border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 7px 13px; font-size: 0.84rem; font-weight: 650; cursor: pointer; text-decoration: none; }
+    .btn:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #fff; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.87rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <nav class="nav-links" aria-label="Section navigation">
+        <a href="#lookup">All-13,251 District Lookup</a>
+        <a href="#cliff">Post-COVID Enrollment Cliff</a>
+        <a href="#states">51-State Funding Inequality</a>
+        <a href="#methodology">Caveats &amp; Open CSV</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Flagship Investigation #10 &bull; Guide #16 &bull; Public Education &amp; Property Taxes</span>
+      <h1>Follow the School Dollar: All 13,251 U.S. Public School Districts (FY2019–FY2024)</h1>
+      <p class="meta">
+        Zero-ad audit of the official <strong>U.S. Census Bureau F-33 Survey of School System Finances</strong> (FY2019 &amp; FY2024) covering <strong>13,251</strong> operating K–12 public school districts (<strong>46.37M</strong> students, <strong>$990.2B</strong> annual revenue, <strong>$570.2B</strong> debt) &bull; Updated November 2026
+      </p>
+
+      <div class="callout">
+        <strong>Why this doesn't exist anywhere else:</strong> Commercial school sites like GreatSchools and Niche publish opaque 1–10 ratings that mostly mirror neighborhood home prices—without showing where your property taxes go. Here any parent, teacher, homeowner, or school-board voter can look up <strong>any of America's 13,251 public school districts</strong> to see per-pupil spending, how many cents reach classrooms vs. administration, 5-year student enrollment gains/losses, and long-term district debt.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Annual Public School Spending</div>
+          <div class="kpi-val" id="kpi-rev">$990.2B</div>
+          <div class="kpi-sub" id="kpi-rev-sub">$827.5B operating ($17,846/pupil avg) &bull; $570.2B debt</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Post-COVID Enrollment Cliff</div>
+          <div class="kpi-val bad" id="kpi-enr">-1.65M kids</div>
+          <div class="kpi-sub" id="kpi-enr-sub">-3.4% nationwide (FY2019 &rarr; FY2024 across matched districts)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Classroom vs. Admin Share</div>
+          <div class="kpi-val good" id="kpi-inst">59.2% vs 7.2%</div>
+          <div class="kpi-sub">Classroom instruction vs. central &amp; school administration</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">3.1&times; Interstate Spending Gap</div>
+          <div class="kpi-val bad" id="kpi-gap">$34.6k vs $11.1k</div>
+          <div class="kpi-sub">New York ($34,607/pupil) vs. Idaho ($11,119/pupil)</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 1. All-13,251 School District Lookup -->
+    <section class="card" id="lookup">
+      <h2>1. Look Up YOUR Public School District (All 13,251 Active U.S. Districts)</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:12px;">
+        Search any district name or state (e.g., <code>Los Angeles</code>, <code>Fairfax</code>, <code>Houston</code>, <code>New York City</code>, <code>Miami-Dade</code>, <code>Austin</code>, <code>Wake</code>, <code>Chicago</code>) and click a row to open its full FY2019&rarr;FY2024 financial dossier.
+      </p>
+
+      <div class="controls">
+        <input type="search" id="q" placeholder="Search school district name or state..." aria-label="Search school districts" />
+        <select id="f-state" aria-label="Filter by state"><option value="">All 51 States &amp; DC</option></select>
+        <select id="f-sort" aria-label="Sort districts">
+          <option value="enr_desc">Sort: Most Students (FY24)</option>
+          <option value="pp_desc">Sort: Highest Per-Pupil Spending</option>
+          <option value="pp_asc">Sort: Lowest Per-Pupil Spending</option>
+          <option value="enr_drop">Sort: Steepest Enrollment Drop (19–24)</option>
+          <option value="inst_desc">Sort: Highest Classroom Share (%)</option>
+          <option value="adm_desc">Sort: Highest Admin Share (%)</option>
+          <option value="debt_desc">Sort: Highest Debt per Student</option>
+        </select>
+      </div>
+
+      <div class="chip-bar">
+        <button type="button" class="chip active" data-preset="all">All 13,251 Districts</button>
+        <button type="button" class="chip" data-preset="large">Large Districts (&ge;10k Kids)</button>
+        <button type="button" class="chip" data-preset="drop15">Enrollment Cliff (&le;-15%, &ge;2k Kids)</button>
+        <button type="button" class="chip" data-preset="highinst">Classroom Leaders (&ge;65% Inst, &ge;1k)</button>
+        <button type="button" class="chip" data-preset="highadm">High Admin Overhead (&ge;12% Admin, &ge;1k)</button>
+        <button type="button" class="chip" data-preset="highdebt">Heavy Debt (&ge;$25k/student, &ge;1k)</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>School District</th>
+              <th>St</th>
+              <th class="num">Students</th>
+              <th class="num">19&rarr;24 Enr</th>
+              <th class="num">Spend/Pupil</th>
+              <th class="num">19&rarr;24 Spend</th>
+              <th class="num">Classroom %</th>
+              <th class="num">Admin %</th>
+              <th class="num">Debt/Pupil</th>
+            </tr>
+          </thead>
+          <tbody id="tbl-body">
+            <tr><td colspan="9" class="muted">Loading all 13,251 U.S. school districts...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pager">
+        <span id="pg-info">--</span>
+        <div style="display:flex; gap:8px;">
+          <button type="button" class="btn" id="pg-prev">&larr; Prev</button>
+          <button type="button" class="btn" id="pg-next">Next &rarr;</button>
+        </div>
+      </div>
+
+      <div class="dossier" id="dossier" aria-live="polite"></div>
+    </section>
+
+    <!-- 2. Post-COVID Enrollment Cliff -->
+    <section class="card" id="cliff">
+      <h2>2. The Post-COVID Public School Enrollment Cliff (Steepest Large-District Drops, FY2019–FY2024)</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:12px;">
+        Across matched U.S. districts, public K–12 enrollment fell by <strong>1.65 million students (-3.4%)</strong> between FY2019 and FY2024. Among large districts (&ge;25,000 students in 2019), the steepest declines ran <strong>-16% to -22%</strong>—driving sharp spikes in fixed-cost per-pupil spending (+35% to +73%) as districts now face painful school consolidation budgets after federal ESSER relief expired.
+      </p>
+      <div class="table-wrap" style="max-height:none;">
+        <table style="min-width:780px;">
+          <thead>
+            <tr>
+              <th>Large School District (&ge;25k in FY19)</th>
+              <th>St</th>
+              <th class="num">FY19 Kids</th>
+              <th class="num">FY24 Kids</th>
+              <th class="num">5-Yr Drop</th>
+              <th class="num">FY19 $/Pupil</th>
+              <th class="num">FY24 $/Pupil</th>
+              <th class="num">5-Yr Spend</th>
+            </tr>
+          </thead>
+          <tbody id="cliff-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 3. 51-State Funding Inequality Scorecard -->
+    <section class="card" id="states">
+      <h2>3. 51-State School Spending &amp; Within-State Inequality Scorecard (FY2024)</h2>
+      <p style="color:var(--ink-muted); font-size:0.9rem; margin-bottom:12px;">
+        Even inside the <em>same</em> state, the 90th-percentile district (&ge;500 students) routinely spends <strong>1.4&times; to 1.8&times;</strong> more per student than the 10th-percentile district, driven heavily by local property-tax bases.
+      </p>
+      <div class="table-wrap" style="max-height:440px;">
+        <table style="min-width:760px;">
+          <thead>
+            <tr>
+              <th>State</th>
+              <th class="num">Districts</th>
+              <th class="num">Students</th>
+              <th class="num">Wtd $/Pupil</th>
+              <th class="num">p10 &rarr; p90</th>
+              <th class="num">p90/p10 Gap</th>
+              <th class="num">Med Inst %</th>
+              <th class="num">5-Yr Enr</th>
+            </tr>
+          </thead>
+          <tbody id="state-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 4. Caveats & Open CSV -->
+    <section class="card" id="methodology">
+      <h2>4. Honest Caveats &amp; Open Dataset Downloads</h2>
+      <div class="callout warn">
+        <strong>Important Methodological Notes:</strong>
+        <ul style="margin:6px 0 0; padding-left:18px;">
+          <li><strong>ESSER Pandemic Funds in FY2024:</strong> FY2024 was the final major spending year of federal COVID-19 ESSER relief, temporarily elevating per-pupil operating spending and federal revenue shares in many districts relative to FY2019.</li>
+          <li><strong>Regional Cost of Living &amp; Special Education:</strong> Higher per-pupil spending in NY, NJ, MA, CT, and CA partly reflects higher regional teacher salaries, healthcare/pension costs, and dense special-education services—not simply "waste." Likewise, tiny rural districts naturally show higher administrative % due to fixed superintendent/principal overhead spread across few students (which is why our High Admin preset filters to &ge;1,000 students).</li>
+          <li><strong>Non-Operating Agencies Excluded:</strong> We filter out zero-enrollment intermediate service agencies (e.g., BOCES/ESAs) so every district row reflects an operating K–12 school system.</li>
+        </ul>
+      </div>
+
+      <div style="display:flex; flex-wrap:wrap; gap:10px; margin:16px 0 18px;">
+        <a class="btn btn-primary" href="../../data/school-finances/census-school-districts-2019-2024.csv.gz" download>Download All 13,251 Districts (.csv.gz)</a>
+        <a class="btn" href="../../data/school-finances/summary.json" target="_blank" rel="noopener">View summary.json</a>
+        <a class="btn" href="https://github.com/tinhnhatpham/open-research-guides/blob/main/data/school-finances/analyze_school_finances.py" target="_blank" rel="noopener">Reproducible Python Pipeline (GitHub)</a>
+      </div>
+
+      <ul class="sources">
+        <li><strong>U.S. Census Bureau:</strong> <a href="https://www.census.gov/programs-surveys/school-finances.html" target="_blank" rel="noopener">Annual Survey of School System Finances (F-33), FY2019 &amp; FY2024 Individual Unit Tables (<code>elsec19t.txt</code> &amp; <code>elsec24t.txt</code>)</a>.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research Guides &bull; Zero ads, zero affiliates, open federal data</span>
+      <span><a href="../../" style="color:var(--accent-dark); text-decoration:none; font-weight:600;">All 16 Research Guides &rarr;</a></span>
+    </footer>
+  </main>
+
+  <script src="../../data/school-finances/summary-data.js"></script>
+  <script>
+  (function () {
+    const S = window.SCHOOL_SUMMARY;
+    if (!S) return;
+
+    const fmtN = (n) => n == null ? "—" : Number(n).toLocaleString("en-US");
+    const fmtD = (n) => n == null ? "—" : "$" + Math.round(n).toLocaleString("en-US");
+    const fmtP = (n, signed) => n == null ? "—" : ((signed && n > 0 ? "+" : "") + Number(n).toFixed(1) + "%");
+    const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    const N = S.national;
+    document.getElementById("kpi-rev").textContent = `$${N.total_rev_b}B`;
+    document.getElementById("kpi-rev-sub").textContent = `$${N.cur_spend_b}B operating (${fmtD(N.wavg_pp24)}/pupil) • $${N.total_debt_b}B debt`;
+    document.getElementById("kpi-enr").textContent = `-${(N.students_lost_19_24 / 1e6).toFixed(2)}M kids`;
+    document.getElementById("kpi-enr-sub").textContent = `${fmtP(N.enr_chg_19_24_pct, true)} nationwide (FY2019 → FY2024 matched districts)`;
+    document.getElementById("kpi-inst").textContent = `${N.inst_share_pct}% vs ${N.adm_share_pct}%`;
+
+    // Cliff table
+    document.getElementById("cliff-body").innerHTML = S.big_enrollment_drops.map(r => `
+      <tr>
+        <td><strong>${esc(r.name)}</strong></td>
+        <td>${esc(r.state)}</td>
+        <td class="num">${fmtN(r.enroll19)}</td>
+        <td class="num">${fmtN(r.enroll)}</td>
+        <td class="num bad-txt">${fmtP(r.enr_chg_pct, true)}</td>
+        <td class="num">${fmtD(r.pp19)}</td>
+        <td class="num"><strong>${fmtD(r.pp24)}</strong></td>
+        <td class="num">${fmtP(r.pp_chg_pct, true)}</td>
+      </tr>
+    `).join("");
+
+    // State table + dropdown
+    const fState = document.getElementById("f-state");
+    document.getElementById("state-body").innerHTML = S.by_state.map(s => `
+      <tr>
+        <td><strong>${esc(s.name)}</strong> (${esc(s.state)})</td>
+        <td class="num">${fmtN(s.districts)}</td>
+        <td class="num">${(s.enroll / 1e6).toFixed(2)}M</td>
+        <td class="num"><strong>${fmtD(s.wavg_pp24)}</strong></td>
+        <td class="num muted">${s.p10_pp ? `${fmtD(s.p10_pp)} → ${fmtD(s.p90_pp)}` : '—'}</td>
+        <td class="num ${s.ineq_ratio >= 1.6 ? 'bad-txt' : ''}">${s.ineq_ratio ? s.ineq_ratio.toFixed(2) + '×' : '—'}</td>
+        <td class="num">${fmtP(s.med_inst_pct)}</td>
+        <td class="num ${(s.enr_chg_pct || 0) <= -5 ? 'bad-txt' : (s.enr_chg_pct || 0) > 0 ? 'good-txt' : ''}">${fmtP(s.enr_chg_pct, true)}</td>
+      </tr>
+    `).join("");
+
+    [...S.by_state].sort((a, b) => a.state.localeCompare(b.state)).forEach(s => {
+      const o = document.createElement("option");
+      o.value = s.state; o.textContent = `${s.state} — ${s.name}`;
+      fState.appendChild(o);
+    });
+
+    // District Lookup
+    let C = {}, ROWS = [], FILTERED = [], PAGE = 1, PAGE_SIZE = 25, PRESET = "all", SEL = null;
+
+    function openDossier(r) {
+      SEL = r;
+      const d = document.getElementById("dossier");
+      d.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:12px; flex-wrap:wrap;">
+          <div>
+            <div style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--accent-dark);">NCES District ID ${esc(r[C.nid])} &bull; ${esc(r[C.state])} &bull; Census F-33 FY2024</div>
+            <h3 style="font-size:1.18rem; margin:2px 0 4px;">${esc(r[C.name])}</h3>
+            <div><span class="badge b-soft">${fmtN(r[C.enroll])} students</span> <span class="badge ${(r[C.enr_chg_pct] || 0) <= -10 ? 'b-bad' : 'b-good'}">5-Yr Enrollment: ${fmtP(r[C.enr_chg_pct], true)}</span></div>
+          </div>
+          <div class="muted" style="font-size:0.83rem;">Funding Split: <strong>${fmtP(r[C.loc_pct])}</strong> Local &bull; <strong>${fmtP(r[C.st_pct])}</strong> State &bull; <strong>${fmtP(r[C.fed_pct])}</strong> Federal</div>
+        </div>
+        <div class="dossier-grid">
+          <div class="c-box"><div class="c-lbl">FY24 Spending / Pupil</div><div class="c-val">${fmtD(r[C.pp24])}</div><div class="c-sub">FY19: ${fmtD(r[C.pp19])} (${fmtP(r[C.pp_chg_pct], true)})</div></div>
+          <div class="c-box"><div class="c-lbl">Classroom Instruction</div><div class="c-val good-txt">${fmtP(r[C.inst_pct])}</div><div class="c-sub">${fmtD(r[C.pp_inst])}/pupil (U.S. avg: ${N.inst_share_pct}%)</div></div>
+          <div class="c-box"><div class="c-lbl">Administration Overhead</div><div class="c-val ${(r[C.adm_pct] || 0) >= 11 ? 'bad-txt' : ''}">${fmtP(r[C.adm_pct])}</div><div class="c-sub">${fmtD(r[C.pp_adm])}/pupil (U.S. avg: ${N.adm_share_pct}%)</div></div>
+          <div class="c-box"><div class="c-lbl">Long-Term Debt / Student</div><div class="c-val ${(r[C.debt_pp] || 0) >= 25000 ? 'bad-txt' : ''}">${fmtD(r[C.debt_pp])}</div><div class="c-sub">FY19 students: ${fmtN(r[C.enroll19])}</div></div>
+        </div>
+      `;
+      d.classList.add("open");
+    }
+
+    function applyFilters() {
+      const q = document.getElementById("q").value.trim().toLowerCase();
+      const st = fState.value;
+      const sort = document.getElementById("f-sort").value;
+
+      FILTERED = ROWS.filter(r => {
+        if (st && r[C.state] !== st) return false;
+        if (PRESET === "large" && r[C.enroll] < 10000) return false;
+        if (PRESET === "drop15" && !(r[C.enroll19] >= 2000 && r[C.enr_chg_pct] != null && r[C.enr_chg_pct] <= -15)) return false;
+        if (PRESET === "highinst" && !(r[C.enroll] >= 1000 && (r[C.inst_pct] || 0) >= 65)) return false;
+        if (PRESET === "highadm" && !(r[C.enroll] >= 1000 && (r[C.adm_pct] || 0) >= 12)) return false;
+        if (PRESET === "highdebt" && !(r[C.enroll] >= 1000 && (r[C.debt_pp] || 0) >= 25000)) return false;
+        if (q && !(r[C.name] + " " + r[C.state]).toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      const desc = (k) => (a, b) => (b[k] == null ? -1e9 : b[k]) - (a[k] == null ? -1e9 : a[k]);
+      const asc = (k) => (a, b) => (a[k] == null ? 1e9 : a[k]) - (b[k] == null ? 1e9 : b[k]);
+      if (sort === "enr_desc") FILTERED.sort(desc(C.enroll));
+      else if (sort === "pp_desc") FILTERED.sort(desc(C.pp24));
+      else if (sort === "pp_asc") FILTERED.sort(asc(C.pp24));
+      else if (sort === "enr_drop") FILTERED.sort(asc(C.enr_chg_pct));
+      else if (sort === "inst_desc") FILTERED.sort(desc(C.inst_pct));
+      else if (sort === "adm_desc") FILTERED.sort(desc(C.adm_pct));
+      else if (sort === "debt_desc") FILTERED.sort(desc(C.debt_pp));
+
+      PAGE = 1;
+      renderTable();
+    }
+
+    function renderTable() {
+      const total = FILTERED.length;
+      const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+      if (PAGE > pages) PAGE = pages;
+      const start = (PAGE - 1) * PAGE_SIZE;
+      const slice = FILTERED.slice(start, start + PAGE_SIZE);
+      document.getElementById("pg-info").textContent =
+        total ? `Showing ${start + 1}–${Math.min(start + PAGE_SIZE, total)} of ${fmtN(total)} school districts (Page ${PAGE}/${pages})` : "No matching districts.";
+      document.getElementById("pg-prev").disabled = PAGE <= 1;
+      document.getElementById("pg-next").disabled = PAGE >= pages;
+
+      const tb = document.getElementById("tbl-body");
+      if (!slice.length) {
+        tb.innerHTML = '<tr><td colspan="9" class="muted">No matching districts found.</td></tr>';
+        return;
+      }
+      tb.innerHTML = slice.map((r, i) => `
+        <tr class="clickable ${SEL && SEL[C.nid] === r[C.nid] ? 'selected' : ''}" data-idx="${start + i}">
+          <td><strong>${esc(r[C.name])}</strong></td>
+          <td>${esc(r[C.state])}</td>
+          <td class="num">${fmtN(r[C.enroll])}</td>
+          <td class="num ${(r[C.enr_chg_pct] || 0) <= -10 ? 'bad-txt' : (r[C.enr_chg_pct] || 0) >= 5 ? 'good-txt' : ''}">${fmtP(r[C.enr_chg_pct], true)}</td>
+          <td class="num"><strong>${fmtD(r[C.pp24])}</strong></td>
+          <td class="num">${fmtP(r[C.pp_chg_pct], true)}</td>
+          <td class="num ${(r[C.inst_pct] || 0) >= 62 ? 'good-txt' : ''}">${fmtP(r[C.inst_pct])}</td>
+          <td class="num ${(r[C.adm_pct] || 0) >= 11 ? 'bad-txt' : ''}">${fmtP(r[C.adm_pct])}</td>
+          <td class="num">${fmtD(r[C.debt_pp])}</td>
+        </tr>
+      `).join("");
+    }
+
+    document.getElementById("tbl-body").addEventListener("click", (e) => {
+      const tr = e.target.closest("tr[data-idx]");
+      if (!tr) return;
+      openDossier(FILTERED[Number(tr.dataset.idx)]);
+      renderTable();
+    });
+
+    ["q", "f-state", "f-sort"].forEach(id => {
+      document.getElementById(id).addEventListener(id === "q" ? "input" : "change", applyFilters);
+    });
+    document.querySelectorAll(".chip").forEach(btn => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".chip").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        PRESET = btn.dataset.preset;
+        applyFilters();
+      });
+    });
+    document.getElementById("pg-prev").addEventListener("click", () => { if (PAGE > 1) { PAGE--; renderTable(); } });
+    document.getElementById("pg-next").addEventListener("click", () => { PAGE++; renderTable(); });
+
+    fetch("../../data/school-finances/districts.json")
+      .then(r => r.json())
+      .then(d => {
+        d.cols.forEach((c, i) => { C[c] = i; });
+        ROWS = d.rows;
+        applyFilters();
+        if (ROWS.length) openDossier(ROWS[0]);
+      })
+      .catch(() => {
+        document.getElementById("tbl-body").innerHTML = '<tr><td colspan="9" class="bad-txt">Failed to load districts.json.</td></tr>';
+      });
+  })();
+  </script>
+</body>
+</html>

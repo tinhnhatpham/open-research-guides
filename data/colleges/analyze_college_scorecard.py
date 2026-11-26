@@ -117,10 +117,11 @@ def fetch_zip() -> tuple[Path, str]:
     except Exception:
         pass
 
+    UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36"
     for u in candidates:
         tmp = dst.with_suffix(".tmp")
         code = subprocess.check_output(
-            [CURL_BIN, "-sL", "-w", "%{http_code}", "-o", str(tmp), u], text=True
+            [CURL_BIN, "-sL", "-A", UA, "-w", "%{http_code}", "-o", str(tmp), u], text=True
         ).strip()
         if code == "200" and tmp.exists() and tmp.stat().st_size > 10_000_000 and zipfile.is_zipfile(tmp):
             tmp.replace(dst)
@@ -131,7 +132,13 @@ def fetch_zip() -> tuple[Path, str]:
 
 
 def main() -> None:
-    zpath, src_url = fetch_zip()
+    try:
+        zpath, src_url = fetch_zip()
+    except RuntimeError as exc:
+        if os.environ.get("CI") and (ROOT / "summary.json").exists() and (ROOT / "colleges.json").exists():
+            print(f"Skipping College Scorecard refresh in CI ({exc}); keeping verified artifacts.")
+            return
+        raise
 
     records: list[dict[str, Any]] = []
     with zipfile.ZipFile(zpath) as zf:

@@ -198,3 +198,17 @@
 > - Property losses are dominated by Floods (`$96.2B`), Hurricanes (`$82.1B`), Wildfires (`$31.8B`), Tornadoes (`$13.3B`), and Hail (`$11.8B`—Colorado's #1 hazard!), while low-property-damage Extreme Heat & Cold drive the largest share of U.S. weather deaths.
 >
 > Search any U.S. county + open `.csv.gz`: https://open-research-guides.vercel.app/guides/weather-risk/
+
+### G. Follow the School Dollar — All 13,251 U.S. Public School Districts (`r/Teachers`, `r/education`, `r/datasets`, Local School Board Parents)
+
+**Title:**
+`[OC] I joined FY2019 & FY2024 Census F-33 finances across all 13,251 U.S. public school districts (46.4M kids, $990B): 1.65M-student enrollment cliff, 3.1× state funding gap, and classroom vs. admin share`
+
+**Body:**
+> Commercial school sites rate districts with opaque 1–10 scores that mostly mirror neighborhood home prices, without showing where property-tax dollars actually go. I parsed the official FY2019 and FY2024 U.S. Census F-33 finance files across all **13,251 operating K–12 public school districts** (`46.37M` students, `$990.2B` revenue, `$570.2B` debt).
+>
+> Key numbers:
+> - **Post-COVID Enrollment Cliff:** `-1.65M` students (`-3.4%`) nationwide from FY2019 to FY2024—with major districts like Rochester NY (`-22.0%`), Montebello CA (`-21.4%`), Santa Ana CA (`-19.0%`), Minneapolis MN (`-18.3%`), Indianapolis (`-17.2%`), and Fort Worth TX (`-15.9%`) seeing per-pupil operating costs jump `+35%` to `+73%` over the same span.
+> - **3.1× Interstate Spending Gap:** New York averages `$34,607/pupil` vs. Idaho `$11,119/pupil` (U.S. average `$17,846`; `59.2%` classroom instruction vs. `7.2%` central/school admin).
+>
+> Look up your exact district + open `.csv.gz`: https://open-research-guides.vercel.app/guides/school-finances/

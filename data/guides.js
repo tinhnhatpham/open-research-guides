@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "school-district-finances",
+    number: "Guide #16",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "Public Education & Taxes",
+    title: "Follow the School Dollar: All 13,251 U.S. Public School Districts (FY2019–FY2024)",
+    summary:
+      "Zero-ad Census F-33 audit of all 13,251 operating U.S. public school districts (46.37M students, $990.2B annual revenue, $570.2B debt): exposing the 1.65M-student post-COVID enrollment cliff (-3.4%; big urban drops up to -22%), the 3.1× interstate spending gap ($34,607 NY vs $11,119 ID), and exact classroom instruction vs. admin share for every district.",
+    highlights: [
+      "Instant lookup across all 13,251 U.S. school districts with FY2019→FY2024 spending & enrollment dossiers",
+      "51-state within-state inequality scorecard (90th vs 10th percentile district funding gap)",
+      "Open bulk dataset (.csv.gz) & reproducible Census F-33 Python pipeline (zero API keys)"
+    ],
+    guideUrl: "./guides/school-finances/",
+    toolUrl: "./guides/school-finances/#lookup",
+    toolLabel: "Look Up Your District",
+    sourcesCount: "Live Census F-33 (13,251 districts)"
+  },
+  {
     id: "weather-risk-noaa",
     number: "Guide #15",
     flagship: true,
