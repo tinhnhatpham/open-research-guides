@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Food Recalls Decoded: Allergens vs. Severe Pathogens — Open Plain-Language Research</title>
+  <meta name="description" content="Reproducible analysis of 29,634 U.S. FDA food recalls (live openFDA Food Enforcement API, 2021–2026) separating high-volume allergen errors from high-lethality Class I Listeria and Salmonella recalls." />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    .topbar-inner { max-width: 1040px; margin: 0 auto; padding: 13px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.9rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 30px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 20px 16px; } }
+    .eyebrow { display: inline-block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 18px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.92rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .pill { border: 1.5px solid var(--border); background: var(--surface); color: var(--ink); border-radius: 999px; padding: 7px 14px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .bar-list { display: grid; gap: 13px; }
+    .bar-head { display: flex; justify-content: space-between; gap: 10px; font-size: 0.89rem; margin-bottom: 4px; flex-wrap: wrap; }
+    .bar-track { height: 14px; background: #e9efee; border-radius: 999px; overflow: hidden; display: flex; }
+    .bar-c1 { height: 100%; background: #dc2626; }
+    .bar-other { height: 100%; background: #0f6b6e; opacity: 0.65; }
+    .legend { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.82rem; color: var(--ink-muted); margin-bottom: 12px; }
+    .leg-dot { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: middle; }
+    .svg-wrap { width: 100%; overflow-x: auto; background: #fcfdfd; border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
+    svg { width: 100%; min-width: 540px; height: auto; display: block; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+    .box { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: #fcfdfd; }
+    .box ul { margin: 8px 0 0; padding-left: 19px; font-size: 0.9rem; color: var(--ink-muted); }
+    .box li { margin-bottom: 5px; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <a href="#allergens">Jump to Allergen Breakdown &darr;</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Guide #05 &bull; Public Health &amp; Live openFDA Data</span>
+      <h1>Food Recalls Decoded: Allergens vs. Severe Pathogens</h1>
+      <p class="meta">Reproducible analysis of <strong>29,634</strong> all-time and <strong>9,192</strong> recent (2021–2026) U.S. FDA Food Enforcement records &bull; Compiled November 2026</p>
+
+      <div class="callout">
+        <strong>Why this matters:</strong> Viral headlines treat every food recall like an emergency. Real FDA enforcement data reveals a huge divide between <strong>recall volume</strong> and <strong>severe life-threatening risk (Class I)</strong>—helping households focus their energy on what actually puts their family in danger.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Records Analyzed (2021–2026)</div>
+          <div class="kpi-val" id="kpi-recent">9,192</div>
+          <div class="kpi-sub">29,634 all-time in openFDA</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">#1 Cause by Volume</div>
+          <div class="kpi-val">Allergens (24.7%)</div>
+          <div class="kpi-sub">2,272 recalls &bull; 38.0% Class I</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Highest Class I Severity</div>
+          <div class="kpi-val bad">Salmonella (88.4%)</div>
+          <div class="kpi-sub">Listeria: 79.2% &bull; E. coli: 79.1%</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Foreign Material Class I</div>
+          <div class="kpi-val good">0.7%</div>
+          <div class="kpi-sub">Only 6 of 916 plastic/metal/glass recalls</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1. Volume vs. Severity: What Actually Triggers Class I Recalls? (2021–2026)</h2>
+      <p style="color:var(--ink-muted); font-size:0.93rem;">
+        The FDA defines <strong>Class I</strong> as a reasonable probability of serious adverse health consequences or death. Toggle between sorting by total volume vs. Class I severity rate below.
+      </p>
+      <div class="controls" id="hazard-controls">
+        <button type="button" class="pill active" data-sort="total">Sort by Recall Volume</button>
+        <button type="button" class="pill" data-sort="severity">Sort by Class I Severity %</button>
+      </div>
+      <div class="legend">
+        <span><span class="leg-dot" style="background:#dc2626"></span>Class I (Severe / Life-Threatening)</span>
+        <span><span class="leg-dot" style="background:#0f6b6e; opacity:0.65"></span>Class II / III (Lower Risk)</span>
+      </div>
+      <div class="bar-list" id="hazard-bars"></div>
+    </section>
+
+    <section class="card" id="allergens">
+      <h2>2. Which Undeclared Allergens Fail Most Often? (2021–2026)</h2>
+      <p style="color:var(--ink-muted); font-size:0.93rem;">
+        Not all undeclared allergens carry the same FDA risk classification. Notice how <strong>Milk</strong> dominates total errors (683 recalls), while <strong>Egg</strong> (65.6% Class I) and <strong>Milk</strong> (53.1% Class I) trigger Class I alerts far more often than Soy (26.7%) or Wheat (29.7%).
+      </p>
+      <div class="bar-list" id="allergen-bars"></div>
+    </section>
+
+    <section class="card">
+      <h2>3. Annual Trend: Total FDA Food Recall Records vs. Class I (2015–2025)</h2>
+      <div class="svg-wrap">
+        <svg id="yearly-svg" viewBox="0 0 780 300" role="img" aria-label="Annual FDA food recall counts from 2015 to 2025"></svg>
+      </div>
+      <p style="font-size:0.81rem; color:var(--ink-muted); margin-top:8px;">
+        Data literacy note: In openFDA, each individual product/SKU or lot affected by a single contamination outbreak counts as a separate enforcement record. A single large <em>Listeria</em> or <em>Salmonella</em> supplier recall can generate hundreds of records in one year—so spikes often reflect one huge shared supplier rather than a broad collapse in food safety. Also note: openFDA covers FDA-regulated foods (produce, dairy, packaged snacks, seafood), while USDA FSIS separately regulates most meat, poultry, and processed eggs.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>4. Calm Household Food-Safety Takeaways</h2>
+      <div class="grid-2">
+        <div class="box">
+          <h3>If Nobody in Your Home Has Food Allergies</h3>
+          <ul>
+            <li>Nearly a quarter of FDA food recalls are undeclared allergen labeling mistakes—they are safe for non-allergic households.</li>
+            <li>Focus your attention on <strong>Class I pathogen recalls</strong> (<em>Listeria</em>, <em>Salmonella</em>, <em>E. coli</em>), especially for ready-to-eat chilled foods (soft cheeses, deli salads, bagged greens, pre-cut fruit, ice cream).</li>
+            <li><em>Listeria</em> uniquely grows at refrigerator temperatures—keep your fridge at or below <strong>40&deg;F (4&deg;C)</strong> and wipe spills promptly.</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h3>If Someone in Your Home Has a Severe Allergy</h3>
+          <ul>
+            <li><strong>Milk, soy, wheat, egg, and sesame</strong> account for the vast majority of undeclared-allergen recalls—most often due to packaging mix-ups or shared bakery/snack lines.</li>
+            <li>Check official alerts at <strong>fda.gov/safety/recalls</strong> (free email subscription) rather than relying on social media rumors.</li>
+            <li>If a product is recalled, check the exact <strong>lot code &amp; best-by date</strong> before throwing everything out—most recalls cover narrow production runs.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. Primary Sources &amp; Open Reproducibility</h2>
+      <ol class="sources">
+        <li><strong>U.S. FDA openFDA Food Enforcement API:</strong> Live queries against <code>https://api.fda.gov/food/enforcement.json</code> (29,634 all-time records; 9,192 records from 2021–2026).</li>
+        <li><strong>Reproducible Code:</strong> Full Python aggregation script (<code>data/food-recalls/analyze_openfda_food_recalls.py</code>) and JSON output (<code>summary.json</code>) are open in the repository so anyone can re-run and verify live numbers.</li>
+        <li><strong>Scope Note:</strong> Covers FDA-regulated foods only; USDA FSIS handles separate meat, poultry, and egg-product recalls.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research &bull; Guide #05</span>
+      <span>Data: Live U.S. openFDA API (2021–2026) &bull; CC BY 4.0 / MIT</span>
+    </footer>
+  </main>
+
+  <script src="../../data/food-recalls/summary-data.js"></script>
+  <script>
+    const D = window.OPENFDA_FOOD_DATA;
+    let hazardSort = "total";
+
+    document.querySelectorAll("#hazard-controls .pill").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#hazard-controls .pill").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        hazardSort = btn.dataset.sort;
+        renderHazards();
+      });
+    });
+
+    function renderHazards() {
+      const items = [...D.hazards_recent].sort((a, b) =>
+        hazardSort === "total" ? b.total - a.total : b.class_i_pct - a.class_i_pct
+      );
+      const maxTot = Math.max(...items.map((x) => x.total));
+      document.getElementById("hazard-bars").innerHTML = items.map((h) => {
+        const wAll = hazardSort === "total" ? (h.total / maxTot) * 100 : 100;
+        const c1Share = h.total ? (h.class_i / h.total) * wAll : 0;
+        const otherShare = wAll - c1Share;
+        return `
+          <div>
+            <div class="bar-head">
+              <strong>${h.hazard}</strong>
+              <span style="color:var(--ink-muted)"><strong>${h.total.toLocaleString()}</strong> recalls (${h.share_of_recent_pct}%) &bull; <strong style="color:${h.class_i_pct >= 50 ? "var(--bad-ink)" : "var(--ink)"}">${h.class_i_pct}% Class I</strong></span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-c1" style="width:${c1Share.toFixed(1)}%"></div>
+              <div class="bar-other" style="width:${otherShare.toFixed(1)}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderAllergens() {
+      const items = D.allergens_recent.slice(0, 8);
+      const maxT = Math.max(...items.map((x) => x.total));
+      document.getElementById("allergen-bars").innerHTML = items.map((a) => {
+        const wAll = (a.total / maxT) * 100;
+        const c1 = (a.class_i / maxT) * 100;
+        const oth = wAll - c1;
+        return `
+          <div>
+            <div class="bar-head">
+              <strong>${a.allergen}</strong>
+              <span style="color:var(--ink-muted)">${a.total.toLocaleString()} recalls &bull; <strong>${a.class_i_pct}% Class I</strong></span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-c1" style="width:${c1.toFixed(1)}%"></div>
+              <div class="bar-other" style="width:${oth.toFixed(1)}%"></div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderYearly() {
+      const svg = document.getElementById("yearly-svg");
+      const yrs = D.yearly;
+      const W = 780, H = 300, padL = 52, padR = 20, padT = 20, padB = 36;
+      const plotW = W - padL - padR, plotH = H - padT - padB;
+      const maxV = Math.ceil(Math.max(...yrs.map((y) => y.total)) / 500) * 500;
+      const bw = (plotW / yrs.length) * 0.62;
+      const parts = [];
+
+      for (let i = 0; i <= 4; i++) {
+        const val = (maxV / 4) * i;
+        const y = padT + plotH - (val / maxV) * plotH;
+        parts.push(`<line x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" stroke="#e5ecea" />`);
+        parts.push(`<text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="11" fill="#64748b">${val.toLocaleString()}</text>`);
+      }
+
+      yrs.forEach((row, idx) => {
+        const cx = padL + (idx + 0.5) * (plotW / yrs.length);
+        const hTot = (row.total / maxV) * plotH;
+        const hC1 = (row.class_i / maxV) * plotH;
+        const yTot = padT + plotH - hTot;
+        const yC1 = padT + plotH - hC1;
+        parts.push(`<rect x="${(cx - bw / 2).toFixed(1)}" y="${yTot.toFixed(1)}" width="${bw.toFixed(1)}" height="${hTot.toFixed(1)}" rx="4" fill="#0f6b6e" opacity="0.55" />`);
+        parts.push(`<rect x="${(cx - bw / 2).toFixed(1)}" y="${yC1.toFixed(1)}" width="${bw.toFixed(1)}" height="${hC1.toFixed(1)}" rx="4" fill="#dc2626" />`);
+        parts.push(`<text x="${cx.toFixed(1)}" y="${(yTot - 5).toFixed(1)}" text-anchor="middle" font-size="10" fill="#52606d">${row.total.toLocaleString()}</text>`);
+        parts.push(`<text x="${cx.toFixed(1)}" y="${H - 13}" text-anchor="middle" font-size="11" fill="#64748b">${row.year}</text>`);
+      });
+
+      svg.innerHTML = parts.join("");
+    }
+
+    renderHazards();
+    renderAllergens();
+    renderYearly();
+  </script>
+</body>
+</html>

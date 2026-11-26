@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Financial Disputes, Credit-Repair Spam &amp; P2P Fraud Reality — Open Plain-Language Research</title>
+  <meta name="description" content="Plain-language consumer guide built from CFPB Consumer Complaint Database outcomes (2024–2026): what actually wins monetary relief, why Regulation E splits Zelle fraud, and how to avoid credit-repair scams." />
+  <style>
+    :root {
+      --bg: #f6f7f5;
+      --surface: #ffffff;
+      --surface-alt: #f0f4f3;
+      --ink: #17212b;
+      --ink-muted: #52606d;
+      --border: #d9e2e0;
+      --accent: #0f6b6e;
+      --accent-dark: #0a4f52;
+      --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5;
+      --good-ink: #065f46;
+      --warn-bg: #fff8eb;
+      --warn-border: #f59e0b;
+      --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2;
+      --bad-ink: #b91c1c;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.62;
+    }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    .topbar-inner {
+      max-width: 1040px; margin: 0 auto; padding: 13px 20px;
+      display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.9rem;
+    }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 30px 20px 72px; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px; box-shadow: var(--shadow); margin-bottom: 22px;
+    }
+    @media (max-width: 640px) { .card { padding: 20px 16px; } }
+    .eyebrow {
+      display: inline-block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; margin-bottom: 10px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 18px; }
+    .callout {
+      background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px;
+      padding: 14px 16px; margin: 14px 0; font-size: 0.92rem; color: var(--ink-muted);
+    }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .callout.bad { background: var(--bad-bg); border-left-color: #dc2626; color: var(--bad-ink); }
+    .callout.bad strong { color: var(--bad-ink); }
+    .scenario-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(195px, 1fr)); gap: 10px; margin-bottom: 16px; }
+    .scen-btn {
+      border: 1.5px solid var(--border); background: var(--surface); color: var(--ink);
+      border-radius: 11px; padding: 12px; text-align: left; cursor: pointer; font-weight: 650; font-size: 0.88rem;
+    }
+    .scen-btn small { display: block; font-weight: 400; color: var(--ink-muted); font-size: 0.77rem; margin-top: 3px; }
+    .scen-btn.active { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-dark); box-shadow: 0 0 0 1px var(--accent); }
+    .result-panel {
+      border: 1px solid var(--border); border-radius: 12px; padding: 20px; background: #fcfdfd;
+    }
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0 14px; }
+    @media (max-width: 600px) { .stat-row { grid-template-columns: 1fr; } }
+    .stat-box { background: var(--surface-alt); border-radius: 10px; padding: 11px 13px; }
+    .stat-label { font-size: 0.73rem; text-transform: uppercase; letter-spacing: 0.04em; color: var(--ink-muted); font-weight: 700; }
+    .stat-val { font-size: 1.2rem; font-weight: 800; margin-top: 2px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 600px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--surface-alt); font-weight: 700; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer {
+      margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border);
+      font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <a href="#dispute-tool">Jump to Interactive Dispute Reality Checker &darr;</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Guide #06 &bull; Consumer Finance &amp; CFPB Data</span>
+      <h1>Financial Disputes, Credit-Repair Spam &amp; P2P Fraud Reality</h1>
+      <p class="meta">Built from CFPB Consumer Response Annual Reports &amp; Complaint Database outcomes (2024–2026) &bull; Compiled November 2026</p>
+
+      <div class="callout">
+        <strong>Why this guide exists:</strong> When someone loses money to a Zelle scam or finds an error on their credit report, Google and YouTube are flooded with predatory "credit sweep" schemes and fake videos claiming a CFPB form guarantees an instant payout. Real CFPB outcome data shows a very different—and far more useful—reality.
+      </div>
+    </section>
+
+    <section class="card" id="dispute-tool">
+      <h2>1. Interactive Dispute Reality Checker: What Actually Happens?</h2>
+      <p style="color:var(--ink-muted); font-size:0.93rem;">Select your financial dispute below to see historical CFPB relief rates, the exact federal rule that applies, and the safest free steps to take.</p>
+
+      <div class="scenario-grid" id="scen-grid">
+        <button type="button" class="scen-btn active" data-id="p2p_scam">Zelle / P2P Scam (I sent it)<small>Tricked by fake bank or seller</small></button>
+        <button type="button" class="scen-btn" data-id="p2p_hack">Bank / P2P Account Hacked<small>Unauthorized login or transfer</small></button>
+        <button type="button" class="scen-btn" data-id="credit_report">Credit Report Error<small>Equifax, Experian, TransUnion</small></button>
+        <button type="button" class="scen-btn" data-id="credit_card">Credit Card Billing Dispute<small>Wrong charge, fraud, or fee</small></button>
+        <button type="button" class="scen-btn" data-id="bank_fee">Checking / Savings Fee Issue<small>Overdraft, closure, surprise fee</small></button>
+        <button type="button" class="scen-btn" data-id="debt">Debt Collection Dispute<small>Unrecognized debt or harassment</small></button>
+      </div>
+
+      <div class="result-panel" id="scen-result" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <h2>2. CFPB Complaint Outcomes by Product (2024–2025 Reports)</h2>
+      <p style="color:var(--ink-muted); font-size:0.93rem;">
+        Notice the dramatic gap between complaint <em>volume</em> and actual <em>monetary relief</em>: credit bureaus account for ~85% of all CFPB complaints, yet almost never pay cash (their relief is fixing records). Meanwhile, credit card disputes win monetary relief ~13% of the time.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Product Category</th>
+              <th class="num">Share of CFPB Volume</th>
+              <th class="num">Monetary Relief Rate</th>
+              <th>Most Common Resolution</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Credit &amp; Consumer Reporting</strong></td>
+              <td class="num">~85%</td>
+              <td class="num"><strong>&lt; 0.1%</strong> (~0.02%–0.1%)</td>
+              <td>Non-monetary relief (~40–47% file fixes) &amp; Explanations (~51–66%)</td>
+            </tr>
+            <tr>
+              <td><strong>Debt Collection</strong></td>
+              <td class="num">~7%</td>
+              <td class="num"><strong>~0.2%</strong></td>
+              <td>Explanations (~66–67%) &amp; Non-monetary relief (~23–27%, stopping calls)</td>
+            </tr>
+            <tr>
+              <td><strong>Credit Cards</strong></td>
+              <td class="num">~3%</td>
+              <td class="num"><strong style="color:var(--good-ink)">~13%</strong></td>
+              <td>Explanations (~58%), Non-monetary (~25%), Monetary (~13%)</td>
+            </tr>
+            <tr>
+              <td><strong>Checking or Savings Accounts</strong></td>
+              <td class="num">~2%</td>
+              <td class="num"><strong>~1% – 10%+</strong> <em>(varies by bank)</em></td>
+              <td>Explanations &amp; Fee/overdraft reversals</td>
+            </tr>
+            <tr>
+              <td><strong>Money Transfers / P2P Services</strong></td>
+              <td class="num">&lt; 1%</td>
+              <td class="num"><strong style="color:var(--bad-ink)">Low (&lt; 5%)</strong></td>
+              <td>Explanations citing authorized-transfer policy</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Data Literacy Warning: "Credit Washing" Spam &amp; 2026 Database Changes</h2>
+      <div class="callout warn">
+        <strong>Why raw CFPB credit-bureau counts exploded:</strong> Independent fraud analysts found that a massive share of recent CFPB complaints against Equifax, Experian, and TransUnion come from copy-pasted legalistic templates ("credit washing" scripts) submitted by shady credit-repair services promising to erase valid negative debt. Never hand your logins to a paid "credit sweep" firm—you have a free federal right under the Fair Credit Reporting Act (FCRA) to dispute errors directly, and spam templates often trigger automated rejection filters.
+      </div>
+      <div class="callout">
+        <strong>Mid-2026 CFPB Data Change:</strong> Analysts working with the CFPB database should note that the agency ceased publishing new public consumer narrative text in mid-2026; structured metadata (product, issue, company response, timeliness) remains the reliable dataset for tracking trends.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Primary Sources</h2>
+      <ol class="sources">
+        <li><strong>Consumer Financial Protection Bureau (CFPB):</strong> <em>Consumer Response Annual Reports</em> (2024–2025) &amp; Consumer Complaint Database structured outcomes (<code>consumerfinance.gov/complaint</code>).</li>
+        <li><strong>Federal Regulation E (Electronic Fund Transfer Act) &amp; Fair Credit Reporting Act (FCRA):</strong> Legal distinction between unauthorized electronic fund transfers vs. socially engineered authorized transfers, and free direct credit-bureau dispute rights.</li>
+        <li><strong>Industry &amp; Consumer Protection Analyses:</strong> Legal compliance summaries of CFPB resolution rates by product (Orrick, Hudson Cook, Consumer Financial Services Law Monitor) and fraud-analytics reviews of copy-paste "credit washing" spam.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research &bull; Guide #06</span>
+      <span>Data: CFPB Annual Reports &amp; Federal Rules &bull; Educational, Not Legal Advice</span>
+    </footer>
+  </main>
+
+  <script>
+    const SCENARIOS = {
+      p2p_scam: {
+        title: "Zelle / Venmo / Cash App Scam (You Pressed 'Send')",
+        relief: "Low (< 5%)",
+        rule: "Regulation E (Authorized Transfer Gap)",
+        primary: "Closed with explanation",
+        alertType: "bad",
+        alertTitle: "Critical Reality Check & Secondary Scam Warning",
+        alertBody: "Because you authorized the transfer yourself—even after being lied to by a fake bank agent or seller—banks historically classify it as an 'authorized' payment outside standard Regulation E mandatory refunds. Beware social-media scammers claiming a paid form or 'recovery agent' guarantees a CFPB payout!",
+        steps: [
+          "Report immediately to your bank's fraud team AND specify clearly if the scammer impersonated your own bank (regulatory pressure has led some banks to offer goodwill credits for bank-impersonation scams).",
+          "File a free factual report at reportfraud.ftc.gov, ic3.gov (FBI), and consumerfinance.gov/complaint—with exact dates, amounts, and masked account numbers (no copy-paste internet templates).",
+          "Going forward, treat P2P apps strictly like handing physical cash to someone you know personally; use a credit card for marketplace purchases."
+        ]
+      },
+      p2p_hack: {
+        title: "Unauthorized Account Hack (Stolen Password / SIM Swap)",
+        relief: "Strong Legal Protection",
+        rule: "Regulation E (Unauthorized EFT)",
+        primary: "Mandatory bank investigation & recredit",
+        alertType: "good",
+        alertTitle: "You Have Strong Federal Protection Here",
+        alertBody: "If someone broke into your bank or P2P account and moved money WITHOUT your knowledge or consent, Regulation E generally requires your bank to investigate and recredit unauthorized transfers—especially when reported promptly (within 2 business days of noticing).",
+        steps: [
+          "Notify your bank immediately in writing and by phone; emphasize explicitly that this was an UNAUTHORIZED electronic fund transfer under Regulation E.",
+          "Change passwords, enable app-based 2FA (not SMS if SIM-swapped), and file a local police report to attach to your bank dispute.",
+          "If the bank wrongly denies an unauthorized hack claim, escalate with documentation at consumerfinance.gov/complaint."
+        ]
+      },
+      credit_report: {
+        title: "Error on Your Credit Report (Equifax, Experian, TransUnion)",
+        relief: "< 0.1% Cash (~40–47% Record Fix)",
+        rule: "Fair Credit Reporting Act (FCRA)",
+        primary: "Non-monetary relief (file correction)",
+        alertType: "warn",
+        alertTitle: "Don't Pay a 'Credit Sweep' Company for What Is Free",
+        alertBody: "Credit bureaus account for ~85% of CFPB complaints, and copy-paste 'credit washing' scripts flood the system. Bureaus almost never pay cash, but ~40–47% of CFPB disputes result in non-monetary corrections when backed by genuine proof.",
+        steps: [
+          "Pull all three free official reports at AnnualCreditReport.com.",
+          "Dispute factual errors directly with the bureau AND the original lender first, attaching clear documents (payment proof, identity-theft report) in plain English—never copy-pasted legal boilerplate.",
+          "If a documented error isn't fixed within 30 days, file directly at consumerfinance.gov/complaint with your proof attached."
+        ]
+      },
+      credit_card: {
+        title: "Credit Card Billing Error, Fraud, or Unfair Charge",
+        relief: "~13% Monetary Relief",
+        rule: "Fair Credit Billing Act (FCBA) / Reg Z",
+        primary: "Highest CFPB cash-relief category",
+        alertType: "good",
+        alertTitle: "Strongest Consumer Dispute Leverage",
+        alertBody: "Credit cards offer the strongest built-in U.S. consumer dispute protections and the highest CFPB monetary relief rate (~13% cash/credit relief plus ~25% non-monetary adjustments).",
+        steps: [
+          "Submit a formal billing dispute with your card issuer within 60 days of the statement date.",
+          "Keep screenshots of merchant cancellation emails, tracking numbers, or broken-item photos.",
+          "If the issuer closes a documented billing error unfairly, a concise CFPB complaint with dates and proof frequently triggers an executive-office review."
+        ]
+      },
+      bank_fee: {
+        title: "Checking or Savings Account Fees / Account Closure",
+        relief: "~1% – 10%+ (Varies by Bank)",
+        rule: "Reg E / Account Agreements",
+        primary: "Fee waivers & explanations",
+        alertType: "warn",
+        alertTitle: "Bank Responses Vary Wildly",
+        alertBody: "Across deposit accounts, some major banks regularly reverse surprise overdraft or maintenance fees via CFPB escalation while others grant monetary relief in fewer than 1% of cases.",
+        steps: [
+          "Ask the bank's customer support for a one-time fee waiver first and note the representative's name and case number.",
+          "If funds are frozen or a clear bank error isn't fixed, file a concise factual timeline at consumerfinance.gov/complaint.",
+          "Consider credit unions or no-overdraft-fee accounts if repeated fee traps occur."
+        ]
+      },
+      debt: {
+        title: "Debt Collection Dispute or Harassment",
+        relief: "~0.2% Cash (~23–27% Non-Monetary)",
+        rule: "Fair Debt Collection Practices Act (FDCPA)",
+        primary: "Stopping calls & debt validation",
+        alertType: "warn",
+        alertTitle: "Know Your Written Validation Right",
+        alertBody: "Debt collectors rarely pay money through CFPB complaints (~0.2%), but ~23–27% of cases end in non-monetary relief such as halting collection calls or closing unverified accounts.",
+        steps: [
+          "Within 30 days of first contact, request written Debt Validation before paying a cent or acknowledging an unfamiliar debt.",
+          "Keep a log of call times/messages if a collector threatens arrest, calls outside 8am–9pm, or contacts your employer improperly.",
+          "If they ignore written validation or continue harassing you, file at consumerfinance.gov/complaint."
+        ]
+      }
+    };
+
+    function renderScenario(id) {
+      const s = SCENARIOS[id];
+      const el = document.getElementById("scen-result");
+      const alertClass = s.alertType === "good" ? "callout" : s.alertType === "bad" ? "callout bad" : "callout warn";
+      el.innerHTML = `
+        <h3 style="margin:0 0 6px; font-size:1.15rem; color:var(--ink)">${s.title}</h3>
+        <div class="stat-row">
+          <div class="stat-box"><div class="stat-label">Typical CFPB Monetary Relief</div><div class="stat-val">${s.relief}</div></div>
+          <div class="stat-box"><div class="stat-label">Key Federal Rule</div><div class="stat-val" style="font-size:0.98rem">${s.rule}</div></div>
+          <div class="stat-box"><div class="stat-label">Most Common Outcome</div><div class="stat-val" style="font-size:0.98rem">${s.primary}</div></div>
+        </div>
+        <div class="${alertClass}"><strong>${s.alertTitle}:</strong> ${s.alertBody}</div>
+        <h3 style="margin-top:14px;">Practical Steps That Actually Help</h3>
+        <ol style="margin:6px 0 0; padding-left:20px; font-size:0.92rem;">
+          ${s.steps.map((st) => `<li style="margin-bottom:6px;">${st}</li>`).join("")}
+        </ol>
+      `;
+    }
+
+    document.querySelectorAll("#scen-grid .scen-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#scen-grid .scen-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderScenario(btn.dataset.id);
+      });
+    });
+
+    renderScenario("p2p_scam");
+  </script>
+</body>
+</html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flood Insurance Payout Reality &amp; Zone X Risk — Open Plain-Language Research</title>
+  <meta name="description" content="Reproducible analysis of 5,000 recent paid FEMA NFIP flood claims (OpenFEMA API v3): why 28.7% happen outside high-risk flood zones, why 73.7% get zero contents payout, and how to check your coverage gap." />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    .topbar-inner { max-width: 1040px; margin: 0 auto; padding: 13px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.9rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 30px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 20px 16px; } }
+    .eyebrow { display: inline-block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 18px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.92rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .callout.bad { background: var(--bad-bg); border-left-color: #dc2626; color: var(--bad-ink); }
+    .callout.bad strong { color: var(--bad-ink); }
+    .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; align-items: start; }
+    @media (max-width: 760px) { .calc-grid { grid-template-columns: 1fr; } }
+    .field { margin-bottom: 14px; }
+    .field label { display: block; font-weight: 650; font-size: 0.88rem; margin-bottom: 5px; }
+    .field select, .field input[type="number"] { width: 100%; padding: 9px 11px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.9rem; background: var(--surface); color: var(--ink); }
+    .check-row { display: flex; gap: 9px; align-items: flex-start; font-size: 0.88rem; margin-bottom: 8px; cursor: pointer; }
+    .check-row input { margin-top: 3px; accent-color: var(--accent); }
+    .result-box { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: #fcfdfd; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; margin-top: 12px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.87rem; min-width: 560px; }
+    th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--surface-alt); font-weight: 700; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <a href="#gap-checker">Jump to Coverage Gap Checker &darr;</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Guide #07 &bull; Housing &amp; Live OpenFEMA v3 Data</span>
+      <h1>Flood Insurance Payout Reality &amp; Zone X Risk</h1>
+      <p class="meta">Reproducible analysis of <strong>5,000</strong> recent paid NFIP flood claims via OpenFEMA API v3 (<code>NfipClaims</code>) &bull; Compiled November 2026</p>
+
+      <div class="callout">
+        <strong>Why this guide exists:</strong> Over half of U.S. homeowners mistakenly believe standard homeowners insurance covers flood damage (it pays <strong>$0</strong>), and real-estate listings treat "not in a high-risk flood zone" as "safe." Live FEMA claims data tells a very different story.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Claims Outside High-Risk Zones</div>
+          <div class="kpi-val bad">28.7%</div>
+          <div class="kpi-sub">1,435 of 5,000 paid claims in Zone X/B/C</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Zone X Median Payout</div>
+          <div class="kpi-val">$18,904</div>
+          <div class="kpi-sub">Higher than Zone A/V ($17,468) in sample!</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">No Contents Payout</div>
+          <div class="kpi-val bad">73.7%</div>
+          <div class="kpi-sub">Only 26.3% received contents payouts</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Mean vs. Median Skew</div>
+          <div class="kpi-val">$36,929</div>
+          <div class="kpi-sub">Mean is 2.1&times; median ($17,843)</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1. Zone X vs. High-Risk Flood Zones (5,000 Paid Claims)</h2>
+      <p style="color:var(--ink-muted); font-size:0.93rem;">
+        In our live sample of 5,000 paid NFIP claims, <strong>28.7%</strong> occurred in Moderate/Low-Risk zones (Zone X/B/C)—matching FEMA's long-run 25%–40% historical range. Equally striking: for <em>insured</em> building claims with documented damage, the median NFIP payout covered <strong>91.7%</strong> of assessed building damage. The catastrophic financial gap happens when homes are <strong>uninsured</strong>, exceed NFIP's <strong>$250,000 residential building cap</strong>, or lack separate <strong>contents coverage</strong>.
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Flood Zone Group</th>
+              <th class="num">Claims (n)</th>
+              <th class="num">Share</th>
+              <th class="num">Median Bldg Payout</th>
+              <th class="num">Mean Bldg Payout</th>
+              <th class="num">Median Payout / Damage</th>
+            </tr>
+          </thead>
+          <tbody id="zone-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" id="gap-checker">
+      <h2>2. Interactive Homebuyer &amp; Renter Flood Gap Checker</h2>
+      <div class="calc-grid">
+        <div>
+          <div class="field">
+            <label for="f-role">Your Situation</label>
+            <select id="f-role">
+              <option value="owner">Homeowner / Buyer</option>
+              <option value="renter">Renter</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-zone">Property Flood Zone</label>
+            <select id="f-zone">
+              <option value="x">Moderate / Low Risk (Zone X — no lender mandate)</option>
+              <option value="sfha">High Risk (Zone A / AE / V / VE — lender mandated)</option>
+              <option value="unsure">Not sure</option>
+            </select>
+          </div>
+          <div class="field" id="val-field">
+            <label for="f-val">Estimated Rebuild Cost of Home ($)</label>
+            <input type="number" id="f-val" value="350000" min="50000" max="2000000" step="25000" />
+          </div>
+          <label class="check-row"><input type="checkbox" id="f-has-flood" /><span>I currently carry a separate NFIP or private flood policy</span></label>
+          <label class="check-row"><input type="checkbox" id="f-has-contents" /><span>My flood policy explicitly includes <strong>contents</strong> coverage</span></label>
+          <label class="check-row"><input type="checkbox" id="f-basement" /><span>Property has a finished basement with valuable items</span></label>
+        </div>
+        <div class="result-box" id="gap-output" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. Top States in the Recent OpenFEMA Sample (Showing Zone X Share)</h2>
+      <p style="color:var(--ink-muted); font-size:0.91rem;">
+        Notice how heavily inland/cloudburst states experience Zone X flooding: in this 5,000-claim sample, <strong>51.6%</strong> of Texas claims, <strong>46.2%</strong> of Florida claims, and <strong>41.3%</strong> of Louisiana claims happened outside mapped high-risk flood zones!
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>State</th>
+              <th class="num">Claims in Sample</th>
+              <th class="num">Median Bldg Payout</th>
+              <th class="num">Mean Bldg Payout</th>
+              <th class="num">Zone X Share</th>
+            </tr>
+          </thead>
+          <tbody id="state-tbody"></tbody>
+        </table>
+      </div>
+      <p style="font-size:0.81rem; color:var(--ink-muted); margin-top:8px;">
+        Data literacy note: Because OpenFEMA returns the 5,000 most recent paid claims sorted by date of loss, state rankings reflect recent storm geography rather than 50-year cumulative totals. What remains rock-solid across both this recent snapshot and multi-decade FEMA archives is the high Zone X share (~25%–40%), heavy payout skew, and low contents-payout rate.
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>4. Primary Sources &amp; Open Reproducibility</h2>
+      <ol class="sources">
+        <li><strong>FEMA OpenFEMA API v3:</strong> <code>https://www.fema.gov/api/open/v3/NfipClaims</code> (5,000 most recent paid residential/commercial NFIP building claims).</li>
+        <li><strong>FEMA NFIP Policyholder Resources:</strong> <em>NFIP Claims Handbook</em>, <em>Severe Repetitive Loss (SRL) Guide</em>, and <em>FloodSmart.gov</em> (residential $250,000 building / $100,000 contents statutory NFIP caps; 60-day Proof of Loss deadline).</li>
+        <li><strong>Reproducible Code:</strong> Full Python script (<code>data/flood-claims/analyze_openfema_flood_claims.py</code>) and output (<code>summary.json</code>) are open in the repository.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research &bull; Guide #07</span>
+      <span>Data: Live OpenFEMA API v3 &bull; CC BY 4.0 / MIT</span>
+    </footer>
+  </main>
+
+  <script src="../../data/flood-claims/summary-data.js"></script>
+  <script>
+    const F = window.OPENFEMA_FLOOD_DATA;
+
+    document.getElementById("zone-tbody").innerHTML = F.by_zone.map((z) => `
+      <tr>
+        <td><strong>${z.zone_group}</strong></td>
+        <td class="num">${z.count.toLocaleString()}</td>
+        <td class="num"><strong>${z.share_pct}%</strong></td>
+        <td class="num">$${z.median_bldg_paid.toLocaleString()}</td>
+        <td class="num">$${z.mean_bldg_paid.toLocaleString()}</td>
+        <td class="num">${z.median_payout_ratio_pct !== null ? z.median_payout_ratio_pct + "%" : "—"}</td>
+      </tr>
+    `).join("");
+
+    document.getElementById("state-tbody").innerHTML = F.top_states.slice(0, 12).map((s) => `
+      <tr>
+        <td><strong>${s.state}</strong></td>
+        <td class="num">${s.count.toLocaleString()}</td>
+        <td class="num">$${s.median_bldg_paid.toLocaleString()}</td>
+        <td class="num">$${s.mean_bldg_paid.toLocaleString()}</td>
+        <td class="num" style="font-weight:700; color:${s.zone_x_pct >= 35 ? "var(--bad-ink)" : "var(--ink)"}">${s.zone_x_pct}%</td>
+      </tr>
+    `).join("");
+
+    function renderGap() {
+      const role = document.getElementById("f-role").value;
+      const zone = document.getElementById("f-zone").value;
+      const val = Number(document.getElementById("f-val").value) || 0;
+      const hasFlood = document.getElementById("f-has-flood").checked;
+      const hasContents = document.getElementById("f-has-contents").checked;
+      const basement = document.getElementById("f-basement").checked;
+
+      document.getElementById("val-field").style.display = role === "owner" ? "block" : "none";
+
+      const warnings = [];
+      if (!hasFlood) {
+        warnings.push({
+          cls: "bad",
+          title: "100% Uninsured Flood Exposure ($0 from standard insurance)",
+          body: role === "renter"
+            ? "Standard renters insurance does NOT cover flood damage. Only a separate flood contents policy covers your belongings if water enters from outside. FEMA disaster grants (if even declared) typically average only a few thousand dollars."
+            : "Standard homeowners insurance pays $0 for rising water/flooding. In our live OpenFEMA data, 28.7% of all paid claims occurred in Moderate/Low-Risk Zone X—with a median building payout of $18,904 (and mean of $36,929). Remember NFIP policies typically have a 30-day waiting period!"
+        });
+      }
+      if (role === "owner" && hasFlood && val > 250000) {
+        const excess = val - 250000;
+        warnings.push({
+          cls: "warn",
+          title: `NFIP Building Cap Gap: ~$${excess.toLocaleString()} Above $250k Statutory Limit`,
+          body: "Standard federal NFIP residential building coverage caps out at $250,000. If your rebuild cost exceeds $250,000, a catastrophic flood leaves an uninsured cap gap unless you add excess flood or private flood coverage."
+        });
+      }
+      if (hasFlood && !hasContents) {
+        warnings.push({
+          cls: "warn",
+          title: "Contents Coverage Trap (73.7% of claims had $0 contents payout)",
+          body: "NFIP building coverage does NOT automatically cover furniture, clothes, or electronics—contents coverage must be added separately (capped at $100,000 under NFIP)."
+        });
+      }
+      if (basement) {
+        warnings.push({
+          cls: "warn",
+          title: "Finished Basement Exclusion Warning",
+          body: "Standard NFIP policies strictly limit basement coverage—typically covering essential mechanicals (furnace, water heater, electrical panel) but NOT finished walls, flooring, or personal belongings stored in basements."
+        });
+      }
+      if (zone === "unsure") {
+        warnings.push({
+          cls: "",
+          title: "Free 60-Second Check Before Buying or Renewing",
+          body: "Look up your exact address on FEMA's free Flood Map Service Center (msc.fema.gov), AND ask the seller for any prior NFIP loss history or Severe Repetitive Loss (SRL) status."
+        });
+      }
+      if (warnings.length === 0) {
+        warnings.push({
+          cls: "",
+          title: "Solid Baseline Protection — Verify Three Details",
+          body: "Keep digital photos/video of rooms and receipts in cloud storage, remember NFIP's strict 60-day Proof of Loss deadline after a flood, and verify your building & contents limits annually as construction costs rise."
+        });
+      }
+
+      document.getElementById("gap-output").innerHTML = `
+        <h3 style="margin:0 0 10px; color:var(--ink);">Your Coverage Reality Check</h3>
+        ${warnings.map((w) => `<div class="callout ${w.cls}"><strong>${w.title}</strong><br />${w.body}</div>`).join("")}
+      `;
+    }
+
+    ["f-role", "f-zone", "f-val", "f-has-flood", "f-has-contents", "f-basement"].forEach((id) => {
+      document.getElementById(id).addEventListener("input", renderGap);
+      document.getElementById(id).addEventListener("change", renderGap);
+    });
+    renderGap();
+  </script>
+</body>
+</html>

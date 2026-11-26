@@ -2,6 +2,101 @@
 // Add a new object here whenever you publish a new research project!
 window.RESEARCH_GUIDES = [
   {
+    id: "nursing-home-reality",
+    number: "Guide #03",
+    status: "published",
+    date: "November 2026",
+    category: "Elder Care & Health",
+    title: "Nursing Home Reality Beyond the 5-Star Rating (14,686 U.S. Homes)",
+    summary:
+      "Reproducible analysis of all 14,686 Medicare-certified nursing homes (live CMS Payroll-Based Journal data) exposing the 30.4% weekend RN staffing cliff, 45.3% annual turnover, $445.7M in fines, and the 44-minute daily for-profit vs. non-profit care gap.",
+    highlights: [
+      "Interactive 50-state + DC explorer sortable by staffing, weekend drop, turnover & fines",
+      "Exposes the '5-Star Illusion': 23.7% of 5-star homes cut weekend nursing by 15%+",
+      "6 concrete questions for families touring facilities on a weekend"
+    ],
+    guideUrl: "./guides/nursing-homes/",
+    toolUrl: "./guides/nursing-homes/#state-explorer",
+    toolLabel: "Explore All 50 States",
+    sourcesCount: "Live CMS Dataset (14,686 facilities)"
+  },
+  {
+    id: "airline-wheelchair-scorecard",
+    number: "Guide #04",
+    status: "published",
+    date: "November 2026",
+    category: "Consumer Rights",
+    title: "Airline Reliability & Wheelchair Safety Scorecard (2024–2025)",
+    summary:
+      "A zero-affiliate carrier scorecard built from mandatory U.S. DOT Air Travel Consumer Reports—ranking actual wheelchair/scooter mishandling rates (0.43% at Delta vs. 1.44% at JetBlue) and 2025 on-time performance.",
+    highlights: [
+      "Interactive sortable scorecard across 10 U.S. carriers (2024 vs. 2025 DOT logs)",
+      "Separates marketing promises from legally reported mobility & delay failure rates",
+      "Practical gate-check & DOT cash-refund rights checklist"
+    ],
+    guideUrl: "./guides/airline-safety/",
+    toolUrl: "./guides/airline-safety/#rights",
+    toolLabel: "Traveler Rights Checklist",
+    sourcesCount: "U.S. DOT / BTS ATCR (2024–2025)"
+  },
+  {
+    id: "food-recalls-decoded",
+    number: "Guide #05",
+    status: "published",
+    date: "November 2026",
+    category: "Everyday Science & Health",
+    title: "Food Recalls Decoded: Allergens vs. Severe Pathogens (29,634 FDA Records)",
+    summary:
+      "Live openFDA Food Enforcement API analysis separating high-volume allergen labeling errors (24.7% of recalls) from high-lethality Class I Salmonella (88.4% Class I) and Listeria (79.2% Class I) outbreaks—vs. foreign material at just 0.7% Class I.",
+    highlights: [
+      "Interactive Volume vs. Class I Severity chart across 9,192 recent recalls (2021–2026)",
+      "Exact allergen risk breakdown (Milk #1 by volume; Egg 65.6% Class I)",
+      "Open Python script querying api.fda.gov directly"
+    ],
+    guideUrl: "./guides/food-recalls/",
+    toolUrl: "./guides/food-recalls/#allergens",
+    toolLabel: "Explore Allergen Risks",
+    sourcesCount: "Live openFDA API (29,634 records)"
+  },
+  {
+    id: "financial-disputes-cfpb",
+    number: "Guide #06",
+    status: "published",
+    date: "November 2026",
+    category: "Consumer Finance",
+    title: "Financial Disputes, Credit-Repair Spam & P2P Fraud Reality",
+    summary:
+      "Built from CFPB Consumer Response Annual Reports (2024–2026): why credit bureaus get 85% of complaints yet pay <0.1% cash relief, how Regulation E splits Zelle hacks from scams, and how to avoid predatory 'credit sweep' schemes.",
+    highlights: [
+      "Interactive Dispute Reality Checker across 6 common money & fraud scenarios",
+      "Documents the copy-paste 'credit washing' spam skewing raw CFPB volumes",
+      "Clear, free federal dispute paths under Reg E, FCRA, FCBA & FDCPA"
+    ],
+    guideUrl: "./guides/financial-disputes/",
+    toolUrl: "./guides/financial-disputes/#dispute-tool",
+    toolLabel: "Open Dispute Checker",
+    sourcesCount: "CFPB Annual Reports & Reg E / FCRA"
+  },
+  {
+    id: "flood-insurance-payout-reality",
+    number: "Guide #07",
+    status: "published",
+    date: "November 2026",
+    category: "Housing & Climate Risk",
+    title: "Flood Insurance Payout Reality & Zone X Risk (5,000 OpenFEMA Claims)",
+    summary:
+      "Live OpenFEMA NFIP v3 analysis showing why 28.7% of paid flood claims happen outside mapped high-risk zones (with higher median payouts than Zone A/V!), why 73.7% receive $0 for contents, and how the $250k cap catches homeowners off guard.",
+    highlights: [
+      "Interactive Homebuyer & Renter Flood Coverage Gap Checker",
+      "State-by-state Zone X claim share (51.6% in TX, 46.2% in FL, 41.3% in LA)",
+      "Open Python script pulling directly from OpenFEMA v3 NfipClaims"
+    ],
+    guideUrl: "./guides/flood-claims/",
+    toolUrl: "./guides/flood-claims/#gap-checker",
+    toolLabel: "Check Your Flood Gap",
+    sourcesCount: "Live OpenFEMA API v3 (5,000 claims)"
+  },
+  {
     id: "microplastics-drinking-water",
     number: "Guide #01",
     status: "published",
@@ -32,7 +127,7 @@ window.RESEARCH_GUIDES = [
     highlights: [
       "Interactive 158-country trend chart & searchable data explorer (WHO 2010–2021)",
       "5 proven policies: Safe System engineering, 50/30 urban speed caps, cameras & crosswalk priority",
-      "Includes reproducible Python analysis code & data-literacy caveats on modeled projections"
+      "Documents WHO 2022–2023 extrapolation artifacts vs. NHTSA actuals"
     ],
     guideUrl: "./guides/traffic-safety/",
     toolUrl: "./guides/traffic-safety/#explorer",

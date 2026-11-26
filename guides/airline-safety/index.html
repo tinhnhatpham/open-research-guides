@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Airline Reliability &amp; Wheelchair Safety Scorecard — Open Plain-Language Research</title>
+  <meta name="description" content="Zero-affiliate U.S. airline scorecard built from mandatory DOT Air Travel Consumer Reports (2024–2025), comparing wheelchair mishandling rates, on-time arrivals, and traveler rights." />
+  <style>
+    :root {
+      --bg: #f6f7f5;
+      --surface: #ffffff;
+      --surface-alt: #f0f4f3;
+      --ink: #17212b;
+      --ink-muted: #52606d;
+      --border: #d9e2e0;
+      --accent: #0f6b6e;
+      --accent-dark: #0a4f52;
+      --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5;
+      --good-ink: #065f46;
+      --warn-bg: #fff8eb;
+      --warn-border: #f59e0b;
+      --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2;
+      --bad-ink: #b91c1c;
+      --radius: 14px;
+      --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.62;
+    }
+    .topbar {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .topbar-inner {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: 13px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+      font-size: 0.9rem;
+    }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 30px 20px 72px; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+    @media (max-width: 640px) { .card { padding: 20px 16px; } }
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 18px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+    .pill {
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .bar-list { display: grid; gap: 12px; }
+    .bar-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 0.9rem; margin-bottom: 4px; flex-wrap: wrap; }
+    .bar-track { height: 13px; background: #e9efee; border-radius: 999px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 999px; transition: width 0.25s ease; }
+    .tag { display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 2px 7px; border-radius: 999px; margin-left: 6px; }
+    .tag-good { background: var(--good-bg); color: var(--good-ink); }
+    .tag-bad { background: var(--bad-bg); color: var(--bad-ink); }
+    .tag-warn { background: var(--warn-bg); color: var(--warn-ink); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.88rem; min-width: 620px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--surface-alt); font-weight: 700; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .callout {
+      background: var(--surface-alt);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin: 14px 0;
+      font-size: 0.92rem;
+      color: var(--ink-muted);
+    }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } }
+    .box { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: #fcfdfd; }
+    .box ul { margin: 8px 0 0; padding-left: 19px; font-size: 0.9rem; color: var(--ink-muted); }
+    .box li { margin-bottom: 5px; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer {
+      margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border);
+      font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <a href="#rights">Jump to Traveler Rights Checklist &darr;</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Guide #04 &bull; Consumer Rights &amp; Aviation Data</span>
+      <h1>Airline Reliability &amp; Wheelchair Safety Scorecard (2024–2025)</h1>
+      <p class="meta">Zero-affiliate carrier comparison from mandatory U.S. DOT Air Travel Consumer Reports (ATCR) &amp; BTS data &bull; Compiled November 2026</p>
+
+      <div class="callout">
+        <strong>Why this guide exists:</strong> Most online "best airline" lists are funded by airline credit-card affiliate commissions, while the DOT's <code>FlightRights.gov</code> only shows what airlines <em>promise</em>. Meanwhile, the government's mandatory monthly failure logs sit inside clunky TranStats tables and dense PDFs. Here are the actual audited rates.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">2025 Wheelchair Mishandling</div>
+          <div class="kpi-val good">1.09%</div>
+          <div class="kpi-sub">Improved from 1.26% in 2024 (&gt;11,000 incidents)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Safest Major for Mobility</div>
+          <div class="kpi-val good">Delta (0.43%)</div>
+          <div class="kpi-sub">651 mishandled of ~153,000 checked</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">2025 U.S. On-Time Rate</div>
+          <div class="kpi-val bad">76.4%</div>
+          <div class="kpi-sub">Lowest since 2014 (down from 78.1% in 2024)</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Worst Mobility Rate (2025)</div>
+          <div class="kpi-val bad">JetBlue (1.44%)</div>
+          <div class="kpi-sub">Also lowest 2025 on-time (~62.0%)</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1. Interactive Carrier Scorecard (Mandatory DOT 2024–2025 Reports)</h2>
+      <p style="color:var(--ink-muted); font-size:0.93rem;">
+        Switch views below to rank major U.S. airlines by <strong>wheelchair &amp; scooter mishandling rate</strong> (lower is safer), <strong>year-over-year improvement</strong>, or <strong>2025 on-time arrival performance</strong>.
+      </p>
+
+      <div class="controls" id="view-controls">
+        <button type="button" class="pill active" data-view="wc2025">2025 Wheelchair Safety (Safest First)</button>
+        <button type="button" class="pill" data-view="wcChange">2024 &rarr; 2025 Mobility Trend</button>
+        <button type="button" class="pill" data-view="ontime2025">2025 On-Time Arrivals (Highest First)</button>
+      </div>
+
+      <div class="bar-list" id="scorecard-bars"></div>
+      <p style="font-size:0.81rem; color:var(--ink-muted); margin-top:12px;">
+        Note: Wheelchair mishandling covers devices lost, damaged, delayed, or pilfered per 100 checked. A 1.44% rate means roughly 1 in 69 checked wheelchairs or scooters suffered an incident—more than <strong>3&times; higher</strong> than Delta's 0.43% rate (~1 in 233).
+      </p>
+    </section>
+
+    <section class="card">
+      <h2>2. Full Carrier Data Table (2024 vs. 2025)</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Airline</th>
+              <th class="num">2024 Wheelchair Rate</th>
+              <th class="num">2025 Wheelchair Rate</th>
+              <th class="num">YoY Change</th>
+              <th class="num">2025 On-Time Arrival*</th>
+            </tr>
+          </thead>
+          <tbody id="carrier-tbody"></tbody>
+        </table>
+      </div>
+      <p style="font-size:0.81rem; color:var(--ink-muted); margin-top:8px;">
+        *On-time arrivals reflect reported full-year 2025 network figures (DOT/BTS reporting; Alaska &amp; Hawaiian unified FAA certificates late 2025; Spirit not listed in the same 2025 network summary subset). System-wide U.S. mishandled baggage rates typically average 0.50%–0.65%, with point-to-point carriers (Southwest, Allegiant) structurally lower than multi-connection hub carriers.
+      </p>
+    </section>
+
+    <section class="card" id="rights">
+      <h2>3. Practical Traveler Protection Checklist</h2>
+      <div class="callout warn">
+        <strong>Why wheelchair damage is uniquely severe:</strong> Unlike a lost suitcase, a damaged custom power wheelchair can cost $15,000–$40,000+ and leave a traveler stranded or injured for weeks. Choosing a carrier with a sub-0.5% vs. 1.4%+ mishandling rate cuts statistical risk by over two-thirds.
+      </div>
+      <div class="grid-2">
+        <div class="box">
+          <h3>Before You Fly With a Wheelchair / Scooter</h3>
+          <ul>
+            <li><strong>Book nonstop whenever possible:</strong> Transferring mobility devices between connecting planes multiplies handling risk.</li>
+            <li><strong>Photograph every angle at the gate</strong> (joysticks, footrests, batteries) right before handing it to ramp staff.</li>
+            <li><strong>Attach laminated handling instructions</strong> showing brake release, battery disconnect, and lift points directly onto the frame.</li>
+            <li><strong>Inspect before leaving the airport</strong> and file a written mishandling report immediately so the airline must log it under DOT rules.</li>
+          </ul>
+        </div>
+        <div class="box">
+          <h3>If Your Flight Is Cancelled or Severely Delayed</h3>
+          <ul>
+            <li><strong>Check mandatory refund rules:</strong> Under DOT rules, if an airline cancels or significantly changes your flight and you choose not to travel, you are entitled to a <strong>cash/original-payment refund</strong>—not just an expiring voucher.</li>
+            <li><strong>Check <code>FlightRights.gov</code> before booking</strong> to see which airlines commit in writing to meals and hotels for controllable delays.</li>
+            <li><strong>File a formal DOT complaint</strong> if an airline violates accessibility or refund rules—those filings directly feed the public ATCR dataset and enforcement fines.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Primary Sources &amp; Data Caveats</h2>
+      <ol class="sources">
+        <li><strong>U.S. Department of Transportation (DOT) / BTS:</strong> <em>Air Travel Consumer Reports (ATCR)</em>, Full-Year 2024 and Full-Year 2025 editions (wheelchair/scooter mishandling, domestic on-time performance, cancellation rates, and mishandled baggage).</li>
+        <li><strong>DOT Aviation Consumer Protection Dashboard:</strong> <code>FlightRights.gov</code> (controllable delay/cancellation carrier commitments).</li>
+        <li><strong>Data caveats:</strong> On-time rates vary sharply by geography—airlines concentrated in congested Northeast corridors (like JetBlue) face heavier airspace delays than carriers concentrated in less congested regions. Conversely, wheelchair mishandling reflects ground-handling training and equipment procedures directly under carrier control.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research &bull; Guide #04</span>
+      <span>Data: U.S. DOT / BTS ATCR (2024–2025) &bull; Zero Affiliate Links</span>
+    </footer>
+  </main>
+
+  <script>
+    const CARRIERS = [
+      { name: "Delta Air Lines", wc24: 0.63, wc25: 0.43, ontime25: 80.0, note: "Best major carrier for mobility" },
+      { name: "Allegiant Air", wc24: null, wc25: 0.74, ontime25: null, note: "Strong point-to-point mobility record" },
+      { name: "United Airlines", wc24: 0.97, wc25: 1.06, ontime25: 81.3, note: "Strong punctuality; mobility worsened" },
+      { name: "Southwest Airlines", wc24: 1.44, wc25: 1.19, ontime25: 78.4, note: "Improved mobility in 2025" },
+      { name: "Hawaiian Airlines", wc24: null, wc25: 1.20, ontime25: 81.95, note: "Top punctuality (merged w/ Alaska)" },
+      { name: "Spirit Airlines", wc24: 2.07, wc25: 1.33, ontime25: null, note: "Largest mobility improvement (-0.74 pts)" },
+      { name: "Alaska Airlines", wc24: 1.54, wc25: 1.37, ontime25: 84.6, note: "Highest 2025 network on-time" },
+      { name: "American Airlines", wc24: 1.63, wc25: 1.41, ontime25: 79.1, note: "Above-average mobility mishandling" },
+      { name: "Frontier Airlines", wc24: 1.76, wc25: 1.43, ontime25: 70.7, note: "Lagging on both metrics" },
+      { name: "JetBlue Airways", wc24: 1.59, wc25: 1.44, ontime25: 62.0, note: "Worst major on both metrics in 2025" }
+    ];
+
+    let activeView = "wc2025";
+
+    document.querySelectorAll("#view-controls .pill").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("#view-controls .pill").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        activeView = btn.dataset.view;
+        renderBars();
+      });
+    });
+
+    function renderBars() {
+      const el = document.getElementById("scorecard-bars");
+      let rows = [];
+
+      if (activeView === "wc2025") {
+        rows = [...CARRIERS].sort((a, b) => a.wc25 - b.wc25);
+        el.innerHTML = rows.map((c) => {
+          const pct = Math.min(100, (c.wc25 / 1.6) * 100);
+          const col = c.wc25 <= 0.75 ? "#0f766e" : c.wc25 <= 1.25 ? "#d97706" : "#dc2626";
+          const badge = c.wc25 === 0.43 ? `<span class="tag tag-good">Safest Major</span>` : c.wc25 >= 1.40 ? `<span class="tag tag-bad">High Risk (&gt;1.4%)</span>` : "";
+          return `
+            <div>
+              <div class="bar-head">
+                <span><strong>${c.name}</strong>${badge}</span>
+                <span style="color:var(--ink-muted)"><strong>${c.wc25.toFixed(2)}%</strong> mishandled (1 in ~${Math.round(100 / c.wc25)})</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:${col};"></div></div>
+            </div>
+          `;
+        }).join("");
+      } else if (activeView === "wcChange") {
+        rows = CARRIERS.filter((c) => c.wc24 !== null)
+          .map((c) => ({ ...c, diff: +(c.wc25 - c.wc24).toFixed(2) }))
+          .sort((a, b) => a.diff - b.diff);
+        el.innerHTML = rows.map((c) => {
+          const absW = Math.max(8, Math.min(100, (Math.abs(c.diff) / 0.8) * 100));
+          const improved = c.diff < 0;
+          const col = improved ? "#0f766e" : "#dc2626";
+          const tag = improved ? `<span class="tag tag-good">Improved</span>` : `<span class="tag tag-bad">Worsened</span>`;
+          return `
+            <div>
+              <div class="bar-head">
+                <span><strong>${c.name}</strong>${tag}</span>
+                <span style="color:var(--ink-muted)">${c.wc24.toFixed(2)}% &rarr; <strong>${c.wc25.toFixed(2)}%</strong> (${c.diff > 0 ? "+" : ""}${c.diff.toFixed(2)} pts)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" style="width:${absW}%; background:${col};"></div></div>
+            </div>
+          `;
+        }).join("");
+      } else {
+        rows = CARRIERS.filter((c) => c.ontime25 !== null).sort((a, b) => b.ontime25 - a.ontime25);
+        el.innerHTML = rows.map((c) => {
+          const col = c.ontime25 >= 80 ? "#0f766e" : c.ontime25 >= 75 ? "#d97706" : "#dc2626";
+          const tag = c.ontime25 >= 81.5 ? `<span class="tag tag-good">Top Punctuality</span>` : c.ontime25 < 72 ? `<span class="tag tag-bad">Frequent Delays</span>` : "";
+          return `
+            <div>
+              <div class="bar-head">
+                <span><strong>${c.name}</strong>${tag}</span>
+                <span style="color:var(--ink-muted)"><strong>${c.ontime25.toFixed(1)}%</strong> on-time (U.S. avg: 76.4%)</span>
+              </div>
+              <div class="bar-track"><div class="bar-fill" style="width:${c.ontime25}%; background:${col};"></div></div>
+            </div>
+          `;
+        }).join("");
+      }
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("carrier-tbody");
+      tbody.innerHTML = [...CARRIERS].sort((a, b) => a.wc25 - b.wc25).map((c) => {
+        const diff = c.wc24 !== null ? +(c.wc25 - c.wc24).toFixed(2) : null;
+        const diffHtml = diff === null ? "—" : `<span style="font-weight:700; color:${diff < 0 ? "var(--good-ink)" : "var(--bad-ink)"}">${diff > 0 ? "+" : ""}${diff.toFixed(2)} pts</span>`;
+        return `
+          <tr>
+            <td><strong>${c.name}</strong><br /><span style="font-size:0.78rem; color:var(--ink-muted)">${c.note}</span></td>
+            <td class="num">${c.wc24 !== null ? c.wc24.toFixed(2) + "%" : "—"}</td>
+            <td class="num"><strong>${c.wc25.toFixed(2)}%</strong></td>
+            <td class="num">${diffHtml}</td>
+            <td class="num">${c.ontime25 !== null ? c.ontime25.toFixed(1) + "%" : "—"}</td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    renderBars();
+    renderTable();
+  </script>
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nursing Home Reality Beyond the 5-Star Rating — Open Plain-Language Research</title>
+  <meta name="description" content="Reproducible analysis of all 14,686 Medicare-certified U.S. nursing homes (live CMS Payroll-Based Journal data): weekend RN drops, 45% staff turnover, $445.7M in fines, and for-profit vs. non-profit gaps." />
+  <style>
+    :root {
+      --bg: #f6f7f5; --surface: #ffffff; --surface-alt: #f0f4f3;
+      --ink: #17212b; --ink-muted: #52606d; --border: #d9e2e0;
+      --accent: #0f6b6e; --accent-dark: #0a4f52; --accent-soft: #e6f4f4;
+      --good-bg: #ecfdf5; --good-ink: #065f46;
+      --warn-bg: #fff8eb; --warn-border: #f59e0b; --warn-ink: #8a4b08;
+      --bad-bg: #fef2f2; --bad-ink: #b91c1c;
+      --radius: 14px; --shadow: 0 2px 12px rgba(23, 33, 43, 0.05);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background: var(--bg); color: var(--ink); line-height: 1.62; }
+    .topbar { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 10; }
+    .topbar-inner { max-width: 1040px; margin: 0 auto; padding: 13px 20px; display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; font-size: 0.9rem; }
+    .topbar a { color: var(--accent-dark); text-decoration: none; font-weight: 650; }
+    .topbar a:hover { text-decoration: underline; }
+    .container { max-width: 1040px; margin: 0 auto; padding: 30px 20px 72px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 28px; box-shadow: var(--shadow); margin-bottom: 22px; }
+    @media (max-width: 640px) { .card { padding: 20px 16px; } }
+    .eyebrow { display: inline-block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; margin-bottom: 10px; }
+    h1 { margin: 0 0 8px; font-size: clamp(1.65rem, 3.2vw, 2.25rem); line-height: 1.2; letter-spacing: -0.02em; }
+    h2 { margin: 0 0 12px; font-size: 1.28rem; letter-spacing: -0.015em; }
+    h3 { margin: 0 0 6px; font-size: 1.02rem; color: var(--accent-dark); }
+    p { margin: 0 0 12px; }
+    p:last-child { margin-bottom: 0; }
+    .meta { color: var(--ink-muted); font-size: 0.9rem; margin-bottom: 18px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-top: 16px; }
+    @media (max-width: 780px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 460px) { .kpi-grid { grid-template-columns: 1fr; } }
+    .kpi { background: var(--surface-alt); border-radius: 12px; padding: 14px 16px; }
+    .kpi-label { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-muted); font-weight: 700; }
+    .kpi-val { font-size: 1.42rem; font-weight: 800; margin: 3px 0 2px; }
+    .kpi-val.bad { color: var(--bad-ink); }
+    .kpi-val.good { color: var(--good-ink); }
+    .kpi-sub { font-size: 0.79rem; color: var(--ink-muted); }
+    .callout { background: var(--surface-alt); border-left: 4px solid var(--accent); border-radius: 8px; padding: 14px 16px; margin: 14px 0; font-size: 0.92rem; color: var(--ink-muted); }
+    .callout strong { color: var(--ink); }
+    .callout.warn { background: var(--warn-bg); border-left-color: var(--warn-border); color: var(--warn-ink); }
+    .callout.warn strong { color: var(--warn-ink); }
+    .owner-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 12px; }
+    @media (max-width: 760px) { .owner-grid { grid-template-columns: 1fr; } }
+    .owner-card { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: #fcfdfd; }
+    .owner-card.highlight { border-color: var(--accent); background: #f8fcfc; }
+    .owner-stat { display: flex; justify-content: space-between; font-size: 0.87rem; padding: 6px 0; border-bottom: 1px solid #edf2f1; }
+    .owner-stat:last-child { border-bottom: none; }
+    .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; }
+    .controls input, .controls select { border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 0.88rem; background: var(--surface); color: var(--ink); }
+    .controls input { flex: 1; min-width: 170px; }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; max-height: 440px; overflow-y: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.86rem; min-width: 650px; }
+    th, td { padding: 9px 11px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { background: var(--surface-alt); position: sticky; top: 0; font-weight: 700; z-index: 2; }
+    .num { text-align: right; font-variant-numeric: tabular-nums; }
+    .checklist { margin: 8px 0 0; padding-left: 20px; font-size: 0.93rem; }
+    .checklist li { margin-bottom: 8px; }
+    .sources { margin: 0; padding-left: 20px; font-size: 0.88rem; color: var(--ink-muted); }
+    .sources li { margin-bottom: 6px; }
+    .sources strong { color: var(--ink); }
+    footer { margin-top: 28px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.82rem; color: var(--ink-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../../">&larr; Back to Research Hub</a>
+      <a href="#state-explorer">Jump to 50-State Explorer &darr;</a>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <span class="eyebrow">Guide #03 &bull; Elder Care &amp; Live CMS Data</span>
+      <h1>Nursing Home Reality Beyond the 5-Star Rating</h1>
+      <p class="meta">Reproducible analysis of all <strong>14,686</strong> Medicare/Medicaid-certified U.S. nursing homes (CMS Payroll-Based Journal &amp; Penalties Dataset <code>4pq5-n9py</code>) &bull; Compiled November 2026</p>
+
+      <div class="callout">
+        <strong>Why this guide exists:</strong> Families choosing a nursing home for an aging parent usually only look at Medicare's headline 5-star badge. Analyzing payroll-verified staffing logs and federal fines across every certified facility in America reveals massive hidden risks—especially on weekends and across for-profit vs. non-profit ownership.
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi">
+          <div class="kpi-label">Weekend RN Cliff</div>
+          <div class="kpi-val bad">-30.4%</div>
+          <div class="kpi-sub">RN care drops 0.69 &rarr; 0.48 hrs/resident/day</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Annual Staff Turnover</div>
+          <div class="kpi-val bad">45.3%</div>
+          <div class="kpi-sub">Nearly half of nursing staff leaves yearly</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Facilities With Federal Fines</div>
+          <div class="kpi-val bad">44.0%</div>
+          <div class="kpi-sub">$445.7M total fines &bull; 9.5% abuse icon</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">For-Profit Staffing Gap</div>
+          <div class="kpi-val">-44 min/day</div>
+          <div class="kpi-sub">3.72 hrs vs. 4.46 hrs at non-profits</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>1. The "5-Star Illusion": What Even Top-Rated Facilities Hide</h2>
+      <p style="color:var(--ink-muted); font-size:0.94rem;">
+        Across the <strong>3,154</strong> U.S. nursing homes that currently hold CMS's highest <strong>5-star overall rating</strong>, payroll-verified PBJ records and enforcement files still uncover major warning signs:
+      </p>
+      <div class="callout warn">
+        <strong>Even among 5-star nursing homes:</strong>
+        <strong>23.7%</strong> slash total nursing hours by 15% or more on weekends &bull;
+        <strong>14.9%</strong> still suffer 50%+ annual nursing turnover &bull;
+        <strong>14.6%</strong> have active federal fines on record. Never stop at the headline star score.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>2. Ownership Matters: Non-Profit vs. Government vs. For-Profit</h2>
+      <p style="color:var(--ink-muted); font-size:0.93rem;">
+        Roughly three out of four U.S. nursing homes (74.1%) are for-profit. On average, non-profit facilities deliver <strong>44 more minutes of nursing care per resident every single day</strong>, have lower turnover, and receive roughly <strong>half the average federal fine</strong>.
+      </p>
+      <div class="owner-grid" id="owner-grid"></div>
+    </section>
+
+    <section class="card" id="state-explorer">
+      <h2>3. Interactive 50-State + DC Nursing Home Explorer</h2>
+      <p style="color:var(--ink-muted); font-size:0.91rem; margin-bottom:12px;">
+        Compare payroll-verified average total nurse hours per resident day (HPRD), weekend drops, staff turnover, and federal fine rates across states.
+      </p>
+      <div class="controls">
+        <input type="search" id="st-search" placeholder="Filter by state abbreviation (e.g. CA, TX, NY, FL, OH)..." aria-label="Filter states" />
+        <select id="st-sort" aria-label="Sort states">
+          <option value="hprd_desc">Highest Total Staffing Hours First</option>
+          <option value="wknd_desc">Biggest Weekend Drop % First</option>
+          <option value="turn_desc">Highest Nursing Turnover % First</option>
+          <option value="fined_desc">Highest % of Fined Homes First</option>
+          <option value="state_asc">State (A–Z)</option>
+        </select>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>State</th>
+              <th class="num">Facilities</th>
+              <th class="num">Avg Stars</th>
+              <th class="num">Total Nurse Hrs</th>
+              <th class="num">Weekend Hrs</th>
+              <th class="num">Wknd Drop</th>
+              <th class="num">Turnover</th>
+              <th class="num">% Fined</th>
+            </tr>
+          </thead>
+          <tbody id="st-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>4. Six Concrete Checks for Families Touring a Facility</h2>
+      <ol class="checklist">
+        <li><strong>Visit unannounced on a Saturday or Sunday afternoon:</strong> Nationally, Registered Nurse (RN) hours plunge <strong>30.4%</strong> on weekends. Seeing a facility on Sunday shows its real baseline.</li>
+        <li><strong>Look up the 6 hidden metrics on <code>medicare.gov/care-compare</code>:</strong> Check (1) Ownership type, (2) Weekend total &amp; RN hours, (3) Total nursing turnover, (4) RN turnover, (5) Administrator turnover, and (6) Federal fines / abuse icon.</li>
+        <li><strong>Ask directly about agency/temp nurse share:</strong> High turnover (&gt;50%) means staff do not know your parent's medications, fall triggers, or dietary needs.</li>
+        <li><strong>Check if the facility changed ownership in the last 12 months:</strong> Rapid buyouts often precede staffing cuts or administrator departures.</li>
+        <li><strong>Read the actual inspection narratives (Form 2567):</strong> A single "Immediate Jeopardy" citation tells you far more than a star rating average.</li>
+        <li><strong>Compare against your state average above:</strong> Use the table to see whether a home is actually outperforming local peers—not just riding a lenient regional curve.</li>
+      </ol>
+    </section>
+
+    <section class="card">
+      <h2>5. Primary Sources &amp; Open Reproducibility</h2>
+      <ol class="sources">
+        <li><strong>Centers for Medicare &amp; Medicaid Services (CMS):</strong> Provider Data Catalog — <em>Nursing Home Provider Information</em> (Dataset <code>4pq5-n9py</code>, 14,686 certified facilities, Payroll-Based Journal verified staffing &amp; federal penalty records).</li>
+        <li><strong>Reproducible Code:</strong> Full Python script (<code>data/nursing-homes/analyze_cms_nursing_homes.py</code>) and dataset (<code>summary.json</code>) are open in the repository so anyone can re-run and verify every state and ownership statistic.</li>
+        <li><strong>Data Caveat:</strong> State averages mask wide facility-to-facility variation—there are excellent for-profit homes and struggling non-profits. Always check the specific facility's PBJ numbers and inspection reports on Medicare Care Compare.</li>
+      </ol>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research &bull; Guide #03</span>
+      <span>Data: Live CMS Provider Data Catalog (14,686 U.S. Homes) &bull; CC BY 4.0 / MIT</span>
+    </footer>
+  </main>
+
+  <script src="../../data/nursing-homes/summary-data.js"></script>
+  <script>
+    const CMS = window.CMS_NURSING_HOME_DATA;
+
+    document.getElementById("owner-grid").innerHTML = CMS.by_ownership.map((o) => `
+      <div class="owner-card ${o.ownership === "Non-Profit" ? "highlight" : ""}">
+        <h3 style="margin:0 0 4px;">${o.ownership}</h3>
+        <p style="font-size:0.8rem; color:var(--ink-muted); margin-bottom:10px;">${o.facilities.toLocaleString()} homes (${o.share_pct}% of U.S.)</p>
+        <div class="owner-stat"><span>Avg Overall Rating</span><strong>${o.avg_stars} / 5</strong></div>
+        <div class="owner-stat"><span>Total Nurse Hrs/Res/Day</span><strong>${o.avg_total_hprd} hrs</strong></div>
+        <div class="owner-stat"><span>Weekend Nurse Hrs</span><strong>${o.avg_weekend_hprd} hrs (-${o.weekend_drop_pct}%)</strong></div>
+        <div class="owner-stat"><span>RN Hrs (Wkday &rarr; Wknd)</span><strong>${o.avg_rn_hprd} &rarr; ${o.avg_rn_weekend_hprd}h</strong></div>
+        <div class="owner-stat"><span>Annual Nurse Turnover</span><strong>${o.avg_turnover_pct}%</strong></div>
+        <div class="owner-stat"><span>Facilities Fined</span><strong>${o.pct_fined}% (avg $${o.avg_fine_dollars.toLocaleString()})</strong></div>
+      </div>
+    `).join("");
+
+    const searchEl = document.getElementById("st-search");
+    const sortEl = document.getElementById("st-sort");
+
+    function renderStates() {
+      const q = searchEl.value.trim().toLowerCase();
+      const sort = sortEl.value;
+      let rows = CMS.by_state.filter((s) => !q || s.state.toLowerCase().includes(q));
+      if (sort === "hprd_desc") rows.sort((a, b) => (b.avg_total_hprd || 0) - (a.avg_total_hprd || 0));
+      else if (sort === "wknd_desc") rows.sort((a, b) => (b.weekend_drop_pct || 0) - (a.weekend_drop_pct || 0));
+      else if (sort === "turn_desc") rows.sort((a, b) => (b.avg_turnover_pct || 0) - (a.avg_turnover_pct || 0));
+      else if (sort === "fined_desc") rows.sort((a, b) => (b.pct_fined || 0) - (a.pct_fined || 0));
+      else rows.sort((a, b) => a.state.localeCompare(b.state));
+
+      document.getElementById("st-tbody").innerHTML = rows.map((s) => `
+        <tr>
+          <td><strong>${s.state}</strong></td>
+          <td class="num">${s.facilities}</td>
+          <td class="num">${s.avg_stars}</td>
+          <td class="num"><strong>${s.avg_total_hprd}h</strong></td>
+          <td class="num">${s.avg_weekend_hprd}h</td>
+          <td class="num" style="color:${s.weekend_drop_pct >= 14 ? "var(--bad-ink)" : "var(--ink)"}">-${s.weekend_drop_pct}%</td>
+          <td class="num" style="color:${s.avg_turnover_pct >= 50 ? "var(--bad-ink)" : "var(--ink)"}">${s.avg_turnover_pct}%</td>
+          <td class="num">${s.pct_fined}%</td>
+        </tr>
+      `).join("");
+    }
+
+    searchEl.addEventListener("input", renderStates);
+    sortEl.addEventListener("change", renderStates);
+    renderStates();
+  </script>
+</body>
+</html>

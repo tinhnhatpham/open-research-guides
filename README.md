@@ -1,33 +1,31 @@
 # Open Plain-Language Research Guides
 
-A small, independent public-interest project turning peer-reviewed studies and public datasets into calm, honest, citation-backed guides and simple tools that ordinary people can actually use.
+**Live Site:** https://open-research-guides.vercel.app/
+
+A public-interest, zero-affiliate collection of citation-backed guides, reproducible public-data analyses, and free interactive tools turning messy government datasets and peer-reviewed studies into clear everyday decisions.
 
 ### Project Principles
-- **Primary sources first:** Claims are checked against peer-reviewed papers, official testing standards, and public datasets—not viral posts or sponsored reviews.
-- **Honest about uncertainty:** Every guide explicitly states what scientists still do *not* know and notes legitimate methodological critiques.
-- **Practical & zero-agenda:** No affiliate links, no tracking, no fearmongering—just clear trade-offs across real household budgets.
+- **Step 0 Prior-Art Check:** Before building, we check what already exists and target real gaps where ordinary people face clunky government portals, paywalls, or SEO/affiliate spam.
+- **Primary Data & Open Code:** Every data-driven guide includes the reproducible Python script pulling directly from official open APIs (WHO, CMS, openFDA, OpenFEMA, World Bank).
+- **Honest About Traps & Uncertainty:** Every guide explicitly flags data artifacts, confounders, and what science or agencies still haven't settled.
 
 ---
 
-## Guides & Tools
+## Published Guides & Interactive Tools (7)
 
-### 1. Microplastics in Drinking Water: What Actually Works (on Any Budget)
-- **Full Evidence Guide:** [`microplastics-drinking-water-guide.md`](./microplastics-drinking-water-guide.md) — Peer-reviewed lab evidence (2023–2025), 5 myth checks, annual budget breakdown, safety caveats, and open scientific gaps.
-- **Interactive Decision Calculator:** [`microplastics-calculator/index.html`](./microplastics-calculator/index.html) — Open directly in any web browser (zero setup, runs 100% locally) to get a tailored household recommendation and 3-year cost comparison.
-- **1-Minute Shareable Summary:** [`microplastics-shareable-summary.md`](./microplastics-shareable-summary.md) — Ready to share with family or community groups.
-
-### 2. Global Traffic Safety: Which Countries Cut Road Deaths Fastest — and How?
-- **Interactive Data Guide & 158-Country Explorer:** [`guides/traffic-safety/index.html`](./guides/traffic-safety/index.html) — Live multi-country SVG trend chart, regional progress breakdown, searchable 158-country table, and 5 proven policy lessons.
-- **Markdown Brief:** [`traffic-safety-global-guide.md`](./traffic-safety-global-guide.md)
-- **Reproducible Analysis Code & Data:** [`data/traffic-safety/analyze_who_road_deaths.py`](./data/traffic-safety/analyze_who_road_deaths.py) & [`data/traffic-safety/summary.json`](./data/traffic-safety/summary.json) (pulls directly from the WHO Global Health Observatory `RS_198` & World Bank APIs).
+1. **Guide #01 — Microplastics in Drinking Water:** [`guides/microplastics/`](./guides/microplastics/) + [Interactive Decision Calculator](./microplastics-calculator/) + [Markdown Guide](./microplastics-drinking-water-guide.md) + [1-Min Shareable Summary](./microplastics-shareable-summary.md)
+2. **Guide #02 — Global Traffic Safety (158 Countries):** [`guides/traffic-safety/`](./guides/traffic-safety/) + [Python WHO Analysis](./data/traffic-safety/analyze_who_road_deaths.py)
+3. **Guide #03 — Nursing Home Reality Beyond the 5-Star Rating (14,686 U.S. Homes):** [`guides/nursing-homes/`](./guides/nursing-homes/) + [Python CMS PBJ Analysis](./data/nursing-homes/analyze_cms_nursing_homes.py)
+4. **Guide #04 — Airline Reliability & Wheelchair Safety Scorecard (2024–2025 DOT/BTS):** [`guides/airline-safety/`](./guides/airline-safety/)
+5. **Guide #05 — Food Recalls Decoded: Allergens vs. Severe Pathogens (29,634 openFDA Records):** [`guides/food-recalls/`](./guides/food-recalls/) + [Python openFDA Analysis](./data/food-recalls/analyze_openfda_food_recalls.py)
+6. **Guide #06 — Financial Disputes, Credit-Repair Spam & P2P Fraud Reality (CFPB):** [`guides/financial-disputes/`](./guides/financial-disputes/)
+7. **Guide #07 — Flood Insurance Payout Reality & Zone X Risk (5,000 OpenFEMA v3 Claims):** [`guides/flood-claims/`](./guides/flood-claims/) + [Python OpenFEMA v3 Analysis](./data/flood-claims/analyze_openfema_flood_claims.py)
 
 ---
 
-## How to Use or Publish This Project
-
-- **Try locally:** Double-click `index.html` (Research Hub) or `microplastics-calculator/index.html` to open in any web browser.
-- **Publish for free on Vercel (recommended):** Push this folder to a public GitHub repository and import it in [Vercel](https://vercel.com/new) (Framework Preset: **Other**, Output Directory: `.`). Every future push auto-deploys live!
-- **Contribute or spot a correction:** If a newer peer-reviewed study updates or contradicts a finding here, please open an issue or pull request with the primary citation (DOI or official agency link).
+## Suggest a Topic or Spot an Error
+Open an issue on GitHub with the topic gap or primary source/DOI:
+https://github.com/tinhnhatpham/open-research-guides/issues
 
 ## License
-Released for open public benefit under **CC BY 4.0** (guides) and **MIT** (interactive tool code). Feel free to share, adapt, or translate with attribution.
+Released for open public benefit under **CC BY 4.0** (guides) and **MIT** (interactive tools & analysis scripts).
