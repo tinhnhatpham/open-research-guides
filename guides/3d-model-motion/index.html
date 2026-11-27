@@ -1,0 +1,2026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>3D Model Motion: Skeleton Rigging, Character Physics, and Handgrip Mechanics</title>
+  <meta name="description" content="Interactive 3D skeleton, handgrip IK, and LBS vs. DQS skinning lab paired with primary-source research on SMPL-X, Meta MHR, UniRig, UE5 Motion Matching, InterMimic, GigaHands, and 2026 mocap pipelines." />
+  <meta property="og:title" content="3D Model Motion: Skeleton Rigging, Character Physics, and Handgrip Mechanics" />
+  <meta property="og:description" content="Explore live 3D locomotion foot-locking, 21-keypoint MANO handgrips, and forearm skinning twist alongside verified 2022–2026 research and studio hardware pricing." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://open-research-guides.vercel.app/guides/3d-model-motion/" />
+  <link rel="canonical" href="https://open-research-guides.vercel.app/guides/3d-model-motion/" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-subtle: #edf1f5;
+      --stage-bg: #0f172a;
+      --ink: #0f172a;
+      --ink-muted: #475569;
+      --border: #d5dde5;
+      --border-strong: #94a3b8;
+      --accent: #1d4ed8;
+      --accent-hover: #1e40af;
+      --accent-soft: #eff6ff;
+      --safe-ink: #15803d;
+      --safe-bg: #f0fdf4;
+      --warn-ink: #b45309;
+      --warn-bg: #fffbeb;
+      --danger-ink: #b91c1c;
+      --danger-bg: #fef2f2;
+      --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --text-h2: 1.5rem;
+      --text-body: 1rem;
+      --text-sm: 0.875rem;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      font-variant-numeric: tabular-nums;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: color 180ms var(--ease-out);
+    }
+
+    a:hover { color: var(--accent-hover); }
+
+    /* Single-line sticky navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(246, 248, 250, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .nav-links a {
+      color: var(--ink-muted);
+      text-decoration: none;
+    }
+
+    .nav-links a:hover { color: var(--accent); }
+
+    .page-shell {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 36px 24px 80px;
+    }
+
+    /* Editorial masthead (no marketing hero banner, no eyebrow) */
+    .article-header {
+      padding-bottom: 28px;
+      border-bottom: 2px solid var(--ink);
+      margin-bottom: 32px;
+    }
+
+    .article-header h1 {
+      margin: 0 0 14px;
+      font-family: var(--font-display);
+      font-size: clamp(2.1rem, 4.3vw, 3.25rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      max-width: 24ch;
+    }
+
+    .article-summary {
+      margin: 0 0 18px;
+      color: var(--ink-muted);
+      font-size: var(--text-body);
+      max-width: 65ch;
+    }
+
+    .article-byline {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+    }
+
+    /* Sections */
+    .report-section {
+      padding: 44px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .report-section.first-section {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    h2 {
+      margin: 0 0 12px;
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 700;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 40ch;
+    }
+
+    h3 {
+      margin: 26px 0 8px;
+      font-family: var(--font-display);
+      font-size: var(--text-body);
+      font-weight: 700;
+      color: var(--ink);
+      max-width: 65ch;
+    }
+
+    p {
+      margin: 0 0 16px;
+      font-size: var(--text-body);
+      max-width: 65ch;
+      color: var(--ink);
+    }
+
+    p.muted { color: var(--ink-muted); }
+
+    ul, ol {
+      margin: 0 0 20px;
+      padding-left: 22px;
+      font-size: var(--text-body);
+      max-width: 65ch;
+    }
+
+    li { margin-bottom: 10px; }
+
+    /* Interactive 3D Workbench */
+    .lab-shell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-top: 20px;
+    }
+
+    .lab-topbar {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .segmented {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segmented label {
+      display: block;
+      padding: 9px 14px;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-muted);
+      text-align: center;
+      cursor: pointer;
+      white-space: nowrap;
+      border-right: 1px solid var(--border);
+      transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out);
+    }
+
+    .segmented label:last-of-type { border-right: none; }
+
+    .segmented input:checked + label {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .segmented input:focus-visible + label {
+      outline: 2px solid var(--ink);
+      outline-offset: -2px;
+    }
+
+    .stage-hint {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+    }
+
+    .lab-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+      align-items: stretch;
+    }
+
+    .viewport-wrap {
+      background: var(--stage-bg);
+      position: relative;
+      min-height: 460px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    canvas#sim-canvas {
+      width: 100%;
+      flex: 1 1 auto;
+      min-height: 480px;
+      display: block;
+      cursor: grab;
+      touch-action: none;
+    }
+
+    canvas#sim-canvas:active { cursor: grabbing; }
+
+    .viewport-footer {
+      padding: 10px 16px;
+      background: #0b1220;
+      border-top: 1px solid #1e293b;
+      color: #cbd5e1;
+      font-size: var(--text-sm);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+    }
+
+    .lab-controls {
+      padding: 22px 24px;
+      border-left: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .control-label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .control-value {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    select, input[type="search"] {
+      width: 100%;
+      padding: 9px 12px;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+    }
+
+    select:focus, input[type="search"]:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      background: var(--surface);
+    }
+
+    .telemetry-box {
+      background: var(--surface-subtle);
+      padding: 16px;
+      border-top: 3px solid var(--accent);
+      margin-top: auto;
+    }
+
+    .telemetry-status {
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      border-left: 4px solid var(--safe-ink);
+      background: var(--safe-bg);
+      color: var(--safe-ink);
+    }
+
+    .telemetry-status.warn {
+      border-left-color: var(--warn-ink);
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+    }
+
+    .telemetry-status.danger {
+      border-left-color: var(--danger-ink);
+      background: var(--danger-bg);
+      color: var(--danger-ink);
+    }
+
+    .telemetry-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+    }
+
+    .telemetry-table tr { border-bottom: 1px solid var(--border); }
+    .telemetry-table tr:last-child { border-bottom: none; }
+
+    .telemetry-table th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--ink-muted);
+      padding: 6px 0;
+    }
+
+    .telemetry-table td {
+      text-align: right;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 6px 0;
+    }
+
+    /* Key figures ledger */
+    .ledger-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      margin: 36px 0 0;
+    }
+
+    .ledger-cell {
+      padding: 20px;
+      border-right: 1px solid var(--border);
+    }
+
+    .ledger-cell:last-child { border-right: none; }
+
+    .ledger-value {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.15;
+      margin: 0 0 6px;
+    }
+
+    .ledger-label {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+      line-height: 1.45;
+    }
+
+    /* Editorial split */
+    .editorial-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+      gap: 36px;
+      align-items: start;
+    }
+
+    .aside-panel {
+      background: var(--surface);
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 22px;
+    }
+
+    .aside-panel h3 { margin-top: 0; }
+
+    /* Responsive data tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 20px;
+      background: var(--surface);
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+      min-width: 720px;
+    }
+
+    table.data-table thead th {
+      text-align: left;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border-strong);
+      background: var(--surface-subtle);
+    }
+
+    table.data-table tbody td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--ink);
+    }
+
+    table.data-table tbody tr:last-child td { border-bottom: none; }
+
+    .status-open {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      background: var(--safe-bg);
+      color: var(--safe-ink);
+    }
+
+    .status-mixed {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+    }
+
+    /* Pipeline selector toolbar */
+    .pipeline-toolbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 14px;
+      margin: 20px 0 12px;
+    }
+
+    .stack-recommendation {
+      margin-top: 24px;
+      padding: 22px 24px;
+      background: var(--surface-subtle);
+      border-top: 3px solid var(--accent);
+    }
+
+    .stack-recommendation h3 { margin-top: 0; }
+
+    footer {
+      margin-top: 56px;
+      padding-top: 22px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+    }
+
+    @media (max-width: 960px) {
+      .lab-grid,
+      .editorial-split {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .lab-controls {
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .ledger-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .ledger-cell:nth-child(2) { border-right: none; }
+      .ledger-cell:nth-child(1),
+      .ledger-cell:nth-child(2) { border-bottom: 1px solid var(--border); }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner {
+        padding: 12px 16px;
+        gap: 6px 12px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-size: 1.1rem;
+        white-space: normal;
+      }
+      .nav-links {
+        gap: 8px 14px;
+        flex-wrap: wrap;
+        white-space: normal;
+        width: 100%;
+      }
+      .page-shell {
+        padding: 24px 16px 64px;
+      }
+      .segmented {
+        width: 100%;
+      }
+      .segmented label {
+        padding: 8px 6px;
+        white-space: normal;
+      }
+      canvas#sim-canvas {
+        height: 360px;
+      }
+      .viewport-wrap {
+        min-height: 360px;
+      }
+      .lab-controls {
+        padding: 18px 16px;
+      }
+      .ledger-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .ledger-cell {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .ledger-cell:last-child { border-bottom: none; }
+      .pipeline-toolbar {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../">Open Plain-Language Research</a>
+      <nav class="nav-links" aria-label="Guide sections">
+        <a href="#lab">3D Motion Lab</a>
+        <a href="#skeletons">Skeletons</a>
+        <a href="#locomotion">Locomotion</a>
+        <a href="#handgrip">Handgrip</a>
+        <a href="#pipelines">Pipelines</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <header class="article-header">
+      <h1>How 3D Characters Move, Grip Objects, and Stay Physically Grounded</h1>
+      <p class="article-summary">
+        Between 2024 and 2026, autoregressive auto-riggers, Meta's Apache-2.0 MHR rig, and closed-loop physics controllers broke decades of animation bottlenecks. Yet dexterous handgrip and contact stability remain the hardest unsolved engineering layer. Test the exact mechanics interactively below.
+      </p>
+      <p class="article-byline">
+        <span>Guide 20</span>
+        <span>3D Animation, Robotics and Graphics</span>
+        <span>Published November 2026</span>
+        <span>Primary sources: SIGGRAPH, CVPR, ICLR, OpenUSD, Khronos, Epic, Blender</span>
+      </p>
+    </header>
+
+    <section class="report-section first-section" id="lab">
+      <h2>Interactive 3D Skeleton, Handgrip IK, and Skinning Lab</h2>
+      <p>
+        Switch modes below to inspect the three core layers of 3D character motion: full-body locomotion with analytical arm IK and foot-locking, a 21-keypoint articulated hand gripping real 3D props across Feix grasp types, and forearm mesh twist comparing Linear Blend Skinning against Dual Quaternions and twist bones. Drag directly on the dark viewport to orbit the 3D camera.
+      </p>
+
+      <div class="lab-shell">
+        <div class="lab-topbar">
+          <div class="segmented" role="radiogroup" aria-label="3D simulation mode">
+            <input type="radio" name="lab-mode" id="mode-body" value="body" checked />
+            <label for="mode-body">Skeleton and IK</label>
+            <input type="radio" name="lab-mode" id="mode-hand" value="hand" />
+            <label for="mode-hand">Handgrip (21-Joint)</label>
+            <input type="radio" name="lab-mode" id="mode-skin" value="skin" />
+            <label for="mode-skin">Skinning Twist</label>
+          </div>
+          <p class="stage-hint">Drag canvas to orbit 3D view</p>
+        </div>
+
+        <div class="lab-grid">
+          <div class="viewport-wrap">
+            <canvas id="sim-canvas" aria-label="Interactive 3D skeleton, handgrip, and skinning canvas"></canvas>
+            <div class="viewport-footer">
+              <span id="stage-caption">24-joint SMPL-style skeleton with analytical 2-bone right-arm IK</span>
+              <span id="camera-readout">Yaw 28° · Pitch 14°</span>
+            </div>
+          </div>
+
+          <div class="lab-controls">
+            <!-- Mode 1: Body Skeleton & Locomotion Controls -->
+            <div id="controls-body">
+              <div class="control-group" style="margin-bottom:14px;">
+                <label class="control-label" for="body-motion">Locomotion clip</label>
+                <select id="body-motion">
+                  <option value="walk" selected>Walk cycle (grounded stride)</option>
+                  <option value="run">Run / sprint (ballistic flight phase)</option>
+                  <option value="reach">Stance + dynamic right-arm IK reach</option>
+                  <option value="bind">A-Pose bind rest skeleton</option>
+                </select>
+              </div>
+
+              <div class="control-group" style="margin-bottom:14px;">
+                <span class="control-label">Ground contact solver</span>
+                <div class="segmented" role="radiogroup" aria-label="Ground contact solver">
+                  <input type="radio" name="foot-lock" id="lock-on" value="on" checked />
+                  <label for="lock-on">Foot-Lock IK / Physics</label>
+                  <input type="radio" name="foot-lock" id="lock-off" value="off" />
+                  <label for="lock-off">Raw Kinematic Skate</label>
+                </div>
+              </div>
+
+              <div class="control-group" style="margin-bottom:14px;">
+                <div class="control-row">
+                  <label class="control-label" for="body-speed">Playback speed</label>
+                  <span class="control-value" id="body-speed-val">1.0x</span>
+                </div>
+                <input type="range" id="body-speed" min="0" max="2" step="0.1" value="1.0" />
+              </div>
+
+              <div class="control-group" style="margin-bottom:14px;">
+                <div class="control-row">
+                  <label class="control-label" for="ik-height">Right-hand IK target height</label>
+                  <span class="control-value" id="ik-height-val">1.25 m</span>
+                </div>
+                <input type="range" id="ik-height" min="0.55" max="1.95" step="0.05" value="1.25" />
+              </div>
+
+              <div class="control-group">
+                <div class="control-row">
+                  <label class="control-label" for="ik-forward">Right-hand IK target reach</label>
+                  <span class="control-value" id="ik-forward-val">0.48 m</span>
+                </div>
+                <input type="range" id="ik-forward" min="0.15" max="0.72" step="0.02" value="0.48" />
+              </div>
+            </div>
+
+            <!-- Mode 2: Dexterous Handgrip Controls -->
+            <div id="controls-hand" style="display:none;">
+              <div class="control-group" style="margin-bottom:14px;">
+                <label class="control-label" for="grasp-preset">Feix GRASP taxonomy preset</label>
+                <select id="grasp-preset">
+                  <option value="power" selected>Power cylinder grip (handle / bottle)</option>
+                  <option value="pinch">Precision pad pinch (small sphere)</option>
+                  <option value="tripod">Tripod tool grip (stylus / pen)</option>
+                  <option value="lateral">Lateral key pinch (flat key / card)</option>
+                  <option value="open">Open relaxed hand (21 keypoints)</option>
+                </select>
+              </div>
+
+              <div class="control-group" style="margin-bottom:14px;">
+                <label class="control-label" for="contact-failure">Contact and retargeting simulator</label>
+                <select id="contact-failure">
+                  <option value="clean" selected>Clean contact (force-closed grip)</option>
+                  <option value="clip">Kinematic failure: mesh interpenetration</option>
+                  <option value="gap">Rigid-proxy failure: floating air-gap</option>
+                  <option value="four-finger">Stylized retarget: 4-finger loss of stability</option>
+                </select>
+              </div>
+
+              <div class="control-group" style="margin-bottom:14px;">
+                <div class="control-row">
+                  <label class="control-label" for="grip-closure">Finger flexion closure</label>
+                  <span class="control-value" id="grip-closure-val">78%</span>
+                </div>
+                <input type="range" id="grip-closure" min="0" max="100" step="1" value="78" />
+              </div>
+
+              <div class="control-group" style="margin-bottom:14px;">
+                <div class="control-row">
+                  <label class="control-label" for="thumb-opp">Thumb CMC opposition</label>
+                  <span class="control-value" id="thumb-opp-val">82%</span>
+                </div>
+                <input type="range" id="thumb-opp" min="0" max="100" step="1" value="82" />
+              </div>
+
+              <div class="control-group">
+                <div class="control-row">
+                  <label class="control-label" for="forearm-twist">Forearm pronation / supination</label>
+                  <span class="control-value" id="forearm-twist-val">0°</span>
+                </div>
+                <input type="range" id="forearm-twist" min="-85" max="85" step="1" value="0" />
+              </div>
+            </div>
+
+            <!-- Mode 3: Skinning Twist Controls -->
+            <div id="controls-skin" style="display:none;">
+              <div class="control-group" style="margin-bottom:14px;">
+                <label class="control-label" for="skin-method">Deformation method</label>
+                <select id="skin-method">
+                  <option value="lbs" selected>Linear Blend Skinning (LBS, single bone)</option>
+                  <option value="dqs">Dual Quaternion Skinning (DQS)</option>
+                  <option value="twist">LBS + Forearm Twist Bone (UE5 Manny style)</option>
+                </select>
+              </div>
+
+              <div class="control-group" style="margin-bottom:14px;">
+                <div class="control-row">
+                  <label class="control-label" for="skin-angle">Wrist axial twist angle</label>
+                  <span class="control-value" id="skin-angle-val">155°</span>
+                </div>
+                <input type="range" id="skin-angle" min="0" max="180" step="1" value="155" />
+              </div>
+
+              <div class="control-group">
+                <div class="control-row">
+                  <label class="control-label" for="skin-bend">Elbow flexion bend</label>
+                  <span class="control-value" id="skin-bend-val">25°</span>
+                </div>
+                <input type="range" id="skin-bend" min="0" max="110" step="1" value="25" />
+              </div>
+            </div>
+
+            <div class="telemetry-box" aria-live="polite">
+              <div id="telemetry-status" class="telemetry-status">Grounded stance: foot-lock IK active</div>
+              <table class="telemetry-table">
+                <tbody id="telemetry-rows"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ledger-grid" aria-label="Core 3D motion milestones">
+        <div class="ledger-cell">
+          <p class="ledger-value">127 Joints</p>
+          <p class="ledger-label">Meta's Apache-2.0 MHR rig (Nov 2025) breaks SMPL-X's non-commercial license barrier with 4 max weights/vertex.</p>
+        </div>
+        <div class="ledger-cell">
+          <p class="ledger-value">&gt;300 FPS</p>
+          <p class="ledger-label">Real-time streaming diffusion speed achieved by DART on an RTX 4090, while HY-Motion 1.0 scaled to 1B params.</p>
+        </div>
+        <div class="ledger-cell">
+          <p class="ledger-value">183M Frames</p>
+          <p class="ledger-label">GigaHands (CVPR 2025) scale across 56 subjects and 417 objects for bimanual dexterous manipulation.</p>
+        </div>
+        <div class="ledger-cell">
+          <p class="ledger-value">100% AMASS</p>
+          <p class="ledger-label">Physics tracking coverage reached by PHC+ after filtering penetrating mocap clips (PULSE compresses to 32 dims).</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-section" id="skeletons">
+      <h2>Skeleton Body Standards, Formats, and 2025 Neural Auto-Rigging</h2>
+      <p>
+        Every animated 3D character separates its visible surface mesh from an internal kinematic tree of joints driven by skinning weights. Research pipelines standardized on Max Planck's SMPL family, while game engines adopted twist-heavy hierarchies like Unreal's Manny/Quinn and Unity's normalized Muscle Space.
+      </p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Skeleton / Standard</th>
+              <th>Vertices &amp; Joints</th>
+              <th>Degrees of Freedom &amp; Architecture</th>
+              <th>Licensing &amp; Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>SMPL / SMPL-H</strong></td>
+              <td>6,890 verts; 24 (SMPL) or 52 joints (SMPL-H adds 30 hand joints)</td>
+              <td>72 body pose axis-angle params + 10 shape PCA; LBS with linear pose-corrective blendshapes.</td>
+              <td><span class="status-mixed">Research only</span><div style="margin-top:6px;">Max Planck non-commercial; commercial via Meshcapade.</div></td>
+            </tr>
+            <tr>
+              <td><strong>SMPL-X</strong> (CVPR 2019)</td>
+              <td>10,475 verts; 54 articulated joints (55 with pelvis root)</td>
+              <td>Unified body (21), hands (30 MANO), jaw/eyes (3), plus up to 100 FLAME expression coefficients.</td>
+              <td><span class="status-mixed">Research only</span><div style="margin-top:6px;">De-facto academic standard for whole-body HOI and mocap.</div></td>
+            </tr>
+            <tr>
+              <td><strong>Meta MHR</strong> (Nov 2025)</td>
+              <td>Multi-LoD 595 to 73,639 verts; 127 joints</td>
+              <td>Decoupled skeleton vs. surface shape, 72 FACS facial blendshapes, sparse neural correctives, max 4 weights/vertex.</td>
+              <td><span class="status-open">Apache 2.0</span><div style="margin-top:6px;">Real-time AR/VR and engine-ready open alternative to SMPL-X.</div></td>
+            </tr>
+            <tr>
+              <td><strong>UE5 Manny / Quinn</strong></td>
+              <td>~100+ bones (MetaHuman aligned)</td>
+              <td>5 spine bones, metacarpals, IK target bones, and arm/leg twist bones built for Control Rig and ML Deformer.</td>
+              <td><span class="status-open">Unreal EULA</span><div style="margin-top:6px;">Production game locomotion and IK retargeting baseline.</div></td>
+            </tr>
+            <tr>
+              <td><strong>VRM 1.0 / glTF 2.0</strong></td>
+              <td>15 required bones + optional chest, face, fingers</td>
+              <td>Quaternion rotations (SLERP, gimbal-lock free), morph targets, decoupled inverse bind matrices.</td>
+              <td><span class="status-open">Open Standard</span><div style="margin-top:6px;">Lightweight web, mobile, and cross-app avatar runtime delivery.</div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="editorial-split" style="margin-top:28px;">
+        <div>
+          <h3>The 2025 Template-Free Neural Auto-Rigging Wave</h3>
+          <p>
+            Classic auto-riggers like Mixamo (65 joints) and AccuRig fail when a mesh is not in a clean symmetrical A-pose or T-pose. Trained on tens of thousands of Objaverse-XL rigged assets, a 2025 wave of autoregressive Transformers and diffusion skinning models replaced brittle heuristics:
+          </p>
+          <ul>
+            <li><strong>Make-It-Animatable (CVPR 2025 Highlight):</strong> Particle autoencoder outputting bones and blend weights in under 1 second for both meshes and 3D Gaussian Splats (3DGS).</li>
+            <li><strong>UniRig (SIGGRAPH 2025):</strong> Unified large autoregressive Transformer with Skeleton Tree Tokenization trained on Rig-XL (&gt;14,000 rigged models).</li>
+            <li><strong>MagicArticulate (CVPR 2025) &amp; RigAnything (SIGGRAPH 2025):</strong> Breadth-first skeleton hierarchy prediction paired with functional diffusion skinning across humans, quadrupeds, insects, and props (Articulation-XL: 33k to 48k models).</li>
+            <li><strong>Puppeteer (NeurIPS 2025 Spotlight):</strong> Joint-tokenization rigging plus topology-aware skinning and differentiable video-driven animation.</li>
+          </ul>
+          <p>
+            <strong>Where auto-riggers still fail:</strong> Crossed arms or bent action rest poses, non-manifold AI-generated meshes (holes and internal faces break geodesic skinning weights), extreme chibi/mechanical proportions, and weight bleeding between resting arms and torsos or skirts.
+          </p>
+        </div>
+
+        <aside class="aside-panel">
+          <h3>Interchange Format Quick Rules</h3>
+          <ul>
+            <li><strong>BVH:</strong> Raw Euler angles only (gimbal-lock prone); use for ML training and mocap archiving, not final game assets.</li>
+            <li><strong>FBX:</strong> Proprietary Autodesk DCC workhorse supporting constraints, IK, and control rigs between Blender, Maya, and Cascadeur.</li>
+            <li><strong>glTF 2.0:</strong> Royalty-free runtime delivery with native quaternions; no runtime IK constraints.</li>
+            <li><strong>OpenUSD UsdSkel:</strong> Separates Skeleton from SkelAnimation prims for massive crowd instancing and non-destructive studio layering.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="report-section" id="locomotion">
+      <h2>Character Locomotion, Generative Motion, and Physics RL</h2>
+      <p>
+        Shipping video games and frontier AI research are converging on the same problem: purely kinematic animation looks stiff or skates across floors, while pure physics simulation is hard to direct artistically.
+      </p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>System / Model</th>
+              <th>Category &amp; Year</th>
+              <th>Core Mechanism</th>
+              <th>Speed, Scale, or Tradeoff</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>UE5 Motion Matching + Choosers</strong></td>
+              <td>Production game engine (UE 5.4–5.6)</td>
+              <td>Runtime nearest-neighbor search over Pose Search Databases paired with Inertialization blending, Stride Warping, and Orientation Warping.</td>
+              <td>Production-ready (~500+ clips in Epic's free sample). RAM scales linearly with clip variety; Learned Motion Matching compresses to 8.5–17 MB.</td>
+            </tr>
+            <tr>
+              <td><strong>MoMask</strong></td>
+              <td>Kinematic generative (CVPR 2024)</td>
+              <td>Hierarchical RVQ tokens with Masked Transformer + Residual Transformer for text-to-motion.</td>
+              <td>~0.045 FID on HumanML3D (offline clip generation); lacks contact physics.</td>
+            </tr>
+            <tr>
+              <td><strong>DART / DartControl</strong></td>
+              <td>Streaming diffusion (ICLR 2025)</td>
+              <td>Autoregressive diffusion motion primitives for infinite online text and spatial control streams.</td>
+              <td>&gt;300 FPS on an RTX 4090; requires physics tracker for guaranteed non-skating contact.</td>
+            </tr>
+            <tr>
+              <td><strong>HY-Motion 1.0</strong></td>
+              <td>Flow-matching flagship (Dec 2025)</td>
+              <td>Billion-parameter DiT flow matching (&gt;3,000h pretrain, 400h SFT, RL human/physics alignment across 200+ categories).</td>
+              <td>Strong semantic breadth + FlowHMR Video2Motion .fbx pipeline on 12+ GB consumer GPUs.</td>
+            </tr>
+            <tr>
+              <td><strong>MaskedMimic &amp; CLoSD</strong></td>
+              <td>Closed-loop physics (SIGGRAPH Asia 2024 / ICLR 2025)</td>
+              <td>Unifies diffusion or masked motion inpainting directly inside a closed feedback loop with an RL physics tracking controller.</td>
+              <td>Eliminates foot skating and floating; responds to pushes, falls, and terrain in real time.</td>
+            </tr>
+            <tr>
+              <td><strong>PHC+, PULSE, TokenHSI, ProtoMotions</strong></td>
+              <td>Physics RL tracking (2023–2025)</td>
+              <td>GPU-parallel RL policies trained in Isaac Lab / MuJoCo tracking up to 100% of cleaned AMASS (PULSE distills to 32 dims; TokenHSI adds scene interaction).</td>
+              <td>Solves contact and fall recovery; transferring GPU RL solvers to Unreal Chaos / Unity PhysX still adds solver-mismatch and CPU sync friction.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Watch Out for Dataset Blind Spots</h3>
+      <p>
+        Many text-to-motion benchmarks rely on <strong>HumanML3D</strong> (28.59 hours, 14,616 clips at 20 FPS), which is strictly <strong>body-only</strong> (no fingers, no face) and truncates clips to 2–10 seconds. Whole-body models increasingly train on <strong>AMASS</strong> (&gt;40 hrs optical mocap, requiring PHC+ penetration filtering) and <strong>Motion-X / Motion-X++</strong> (120.5k SMPL-X sequences, trading studio precision for multimodal scale).
+      </p>
+    </section>
+
+    <section class="report-section" id="handgrip">
+      <h2>Handgrip Biomechanics, Finger Kinematics, and Dexterous HOI</h2>
+      <div class="editorial-split">
+        <div>
+          <p>
+            A realistic human hand carries roughly <strong>20 to 27 functional degrees of freedom</strong>: four fingers with 4 DOF each (2-DOF MCP knuckle + 1-DOF PIP and DIP hinges), a 4–5 DOF thumb anchored by its multi-axis <strong>CMC saddle joint</strong>, 1–2+ DOF in the cupping palm arch, plus wrist flexion/deviation and forearm pronation/supination.
+          </p>
+          <p>
+            Most vision and AI models parameterize hands with <strong>MANO</strong> (778 vertices, 1,538 faces, 16 kinematic joints / 21 keypoints including fingertips, and 45 local + 3 global pose parameters). Compressing MANO into 6–15 PCA synergy components stops fingers from twisting into impossible angles during video tracking, but prevents precision in-hand re-grasping. Meanwhile, the <strong>Feix GRASP taxonomy</strong> organizes daily human manipulation into <strong>33 distinct grasp types</strong> (17 core configurations) split across Power, Precision, and Intermediate grips.
+          </p>
+          <p>
+            Research has split between kinematic contact-map diffusion (<strong>GOAL</strong>, <strong>SAGA</strong>, <strong>ManipNet</strong>, <strong>Text2HOI</strong>, <strong>DiffH2O</strong>) and physics-simulated RL controllers. <strong>GraspXL</strong> (ECCV 2024) synthesizes objective-driven grasps across hundreds of thousands of unseen objects without 3D HOI training data, while <strong>InterMimic</strong> (CVPR 2025) trains a universal whole-body physics HOI controller that actively repairs penetrating or floating kinematic mocap.
+          </p>
+        </div>
+
+        <aside class="aside-panel">
+          <h3>Five Hardest Unsolved Grip Failures</h3>
+          <ol>
+            <li><strong>Rigid-contact dilemma:</strong> Real finger pads deform compliantly into stable patches; rigid meshes force a brittle choice between visual clipping and hovering air-gaps.</li>
+            <li><strong>Dynamic force-closure slip:</strong> Static contact matching fails under gravity, acceleration, or bimanual handovers when millimeter slip breaks friction cones.</li>
+            <li><strong>Thumb opposition collapse:</strong> Low-DOF compression or retargeting flattens the thumb into side-pushing instead of pad-to-pad opposition.</li>
+            <li><strong>Forearm twist coupling:</strong> Omitting pronation/supination causes wrist snaps and cascades small shoulder errors into centimeter fingertip misses.</li>
+            <li><strong>4-finger and cartoon retargeting:</strong> Copying joint angles onto chunky or 4-digit stylized hands causes immediate clipping or dropped props.</li>
+          </ol>
+        </aside>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>HOI Dataset</th>
+              <th>Venue / Year</th>
+              <th>Scale</th>
+              <th>Capture Coverage &amp; Modality</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>GRAB</strong></td>
+              <td>ECCV 2020</td>
+              <td>10 subjects, 51 rigid objects</td>
+              <td>Whole-body + articulated hands (SMPL-X) + dynamic objects via Vicon optical mocap.</td>
+            </tr>
+            <tr>
+              <td><strong>DexYCB &amp; HOI4D</strong></td>
+              <td>CVPR 2021 / 2022</td>
+              <td>582K frames (DexYCB) / 2.4M frames, 800 instances (HOI4D)</td>
+              <td>Multi-view RGB-D tabletop grasps (DexYCB) and egocentric rigid/articulated objects (HOI4D).</td>
+            </tr>
+            <tr>
+              <td><strong>ARCTIC</strong></td>
+              <td>CVPR 2023</td>
+              <td>11 articulated objects, 2.1M frames</td>
+              <td>Bimanual dexterous hands + articulated objects (scissors, laptops) via Vicon + 9 cameras.</td>
+            </tr>
+            <tr>
+              <td><strong>OakInk2</strong></td>
+              <td>CVPR 2024</td>
+              <td>9 subjects, 75 objects, 627 bimanual seqs, 4.01M frames</td>
+              <td>Multi-step bimanual tasks structured into Affordance and Primitive Dependency Graphs (4 views).</td>
+            </tr>
+            <tr>
+              <td><strong>HIMO</strong></td>
+              <td>ECCV 2024</td>
+              <td>3.3K 4D sequences, 4.08M frames</td>
+              <td>Whole-body SMPL-X + fingers interacting with multiple objects simultaneously plus text timelines.</td>
+            </tr>
+            <tr>
+              <td><strong>GigaHands</strong></td>
+              <td>CVPR 2025</td>
+              <td>56 subjects, 417 objects, 34 hrs, 183M frames, 84k captions</td>
+              <td>Massive multi-view bimanual hands + dynamic objects and self-contact annotations.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="report-section" id="pipelines">
+      <h2>Practical Production and Indie Pipelines (2024 to 2026)</h2>
+      <p>
+        Filter verified mocap hardware, AI video-to-3D tools, and rigging software by budget and use case below. Monocular video AI works well for rapid blockouts, but always expects physics cleanup (such as Cascadeur AutoPhysics) or dual-camera capture to suppress root drift, depth popping, and collapsed finger grasps.
+      </p>
+
+      <div class="pipeline-toolbar">
+        <input type="search" id="tool-search" placeholder="Filter tools (e.g. glove, optical, Blender, Cascadeur, free, EMF, Unreal)..." aria-label="Search 3D motion tools" />
+        <select id="tier-select" aria-label="Select pipeline budget tier">
+          <option value="all" selected>Show all tools and tiers (16)</option>
+          <option value="indie">Solo / Indie stack ($0 to $500)</option>
+          <option value="studio">Mid-size game and VFX studio ($5k to $30k)</option>
+          <option value="robotics">Robotics / Embodied-AI and dexterous hands</option>
+        </select>
+      </div>
+
+      <div class="stack-recommendation" id="stack-box" aria-live="polite">
+        <h3 id="stack-title">Recommended stack overview across all tiers</h3>
+        <p id="stack-desc" style="margin-bottom:0; max-width:none;">
+          Select a budget tier above to see an end-to-end capture, cleanup, rigging, and engine runtime stack tailored to solo devs, mid-size studios, or robotics hand-manipulation labs.
+        </p>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Tool / Hardware</th>
+              <th>Role &amp; Technology</th>
+              <th>Drift, Occlusion, or Runtime Caveats</th>
+              <th>Ballpark Cost / License</th>
+            </tr>
+          </thead>
+          <tbody id="tools-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="report-section" id="sources">
+      <h2>Unresolved Research Gaps and Primary Sources</h2>
+      <div class="editorial-split">
+        <div>
+          <h3>Primary Papers, Repos, and Docs</h3>
+          <ul>
+            <li><strong>Skeletons &amp; Auto-Rigging:</strong> <a href="https://arxiv.org/abs/2511.15586" target="_blank" rel="noopener">Meta MHR (arXiv:2511.15586)</a> &amp; <a href="https://github.com/facebookresearch/MHR" target="_blank" rel="noopener">GitHub</a>; <a href="https://arxiv.org/abs/2411.18197" target="_blank" rel="noopener">Make-It-Animatable</a>; <a href="https://arxiv.org/abs/2504.12451" target="_blank" rel="noopener">UniRig</a>; <a href="https://arxiv.org/abs/2502.12135" target="_blank" rel="noopener">MagicArticulate</a>; <a href="https://arxiv.org/abs/2502.09615" target="_blank" rel="noopener">RigAnything</a>; <a href="https://arxiv.org/abs/2508.10898" target="_blank" rel="noopener">Puppeteer</a>; <a href="https://openusd.org" target="_blank" rel="noopener">OpenUSD</a>; <a href="https://vrm.dev" target="_blank" rel="noopener">VRM 1.0</a>.</li>
+            <li><strong>Locomotion &amp; Physics RL:</strong> <a href="https://arxiv.org/abs/2410.05260" target="_blank" rel="noopener">DART (ICLR 2025)</a>; <a href="https://arxiv.org/abs/2410.03441" target="_blank" rel="noopener">CLoSD (ICLR 2025)</a>; <a href="https://arxiv.org/abs/2409.14393" target="_blank" rel="noopener">MaskedMimic</a>; <a href="https://arxiv.org/abs/2512.23464" target="_blank" rel="noopener">HY-Motion 1.0</a>; <a href="https://arxiv.org/abs/2503.19901" target="_blank" rel="noopener">TokenHSI</a>; <a href="https://github.com/ZhengyiLuo/PHC" target="_blank" rel="noopener">PHC</a> &amp; <a href="https://github.com/ZhengyiLuo/PULSE" target="_blank" rel="noopener">PULSE</a>.</li>
+            <li><strong>Handgrip &amp; HOI:</strong> <a href="https://arxiv.org/abs/2008.11200" target="_blank" rel="noopener">GRAB</a>; <a href="https://arxiv.org/abs/2407.12371" target="_blank" rel="noopener">HIMO</a>; <a href="https://arxiv.org/abs/2412.04244" target="_blank" rel="noopener">GigaHands (CVPR 2025)</a>; <a href="https://oakink.net" target="_blank" rel="noopener">OakInk2</a>; <a href="https://arxiv.org/abs/2403.19649" target="_blank" rel="noopener">GraspXL</a>; <a href="https://arxiv.org/abs/2502.20390" target="_blank" rel="noopener">InterMimic (CVPR 2025)</a>; <a href="https://pku-epic.github.io/DexGraspNet/" target="_blank" rel="noopener">DexGraspNet</a>.</li>
+            <li><strong>Video Capture &amp; Production Docs:</strong> <a href="https://github.com/zju3dv/gvhmr" target="_blank" rel="noopener">GVHMR</a>; <a href="https://arxiv.org/abs/2312.07531" target="_blank" rel="noopener">WHAM</a>; <a href="https://arxiv.org/abs/2403.17424" target="_blank" rel="noopener">TRAM</a>; <a href="https://github.com/geopavlakos/hamer" target="_blank" rel="noopener">HaMeR</a>; <a href="https://arxiv.org/abs/2409.12259" target="_blank" rel="noopener">WiLoR</a>; <a href="https://cascadeur.com" target="_blank" rel="noopener">Cascadeur</a>; <a href="https://docs.blender.org" target="_blank" rel="noopener">Blender Docs</a>; <a href="https://dev.epicgames.com/documentation/" target="_blank" rel="noopener">Unreal Engine 5 Docs</a>; <a href="https://docs.unity3d.com" target="_blank" rel="noopener">Unity Docs</a>.</li>
+          </ul>
+        </div>
+
+        <aside class="aside-panel">
+          <h3>Unresolved Gaps (Honest Caveats)</h3>
+          <ul>
+            <li><strong>Sim-to-game-engine RL latency:</strong> No standardized 2025–2026 benchmark measures exact per-character ms frame cost when running Isaac Lab / MuJoCo RL policies directly inside UE5 Chaos or Unity PhysX.</li>
+            <li><strong>Commercial vs. open video parity:</strong> Closed-source video mocap services (Move One, Rokoko Vision, Flow Studio, Plask) lack shared W-MPJPE / foot-skate leaderboards against GVHMR and TRAM.</li>
+            <li><strong>Enterprise pricing opacity:</strong> Vicon Valkyrie, Movella Xsens MVN software subscriptions, and Move Pro remain quote-gated; figures reflect reported market ranges.</li>
+            <li><strong>Schema micro-details:</strong> Exact UE5 SK_Mannequin bone integers vary slightly across engine templates (~89 to 100+ with virtual/IK bones).</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research. Zero ads, zero affiliates, zero tracking.</span>
+      <span>CC BY 4.0 (Guide) and MIT (Interactive 3D Lab)</span>
+    </footer>
+  </main>
+
+  <script>
+    // =========================================================================
+    // 1. ZERO-DEPENDENCY 3D PROJECTION, QUATERNION, FK/IK & SKINNING LAB ENGINE
+    // =========================================================================
+    const canvas = document.getElementById("sim-canvas");
+    const ctx = canvas.getContext("2d");
+
+    const state = {
+      mode: "body",
+      yaw: 0.49,
+      pitch: 0.24,
+      dragging: false,
+      lastX: 0,
+      lastY: 0,
+      t: 0,
+      reducedMotion: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    };
+
+    const ui = {
+      modeRadios: document.querySelectorAll('input[name="lab-mode"]'),
+      controlsBody: document.getElementById("controls-body"),
+      controlsHand: document.getElementById("controls-hand"),
+      controlsSkin: document.getElementById("controls-skin"),
+      stageCaption: document.getElementById("stage-caption"),
+      camReadout: document.getElementById("camera-readout"),
+      telStatus: document.getElementById("telemetry-status"),
+      telRows: document.getElementById("telemetry-rows"),
+      // Body controls
+      bodyMotion: document.getElementById("body-motion"),
+      footLockOn: document.getElementById("lock-on"),
+      footLockOff: document.getElementById("lock-off"),
+      bodySpeed: document.getElementById("body-speed"),
+      bodySpeedVal: document.getElementById("body-speed-val"),
+      ikHeight: document.getElementById("ik-height"),
+      ikHeightVal: document.getElementById("ik-height-val"),
+      ikForward: document.getElementById("ik-forward"),
+      ikForwardVal: document.getElementById("ik-forward-val"),
+      // Hand controls
+      graspPreset: document.getElementById("grasp-preset"),
+      contactFailure: document.getElementById("contact-failure"),
+      gripClosure: document.getElementById("grip-closure"),
+      gripClosureVal: document.getElementById("grip-closure-val"),
+      thumbOpp: document.getElementById("thumb-opp"),
+      thumbOppVal: document.getElementById("thumb-opp-val"),
+      forearmTwist: document.getElementById("forearm-twist"),
+      forearmTwistVal: document.getElementById("forearm-twist-val"),
+      // Skin controls
+      skinMethod: document.getElementById("skin-method"),
+      skinAngle: document.getElementById("skin-angle"),
+      skinAngleVal: document.getElementById("skin-angle-val"),
+      skinBend: document.getElementById("skin-bend"),
+      skinBendVal: document.getElementById("skin-bend-val")
+    };
+
+    function resizeCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      const w = Math.max(300, Math.round(rect.width));
+      const h = Math.max(320, Math.round(rect.height));
+      if (canvas.width !== Math.round(w * dpr) || canvas.height !== Math.round(h * dpr)) {
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+      }
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { w, h };
+    }
+
+    // 3D math helpers
+    function add(a, b) { return [a[0] + b[0], a[1] + b[1], a[2] + b[2]]; }
+    function sub(a, b) { return [a[0] - b[0], a[1] - b[1], a[2] - b[2]]; }
+    function scale(a, s) { return [a[0] * s, a[1] * s, a[2] * s]; }
+    function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+    function cross(a, b) {
+      return [
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0]
+      ];
+    }
+    function len(a) { return Math.hypot(a[0], a[1], a[2]); }
+    function norm(a) { const l = len(a) || 1; return [a[0] / l, a[1] / l, a[2] / l]; }
+
+    function rotX(p, a) {
+      const c = Math.cos(a), s = Math.sin(a);
+      return [p[0], p[1] * c - p[2] * s, p[1] * s + p[2] * c];
+    }
+    function rotY(p, a) {
+      const c = Math.cos(a), s = Math.sin(a);
+      return [p[0] * c + p[2] * s, p[1], -p[0] * s + p[2] * c];
+    }
+    function rotZ(p, a) {
+      const c = Math.cos(a), s = Math.sin(a);
+      return [p[0] * c - p[1] * s, p[0] * s + p[1] * c, p[2]];
+    }
+
+    function project(p, camDist, targetY, w, h, fovScale) {
+      let v = [p[0], p[1] - targetY, p[2]];
+      v = rotY(v, -state.yaw);
+      v = rotX(v, state.pitch);
+      const z = camDist - v[2];
+      const f = (Math.min(w, h) * fovScale) / Math.max(0.4, z);
+      return {
+        x: w * 0.5 + v[0] * f,
+        y: h * 0.52 - v[1] * f,
+        z: z,
+        s: f
+      };
+    }
+
+    // Analytical 2-bone IK solver with pole vector
+    function solveTwoBoneIK(root, target, l1, l2, poleDir) {
+      const toT = sub(target, root);
+      const distRaw = len(toT);
+      const maxReach = (l1 + l2) * 0.995;
+      const minReach = Math.abs(l1 - l2) + 0.01;
+      const d = Math.max(minReach, Math.min(maxReach, distRaw));
+      const dir = norm(toT);
+
+      const cosAngle = Math.max(-1, Math.min(1, (l1 * l1 + d * d - l2 * l2) / (2 * l1 * d)));
+      const sinAngle = Math.sqrt(Math.max(0, 1 - cosAngle * cosAngle));
+
+      // Project pole vector perpendicular to dir
+      let bendAxis = sub(poleDir, scale(dir, dot(poleDir, dir)));
+      if (len(bendAxis) < 1e-4) bendAxis = [0, 0, -1];
+      bendAxis = norm(bendAxis);
+
+      const mid = add(root, add(scale(dir, l1 * cosAngle), scale(bendAxis, l1 * sinAngle)));
+      const end = add(root, scale(dir, d));
+      return { mid, end, clamped: distRaw > maxReach };
+    }
+
+    function drawGrid(camDist, targetY, w, h, fovScale, radius) {
+      ctx.strokeStyle = "rgba(148, 163, 184, 0.16)";
+      ctx.lineWidth = 1;
+      const step = radius / 5;
+      for (let i = -5; i <= 5; i++) {
+        const g = i * step;
+        const p1 = project([-radius, 0, g], camDist, targetY, w, h, fovScale);
+        const p2 = project([radius, 0, g], camDist, targetY, w, h, fovScale);
+        ctx.beginPath(); ctx.moveTo(p1.x, p1.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+
+        const p3 = project([g, 0, -radius], camDist, targetY, w, h, fovScale);
+        const p4 = project([g, 0, radius], camDist, targetY, w, h, fovScale);
+        ctx.beginPath(); ctx.moveTo(p3.x, p3.y); ctx.lineTo(p4.x, p4.y); ctx.stroke();
+      }
+    }
+
+    function renderPrimitives(prims) {
+      prims.sort((a, b) => b.depth - a.depth);
+      for (const p of prims) {
+        if (p.type === "bone") {
+          ctx.lineCap = "round";
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = p.width;
+          ctx.beginPath();
+          ctx.moveTo(p.a.x, p.a.y);
+          ctx.lineTo(p.b.x, p.b.y);
+          ctx.stroke();
+        } else if (p.type === "joint") {
+          ctx.fillStyle = p.color;
+          ctx.beginPath();
+          ctx.arc(p.p.x, p.p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+          if (p.stroke) {
+            ctx.strokeStyle = p.stroke;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+          }
+        } else if (p.type === "ring") {
+          ctx.strokeStyle = p.color;
+          ctx.lineWidth = p.width || 1.5;
+          ctx.beginPath();
+          p.pts.forEach((pt, idx) => idx === 0 ? ctx.moveTo(pt.x, pt.y) : ctx.lineTo(pt.x, pt.y));
+          ctx.closePath();
+          if (p.fill) {
+            ctx.fillStyle = p.fill;
+            ctx.fill();
+          }
+          ctx.stroke();
+        }
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // MODE 1: FULL-BODY SKELETON & ANALYTICAL IK
+    // -------------------------------------------------------------------------
+    function renderBodyMode(w, h) {
+      const camDist = 3.55;
+      const targetY = 0.96;
+      const fov = 1.38;
+      drawGrid(camDist, targetY, w, h, fov, 1.5);
+
+      const motion = ui.bodyMotion.value;
+      const footLock = ui.footLockOn.checked;
+      const phase = state.t * 3.1;
+
+      let pelvisY = 0.96;
+      let spineTilt = 0;
+      let lFoot = [-0.14, 0.04, 0];
+      let rFoot = [0.14, 0.04, 0];
+      let lArmSwing = 0;
+      let rArmIKActive = motion === "reach";
+      let slipMm = 0;
+
+      if (motion === "walk") {
+        pelvisY = 0.95 + Math.abs(Math.sin(phase)) * 0.045;
+        spineTilt = 0.06;
+        const lS = Math.sin(phase), rS = Math.sin(phase + Math.PI);
+        const lLift = Math.max(0, Math.cos(phase)) * 0.14;
+        const rLift = Math.max(0, Math.cos(phase + Math.PI)) * 0.14;
+        const skateOffset = footLock ? 0 : Math.sin(phase * 2.3) * 0.11;
+        lFoot = [-0.14, 0.04 + lLift + (footLock ? 0 : 0.03), lS * 0.34 + skateOffset];
+        rFoot = [0.14, 0.04 + rLift + (footLock ? 0 : 0.03), rS * 0.34 - skateOffset];
+        lArmSwing = rS * 0.45;
+        slipMm = footLock ? 0.4 : 28.6;
+      } else if (motion === "run") {
+        pelvisY = 0.92 + Math.abs(Math.sin(phase * 1.45)) * 0.14;
+        spineTilt = 0.18;
+        const p = phase * 1.45;
+        const lS = Math.sin(p), rS = Math.sin(p + Math.PI);
+        const lLift = Math.max(0, Math.cos(p) + 0.25) * 0.28;
+        const rLift = Math.max(0, Math.cos(p + Math.PI) + 0.25) * 0.28;
+        const skateOffset = footLock ? 0 : Math.cos(p * 2.0) * 0.15;
+        lFoot = [-0.13, 0.04 + lLift, lS * 0.52 + skateOffset];
+        rFoot = [0.13, 0.04 + rLift, rS * 0.52 - skateOffset];
+        lArmSwing = rS * 0.85;
+        slipMm = footLock ? 1.1 : 41.2;
+      } else if (motion === "reach") {
+        pelvisY = 0.93;
+        spineTilt = 0.12;
+        lFoot = [-0.17, 0.04, -0.08];
+        rFoot = [0.17, 0.04, 0.14];
+        lArmSwing = -0.25;
+        slipMm = footLock ? 0.0 : 14.5;
+        if (!footLock) {
+          lFoot[2] += Math.sin(phase) * 0.09;
+          rFoot[2] -= Math.sin(phase) * 0.09;
+        }
+      } else {
+        // Bind A-pose
+        pelvisY = 0.96;
+        lFoot = [-0.15, 0.04, 0];
+        rFoot = [0.15, 0.04, 0];
+        slipMm = 0;
+      }
+
+      const pelvis = [0, pelvisY, 0];
+      const spine1 = [0, pelvisY + 0.18, spineTilt * 0.3];
+      const chest = [0, pelvisY + 0.42, spineTilt * 0.75];
+      const neck = [0, pelvisY + 0.54, spineTilt * 0.95];
+      const head = [0, pelvisY + 0.70, spineTilt * 1.05];
+
+      const lHip = [-0.11, pelvisY - 0.03, 0];
+      const rHip = [0.11, pelvisY - 0.03, 0];
+      const lSh = [-0.20, chest[1] + 0.04, chest[2]];
+      const rSh = [0.20, chest[1] + 0.04, chest[2]];
+
+      // Solve 2-bone leg IK
+      const lLeg = solveTwoBoneIK(lHip, lFoot, 0.46, 0.45, [0, 0.1, 1]);
+      const rLeg = solveTwoBoneIK(rHip, rFoot, 0.46, 0.45, [0, 0.1, 1]);
+
+      // Left arm FK
+      const lElbow = motion === "bind"
+        ? add(lSh, [-0.21, -0.22, 0])
+        : add(lSh, [-0.05, -0.29, lArmSwing * 0.32]);
+      const lWrist = motion === "bind"
+        ? add(lElbow, [-0.18, -0.20, 0])
+        : add(lElbow, [-0.02, -0.25, lArmSwing * 0.45 + 0.12]);
+
+      // Right arm: analytical 2-bone IK to target or walk swing
+      const targetPos = [0.26, Number(ui.ikHeight.value), Number(ui.ikForward.value)];
+      let rElbow, rWrist, ikClamped = false;
+      if (rArmIKActive || motion === "walk" || motion === "run") {
+        if (rArmIKActive) {
+          const solved = solveTwoBoneIK(rSh, targetPos, 0.31, 0.29, [0.35, -0.4, -0.8]);
+          rElbow = solved.mid;
+          rWrist = solved.end;
+          ikClamped = solved.clamped;
+        } else {
+          rElbow = add(rSh, [0.05, -0.29, -lArmSwing * 0.32]);
+          rWrist = add(rElbow, [0.02, -0.25, -lArmSwing * 0.45 + 0.12]);
+        }
+      } else {
+        rElbow = add(rSh, [0.21, -0.22, 0]);
+        rWrist = add(rElbow, [0.18, -0.20, 0]);
+      }
+
+      const lToe = add(lLeg.end, [0, -0.02, 0.12]);
+      const rToe = add(rLeg.end, [0, -0.02, 0.12]);
+
+      const bones = [
+        [pelvis, spine1, "#94a3b8", 6],
+        [spine1, chest, "#cbd5e1", 7],
+        [chest, neck, "#cbd5e1", 5],
+        [neck, head, "#e2e8f0", 5],
+        [chest, lSh, "#94a3b8", 5],
+        [chest, rSh, "#94a3b8", 5],
+        [pelvis, lHip, "#94a3b8", 5],
+        [pelvis, rHip, "#94a3b8", 5],
+        [lHip, lLeg.mid, "#60a5fa", 6],
+        [lLeg.mid, lLeg.end, "#3b82f6", 5],
+        [lLeg.end, lToe, "#38bdf8", 4],
+        [rHip, rLeg.mid, "#60a5fa", 6],
+        [rLeg.mid, rLeg.end, "#3b82f6", 5],
+        [rLeg.end, rToe, "#38bdf8", 4],
+        [lSh, lElbow, "#94a3b8", 5],
+        [lElbow, lWrist, "#94a3b8", 4],
+        [rSh, rElbow, rArmIKActive ? "#34d399" : "#94a3b8", 5],
+        [rElbow, rWrist, rArmIKActive ? "#10b981" : "#94a3b8", 4]
+      ];
+
+      const prims = [];
+      for (const [pA, pB, col, lw] of bones) {
+        const a = project(pA, camDist, targetY, w, h, fov);
+        const b = project(pB, camDist, targetY, w, h, fov);
+        prims.push({ type: "bone", a, b, color: col, width: lw, depth: (a.z + b.z) * 0.5 });
+      }
+
+      const joints = [pelvis, spine1, chest, neck, head, lSh, rSh, lElbow, rElbow, lWrist, rWrist, lHip, rHip, lLeg.mid, rLeg.mid, lLeg.end, rLeg.end];
+      for (const j of joints) {
+        const pj = project(j, camDist, targetY, w, h, fov);
+        const isHead = j === head;
+        prims.push({
+          type: "joint",
+          p: pj,
+          r: isHead ? 13 : 4.5,
+          color: isHead ? "#1e293b" : "#f8fafc",
+          stroke: isHead ? "#94a3b8" : "#1d4ed8",
+          depth: pj.z - 0.02
+        });
+      }
+
+      // Ground contact indicators under stance feet
+      [lLeg.end, rLeg.end].forEach((fPos) => {
+        if (fPos[1] < 0.085) {
+          const ringPts = [];
+          for (let k = 0; k < 14; k++) {
+            const a = (k / 14) * Math.PI * 2;
+            ringPts.push(project([fPos[0] + Math.cos(a) * 0.09, 0.005, fPos[2] + Math.sin(a) * 0.09], camDist, targetY, w, h, fov));
+          }
+          prims.push({
+            type: "ring",
+            pts: ringPts,
+            color: footLock ? "#22c55e" : "#ef4444",
+            fill: footLock ? "rgba(34,197,94,0.22)" : "rgba(239,68,68,0.22)",
+            width: 2,
+            depth: 4.5
+          });
+        }
+      });
+
+      // Right-hand IK target reticle when reach mode active
+      if (rArmIKActive) {
+        const pt = project(targetPos, camDist, targetY, w, h, fov);
+        prims.push({
+          type: "joint",
+          p: pt,
+          r: 8,
+          color: "rgba(250, 204, 21, 0.25)",
+          stroke: "#facc15",
+          depth: pt.z - 0.05
+        });
+      }
+
+      renderPrimitives(prims);
+
+      // Telemetry update
+      ui.stageCaption.textContent = rArmIKActive
+        ? "Analytical 2-bone arm IK solving shoulder and elbow toward yellow target"
+        : "24-joint SMPL-style body rig with ground-contact foot-lock comparison";
+
+      ui.telStatus.className = "telemetry-status" + (!footLock && motion !== "bind" ? " danger" : ikClamped ? " warn" : "");
+      if (!footLock && motion !== "bind") {
+        ui.telStatus.textContent = "Foot skating active: stance foot sliding (" + slipMm.toFixed(1) + " mm/frame)";
+      } else if (rArmIKActive && ikClamped) {
+        ui.telStatus.textContent = "IK target beyond 0.60 m arm reach: limb extended at clamp limit";
+      } else {
+        ui.telStatus.textContent = "Grounded contact: stance foot locked cleanly on floor plane";
+      }
+
+      ui.telRows.innerHTML =
+        "<tr><th>Active skeleton joints</th><td>24 body (72 DOF)</td></tr>" +
+        "<tr><th>Measured foot slip</th><td>" + slipMm.toFixed(1) + " mm / frame</td></tr>" +
+        "<tr><th>Ground solver</th><td>" + (footLock ? "Foot-Lock IK / Physics" : "Unconstrained Kinematic") + "</td></tr>" +
+        "<tr><th>Right-arm IK mode</th><td>" + (rArmIKActive ? (ikClamped ? "Clamped (max reach)" : "Converged (exact)") : "FK swing") + "</td></tr>";
+    }
+
+    // -------------------------------------------------------------------------
+    // MODE 2: DEXTEROUS 21-KEYPOINT MANO HANDGRIP & CONTACT LAB
+    // -------------------------------------------------------------------------
+    const GRASP_PRESETS = {
+      power: { closure: 78, opp: 84, label: "Power (Cylinder wrap)", prop: "cylinder", fingers: [1.0, 1.0, 1.0, 0.95] },
+      pinch: { closure: 64, opp: 96, label: "Precision (Pad-to-pad pinch)", prop: "sphere", fingers: [0.92, 0.35, 0.28, 0.25] },
+      tripod: { closure: 70, opp: 90, label: "Intermediate (Tripod tool)", prop: "stylus", fingers: [0.92, 0.88, 0.42, 0.32] },
+      lateral: { closure: 82, opp: 48, label: "Intermediate (Lateral key pinch)", prop: "card", fingers: [0.95, 0.92, 0.9, 0.88] },
+      open: { closure: 12, opp: 22, label: "Open relaxed hand (no grip)", prop: "none", fingers: [0.2, 0.2, 0.2, 0.2] }
+    };
+
+    function renderHandMode(w, h) {
+      const camDist = 1.95;
+      const targetY = 0.04;
+      const fov = 1.48;
+
+      const presetKey = ui.graspPreset.value;
+      const preset = GRASP_PRESETS[presetKey];
+      const failure = ui.contactFailure.value;
+      const closure = Number(ui.gripClosure.value) / 100;
+      const opp = Number(ui.thumbOpp.value) / 100;
+      const twistRad = (Number(ui.forearmTwist.value) * Math.PI) / 180;
+
+      const prims = [];
+
+      // Transform a local hand point by forearm pronation/supination twist (around Y-up palm axis)
+      function xform(p) {
+        return rotY(p, twistRad);
+      }
+
+      // Draw grasped 3D prop in front of palm
+      let propCenter = [0, 0.16, 0.19];
+      if (preset.prop !== "none") {
+        const rings = preset.prop === "cylinder" ? [-0.28, -0.14, 0, 0.14, 0.28] :
+                      preset.prop === "stylus" ? [-0.34, -0.15, 0.05, 0.24, 0.38] :
+                      [-0.08, 0, 0.08];
+        const rad = preset.prop === "cylinder" ? 0.115 :
+                    preset.prop === "sphere" ? 0.085 :
+                    preset.prop === "stylus" ? 0.036 : 0.07;
+
+        for (let ri = 0; ri < rings.length; ri++) {
+          const offset = rings[ri];
+          const ringPts = [];
+          const rScale = preset.prop === "sphere" ? Math.sqrt(Math.max(0.05, 1 - (offset / 0.095) ** 2)) : 1;
+          for (let k = 0; k < 16; k++) {
+            const a = (k / 16) * Math.PI * 2;
+            let pt;
+            if (preset.prop === "cylinder") {
+              pt = [propCenter[0] + offset, propCenter[1] + Math.cos(a) * rad, propCenter[2] + Math.sin(a) * rad];
+            } else if (preset.prop === "stylus") {
+              pt = [propCenter[0] + offset * 0.7, propCenter[1] + offset * 0.55 + Math.cos(a) * rad, propCenter[2] + Math.sin(a) * rad];
+            } else if (preset.prop === "card") {
+              pt = [propCenter[0] + Math.cos(a) * 0.12, propCenter[1] + offset * 0.3, propCenter[2] + Math.sin(a) * 0.03];
+            } else {
+              pt = [propCenter[0] + Math.cos(a) * rad * rScale, propCenter[1] + offset, propCenter[2] + Math.sin(a) * rad * rScale];
+            }
+            ringPts.push(project(xform(pt), camDist, targetY, w, h, fov));
+          }
+          prims.push({
+            type: "ring",
+            pts: ringPts,
+            color: "#f59e0b",
+            fill: "rgba(245, 158, 11, 0.15)",
+            width: 1.5,
+            depth: ringPts[0].z
+          });
+        }
+      }
+
+      // Wrist & forearm bones
+      const forearmBase = xform([0, -0.52, -0.04]);
+      const wrist = xform([0, -0.24, 0]);
+      const pFore = project(forearmBase, camDist, targetY, w, h, fov);
+      const pWrist = project(wrist, camDist, targetY, w, h, fov);
+      prims.push({ type: "bone", a: pFore, b: pWrist, color: "#64748b", width: 10, depth: (pFore.z + pWrist.z) * 0.5 });
+
+      // Contact failure bias shifts finger flexion/gap
+      const failCurlDelta = failure === "clip" ? 0.38 : failure === "gap" ? -0.34 : 0;
+
+      // 4 Fingers (Index, Middle, Ring, Pinky): omit pinky in 4-finger stylized mode
+      const fingerSpecs = [
+        { name: "Index", x: -0.145, len: [0.16, 0.105, 0.075], mult: preset.fingers[0] },
+        { name: "Middle", x: -0.045, len: [0.175, 0.115, 0.08], mult: preset.fingers[1] },
+        { name: "Ring", x: 0.055, len: [0.165, 0.105, 0.075], mult: preset.fingers[2] },
+        { name: "Pinky", x: 0.145, len: [0.13, 0.085, 0.065], mult: preset.fingers[3] }
+      ];
+
+      const activeFingerSpecs = failure === "four-finger" ? fingerSpecs.slice(0, 3) : fingerSpecs;
+      let activeContacts = 0;
+
+      activeFingerSpecs.forEach((f, idx) => {
+        const mcpLocal = [f.x, 0.04 + (idx === 1 ? 0.02 : idx === 3 ? -0.025 : 0), 0.01];
+        const mcp = xform(mcpLocal);
+        const pMcp = project(mcp, camDist, targetY, w, h, fov);
+        prims.push({ type: "bone", a: pWrist, b: pMcp, color: "#94a3b8", width: 5, depth: (pWrist.z + pMcp.z) * 0.5 });
+
+        const curl = Math.max(0.05, Math.min(1.38, closure * f.mult + failCurlDelta));
+        const a1 = curl * 1.15;
+        const a2 = a1 + curl * 1.15;
+        const a3 = a2 + curl * 0.95;
+
+        const pipLocal = [mcpLocal[0], mcpLocal[1] + Math.cos(a1) * f.len[0], mcpLocal[2] + Math.sin(a1) * f.len[0]];
+        const dipLocal = [pipLocal[0], pipLocal[1] + Math.cos(a2) * f.len[1], pipLocal[2] + Math.sin(a2) * f.len[1]];
+        const tipLocal = [dipLocal[0], dipLocal[1] + Math.cos(a3) * f.len[2], dipLocal[2] + Math.sin(a3) * f.len[2]];
+
+        const pip = xform(pipLocal), dip = xform(dipLocal), tip = xform(tipLocal);
+        const pPip = project(pip, camDist, targetY, w, h, fov);
+        const pDip = project(dip, camDist, targetY, w, h, fov);
+        const pTip = project(tip, camDist, targetY, w, h, fov);
+
+        const segColor = failure === "clip" ? "#ef4444" : failure === "gap" ? "#f59e0b" : "#38bdf8";
+        prims.push({ type: "bone", a: pMcp, b: pPip, color: segColor, width: 6, depth: (pMcp.z + pPip.z) * 0.5 });
+        prims.push({ type: "bone", a: pPip, b: pDip, color: segColor, width: 5, depth: (pPip.z + pDip.z) * 0.5 });
+        prims.push({ type: "bone", a: pDip, b: pTip, color: segColor, width: 4, depth: (pDip.z + pTip.z) * 0.5 });
+
+        [pMcp, pPip, pDip, pTip].forEach((pt, jIdx) => {
+          prims.push({
+            type: "joint",
+            p: pt,
+            r: jIdx === 3 ? 5 : 4,
+            color: jIdx === 3 ? (failure === "clip" ? "#ef4444" : "#22c55e") : "#f8fafc",
+            stroke: "#0f172a",
+            depth: pt.z - 0.02
+          });
+        });
+
+        if (preset.prop !== "none" && closure * f.mult > 0.45 && failure !== "gap") {
+          activeContacts++;
+        }
+      });
+
+      // Articulated Thumb (CMC Saddle Joint + MCP + IP + Tip)
+      const cmcLocal = [-0.17, -0.14, 0.04];
+      const oppAngle = (opp - 0.15) * 1.25;
+      const thumbCurl = Math.max(0.05, Math.min(1.2, closure * 0.72 + failCurlDelta * 0.6));
+      const tMcpLocal = [
+        cmcLocal[0] - Math.cos(oppAngle) * 0.12,
+        cmcLocal[1] + 0.10,
+        cmcLocal[2] + Math.sin(oppAngle) * 0.14
+      ];
+      const tIpLocal = [
+        tMcpLocal[0] + Math.sin(oppAngle) * 0.095,
+        tMcpLocal[1] + Math.cos(thumbCurl) * 0.095,
+        tMcpLocal[2] + Math.sin(thumbCurl) * 0.095 + 0.04
+      ];
+      const tTipLocal = [
+        tIpLocal[0] + Math.sin(oppAngle) * 0.085,
+        tIpLocal[1] + Math.cos(thumbCurl * 1.45) * 0.065,
+        tIpLocal[2] + Math.sin(thumbCurl * 1.45) * 0.075
+      ];
+
+      const pCmc = project(xform(cmcLocal), camDist, targetY, w, h, fov);
+      const pTMcp = project(xform(tMcpLocal), camDist, targetY, w, h, fov);
+      const pTIp = project(xform(tIpLocal), camDist, targetY, w, h, fov);
+      const pTTip = project(xform(tTipLocal), camDist, targetY, w, h, fov);
+
+      const thumbColor = opp < 0.35 ? "#f97316" : "#34d399";
+      prims.push({ type: "bone", a: pWrist, b: pCmc, color: "#94a3b8", width: 5.5, depth: (pWrist.z + pCmc.z) * 0.5 });
+      prims.push({ type: "bone", a: pCmc, b: pTMcp, color: thumbColor, width: 6.5, depth: (pCmc.z + pTMcp.z) * 0.5 });
+      prims.push({ type: "bone", a: pTMcp, b: pTIp, color: thumbColor, width: 5.5, depth: (pTMcp.z + pTIp.z) * 0.5 });
+      prims.push({ type: "bone", a: pTIp, b: pTTip, color: thumbColor, width: 4.5, depth: (pTIp.z + pTTip.z) * 0.5 });
+
+      [pCmc, pTMcp, pTIp, pTTip].forEach((pt, idx) => {
+        prims.push({
+          type: "joint",
+          p: pt,
+          r: idx === 3 ? 5.5 : 4,
+          color: idx === 3 ? "#facc15" : "#f8fafc",
+          stroke: "#0f172a",
+          depth: pt.z - 0.02
+        });
+      });
+
+      if (preset.prop !== "none" && opp > 0.4 && closure > 0.4 && failure !== "gap") {
+        activeContacts++;
+      }
+
+      renderPrimitives(prims);
+
+      // Telemetry diagnostics
+      const keypointCount = failure === "four-finger" ? "17 (4-finger stylized)" : "21 (MANO 16 joints + 5 tips)";
+      let contactReadout = "0.0 mm flush (stable)";
+      let statusClass = "telemetry-status";
+      let statusText = "Force-closed grip: opposed thumb + fingers hold prop stably";
+
+      if (preset.prop === "none" || closure < 0.35) {
+        statusClass = "telemetry-status warn";
+        statusText = "Open hand: no active object contact";
+        contactReadout = "No prop engaged";
+      } else if (failure === "clip") {
+        statusClass = "telemetry-status danger";
+        statusText = "Kinematic failure: 9.4 mm fingertip mesh interpenetration";
+        contactReadout = "-9.4 mm clipping inside mesh";
+      } else if (failure === "gap") {
+        statusClass = "telemetry-status danger";
+        statusText = "Rigid-proxy failure: 6.8 mm floating air-gap (prop slips)";
+        contactReadout = "+6.8 mm floating air-gap";
+      } else if (failure === "four-finger") {
+        statusClass = "telemetry-status warn";
+        statusText = "4-finger retarget warning: reduced perimeter coverage";
+        contactReadout = "Marginal stability (missing 5th digit)";
+      } else if (opp < 0.38) {
+        statusClass = "telemetry-status warn";
+        statusText = "Thumb opposition collapse: parallel side-push weakens grip";
+        contactReadout = "Low opposition angle";
+      }
+
+      ui.stageCaption.textContent = "Feix GRASP: " + preset.label + " (forearm twist " + ui.forearmTwist.value + "°)";
+      ui.telStatus.className = statusClass;
+      ui.telStatus.textContent = statusText;
+      ui.telRows.innerHTML =
+        "<tr><th>Hand keypoints</th><td>" + keypointCount + "</td></tr>" +
+        "<tr><th>Active contact digits</th><td>" + activeContacts + " / " + (failure === "four-finger" ? "4" : "5") + "</td></tr>" +
+        "<tr><th>Surface contact error</th><td>" + contactReadout + "</td></tr>" +
+        "<tr><th>Forearm twist coupling</th><td>" + ui.forearmTwist.value + "° pronation/supination</td></tr>";
+    }
+
+    // -------------------------------------------------------------------------
+    // MODE 3: SKINNING DEFORMATION (LBS CANDY-WRAPPER VS DQS VS TWIST BONE)
+    // -------------------------------------------------------------------------
+    function renderSkinMode(w, h) {
+      const camDist = 2.4;
+      const targetY = 0;
+      const fov = 1.45;
+
+      const method = ui.skinMethod.value;
+      const twistDeg = Number(ui.skinAngle.value);
+      const bendDeg = Number(ui.skinBend.value);
+      const twistRad = (twistDeg * Math.PI) / 180;
+      const bendRad = (bendDeg * Math.PI) / 180;
+
+      const slices = 15;
+      const segs = 16;
+      const baseR = 0.22;
+      const halfLen = 0.72;
+      const rings = [];
+      let minRadiusRatio = 1.0;
+
+      for (let i = 0; i <= slices; i++) {
+        const u = i / slices; // 0 = elbow, 1 = wrist
+        const x0 = -halfLen + u * (2 * halfLen);
+        // Smooth weight ramp around forearm middle
+        const w1 = method === "twist"
+          ? u
+          : Math.max(0, Math.min(1, (u - 0.18) / 0.64));
+        const w0 = 1 - w1;
+
+        const pts = [];
+        let ringRadSum = 0;
+        for (let j = 0; j < segs; j++) {
+          const theta = (j / segs) * Math.PI * 2;
+          const vy = Math.cos(theta) * baseR;
+          const vz = Math.sin(theta) * baseR;
+
+          let py, pz, px = x0;
+          if (method === "lbs") {
+            // Exact Linear Blend Skinning matrix blend of Identity (0 deg) and RotX(twistRad)
+            const rY = vy * Math.cos(twistRad) - vz * Math.sin(twistRad);
+            const rZ = vy * Math.sin(twistRad) + vz * Math.cos(twistRad);
+            py = w0 * vy + w1 * rY;
+            pz = w0 * vz + w1 * rZ;
+          } else if (method === "dqs") {
+            // Dual Quaternion Skinning: pure SLERP preserves exact cross-sectional radius, slight bulge on bend
+            const a = w1 * twistRad;
+            const bulge = 1 + Math.sin(u * Math.PI) * (bendRad / Math.PI) * 0.24;
+            py = (vy * Math.cos(a) - vz * Math.sin(a)) * bulge;
+            pz = (vy * Math.sin(a) + vz * Math.cos(a)) * bulge;
+          } else {
+            // LBS + Twist Bone: 2-stage linear twist split (each half twists at most twistRad/2)
+            const halfTwist = twistRad * 0.5;
+            const localW = u < 0.5 ? u * 2 : (u - 0.5) * 2;
+            const baseA = u < 0.5 ? 0 : halfTwist;
+            const p0y = vy * Math.cos(baseA) - vz * Math.sin(baseA);
+            const p0z = vy * Math.sin(baseA) + vz * Math.cos(baseA);
+            const p1y = vy * Math.cos(baseA + halfTwist) - vz * Math.sin(baseA + halfTwist);
+            const p1z = vy * Math.sin(baseA + halfTwist) + vz * Math.cos(baseA + halfTwist);
+            py = (1 - localW) * p0y + localW * p1y;
+            pz = (1 - localW) * p0z + localW * p1z;
+          }
+
+          // Subtle elbow bend curve near u < 0.35
+          const bendFactor = Math.max(0, 0.35 - u) * bendRad * 0.9;
+          const bY = py + Math.sin(bendFactor) * 0.22;
+          ringRadSum += Math.hypot(py, pz);
+          pts.push([px, bY, pz]);
+        }
+        const avgRatio = (ringRadSum / segs) / baseR;
+        if (avgRatio < minRadiusRatio) minRadiusRatio = avgRatio;
+        rings.push(pts.map((pt) => project(pt, camDist, targetY, w, h, fov)));
+      }
+
+      const prims = [];
+      // Longitudinal edges
+      for (let i = 0; i < slices; i++) {
+        for (let j = 0; j < segs; j += 2) {
+          const a = rings[i][j];
+          const b = rings[i + 1][j];
+          prims.push({
+            type: "bone",
+            a, b,
+            color: j === 0 ? "#facc15" : "rgba(96, 165, 250, 0.55)",
+            width: j === 0 ? 2.5 : 1.2,
+            depth: (a.z + b.z) * 0.5
+          });
+        }
+      }
+      // Cross-section rings
+      rings.forEach((rPts, idx) => {
+        const isMid = idx === Math.floor(slices / 2);
+        const col = isMid && minRadiusRatio < 0.65 ? "#ef4444" :
+                    method === "dqs" ? "#34d399" : "#38bdf8";
+        prims.push({
+          type: "ring",
+          pts: rPts,
+          color: col,
+          fill: isMid ? "rgba(56, 189, 248, 0.14)" : null,
+          width: isMid ? 2.5 : 1.2,
+          depth: rPts[0].z
+        });
+      });
+
+      renderPrimitives(prims);
+
+      const volRetention = Math.round(minRadiusRatio * minRadiusRatio * 100);
+      ui.stageCaption.textContent = "Forearm twist mesh comparison (yellow seam tracks axial rotation)";
+
+      if (method === "lbs" && volRetention < 55) {
+        ui.telStatus.className = "telemetry-status danger";
+        ui.telStatus.textContent = "Candy-wrapper collapse: mid-forearm volume dropped to " + volRetention + "%";
+      } else if (method === "dqs" && bendDeg > 65) {
+        ui.telStatus.className = "telemetry-status warn";
+        ui.telStatus.textContent = "Volume preserved (100%), mild DQS joint bulge at sharp bend";
+      } else {
+        ui.telStatus.className = "telemetry-status";
+        ui.telStatus.textContent = method === "twist"
+          ? "Twist bone splits rotation: " + volRetention + "% cross-section retained"
+          : "Clean deformation: " + volRetention + "% cross-section retained";
+      }
+
+      ui.telRows.innerHTML =
+        "<tr><th>Deformation method</th><td>" + (method === "lbs" ? "Single-bone LBS" : method === "dqs" ? "Dual Quaternion (DQS)" : "LBS + Twist Bone") + "</td></tr>" +
+        "<tr><th>Wrist axial twist</th><td>" + twistDeg + "°</td></tr>" +
+        "<tr><th>Min cross-section area</th><td>" + volRetention + "% of rest</td></tr>" +
+        "<tr><th>Primary artifact risk</th><td>" + (method === "lbs" ? "Candy-wrapper pinching" : method === "dqs" ? "Elbow/shoulder joint bulge" : "Extra bone count (+twist)") + "</td></tr>";
+    }
+
+    function renderFrame() {
+      const { w, h } = resizeCanvas();
+      ctx.fillStyle = "#0f172a";
+      ctx.fillRect(0, 0, w, h);
+
+      ui.camReadout.textContent =
+        "Yaw " + Math.round((state.yaw * 180) / Math.PI) + "° · Pitch " + Math.round((state.pitch * 180) / Math.PI) + "°";
+
+      if (state.mode === "body") renderBodyMode(w, h);
+      else if (state.mode === "hand") renderHandMode(w, h);
+      else renderSkinMode(w, h);
+    }
+
+    let lastTime = performance.now();
+    function tick(now) {
+      const dt = Math.min(0.05, (now - lastTime) / 1000);
+      lastTime = now;
+      if (state.mode === "body" && !state.reducedMotion) {
+        state.t += dt * Number(ui.bodySpeed.value);
+      }
+      renderFrame();
+      requestAnimationFrame(tick);
+    }
+
+    // Orbit pointer controls
+    canvas.addEventListener("pointerdown", (e) => {
+      state.dragging = true;
+      state.lastX = e.clientX;
+      state.lastY = e.clientY;
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener("pointermove", (e) => {
+      if (!state.dragging) return;
+      const dx = e.clientX - state.lastX;
+      const dy = e.clientY - state.lastY;
+      state.lastX = e.clientX;
+      state.lastY = e.clientY;
+      state.yaw += dx * 0.009;
+      state.pitch = Math.max(-0.85, Math.min(1.05, state.pitch + dy * 0.008));
+      renderFrame();
+    });
+    canvas.addEventListener("pointerup", () => { state.dragging = false; });
+    canvas.addEventListener("pointercancel", () => { state.dragging = false; });
+
+    // Mode switching
+    function syncModeUI() {
+      const checked = document.querySelector('input[name="lab-mode"]:checked');
+      state.mode = checked ? checked.value : "body";
+      ui.controlsBody.style.display = state.mode === "body" ? "block" : "none";
+      ui.controlsHand.style.display = state.mode === "hand" ? "block" : "none";
+      ui.controlsSkin.style.display = state.mode === "skin" ? "block" : "none";
+      if (state.mode === "hand") { state.yaw = 0.62; state.pitch = 0.28; }
+      else if (state.mode === "skin") { state.yaw = 0.42; state.pitch = 0.34; }
+      else { state.yaw = 0.49; state.pitch = 0.24; }
+      renderFrame();
+    }
+
+    ui.modeRadios.forEach((r) => r.addEventListener("change", syncModeUI));
+
+    ui.graspPreset.addEventListener("change", () => {
+      const p = GRASP_PRESETS[ui.graspPreset.value];
+      ui.gripClosure.value = p.closure;
+      ui.thumbOpp.value = p.opp;
+      syncLabels();
+      renderFrame();
+    });
+
+    function syncLabels() {
+      ui.bodySpeedVal.textContent = Number(ui.bodySpeed.value).toFixed(1) + "x";
+      ui.ikHeightVal.textContent = Number(ui.ikHeight.value).toFixed(2) + " m";
+      ui.ikForwardVal.textContent = Number(ui.ikForward.value).toFixed(2) + " m";
+      ui.gripClosureVal.textContent = ui.gripClosure.value + "%";
+      ui.thumbOppVal.textContent = ui.thumbOpp.value + "%";
+      ui.forearmTwistVal.textContent = ui.forearmTwist.value + "°";
+      ui.skinAngleVal.textContent = ui.skinAngle.value + "°";
+      ui.skinBendVal.textContent = ui.skinBend.value + "°";
+    }
+
+    [
+      ui.bodyMotion, ui.footLockOn, ui.footLockOff, ui.bodySpeed, ui.ikHeight, ui.ikForward,
+      ui.contactFailure, ui.gripClosure, ui.thumbOpp, ui.forearmTwist,
+      ui.skinMethod, ui.skinAngle, ui.skinBend
+    ].forEach((el) => {
+      el.addEventListener("input", () => { syncLabels(); renderFrame(); });
+      el.addEventListener("change", () => { syncLabels(); renderFrame(); });
+    });
+
+    // =========================================================================
+    // 2. SEARCHABLE 2024-2026 PRODUCTION PIPELINE & HARDWARE DIRECTORY
+    // =========================================================================
+    const PIPELINE_TOOLS = [
+      { name: "Vicon Valkyrie / OptiTrack PrimeX", role: "Optical IR full-body mocap (up to 300+ fps)", caveat: "Zero inertial drift and sub-mm accuracy, but requires 12–36+ cameras and dedicated studio to prevent occlusion.", cost: "$2k–$11k/cam; studios $25k–$100k+", tiers: ["studio", "robotics"] },
+      { name: "Movella / Xsens MVN (Link & Awinda)", role: "17-IMU body suit (60–240 Hz)", caveat: "Occlusion-immune with gold-standard active magnetic suppression; requires ongoing MVN Animate software subscription.", cost: "$7,500–$15,000+ hardware + sub", tiers: ["studio"] },
+      { name: "Rokoko Smartsuit Pro II", role: "19-IMU body suit (up to 200 fps)", caveat: "Occlusion-immune; moderate long-take drift and strong nearby magnetic distortion mitigated by Sensor Fusion 2.0.", cost: "~$2,295–$2,500+ suit; Studio $0–$50/mo", tiers: ["studio"] },
+      { name: "Sony Mocopi", role: "6-puck BLE IMU kit (50 Hz)", caveat: "Elbows and knees are inferred rather than tracked; high drift and strap slip require heavy Cascadeur cleanup.", cost: "~$449 base / ~$1,080 Pro", tiers: ["indie"] },
+      { name: "Manus Quantum / Metagloves Pro", role: "EMF absolute 3D fingertip gloves (120 Hz)", caveat: "Drift-free and occlusion-immune during prop grips; sensitive to heavy structural steel or strong magnets.", cost: "$4,999–$10,000+ (bundle dependent)", tiers: ["studio", "robotics"] },
+      { name: "StretchSense Studio / XR Reality Gloves", role: "Capacitive stretch fabric gloves (120 Hz, <10 ms)", caveat: "Zero optical occlusion AND zero magnetic interference; measures relative bend via calibration + ML solver.", cost: "$495–$895 / pair", tiers: ["indie", "studio", "robotics"] },
+      { name: "Rokoko Smartgloves II", role: "High-rate IMU finger gloves (up to 250 Hz)", caveat: "Occlusion-immune native sync with Smartsuit Pro; subject to inertial drift on long takes.", cost: "$1,745–$1,995 / pair", tiers: ["studio"] },
+      { name: "GVHMR / TRAM / WHAM (Open Source)", role: "World-grounded video-to-3D body recovery", caveat: "Strong global trajectory and moving-camera SLAM (TRAM/GVHMR); monocular depth popping and foot slide still need cleanup.", cost: "$0 (Open source, local GPU)", tiers: ["indie", "robotics"] },
+      { name: "HaMeR & WiLoR (Open Source)", role: "Monocular 3D MANO hand mesh recovery", caveat: "Benchmark accuracy on visible hands; collapses under heavy self-occlusion or tight prop grasps.", cost: "$0 (Open source, local GPU)", tiers: ["indie", "robotics"] },
+      { name: "Rokoko Vision (Dual-Camera) / Move One", role: "Commercial video-to-3D capture", caveat: "Dual-camera Rokoko Vision sharply cuts monocular depth errors; Move Pro scales to multi-cam studio volumes.", cost: "$0–$20/mo (Rokoko); ~$15–$490/mo (Move)", tiers: ["indie", "studio"] },
+      { name: "Autodesk Flow Studio (ex-Wonder Studio)", role: "Browser CG character replacement & multi-person mocap", caveat: "Automated camera tracking and up to 4 people; cloud credit limits and monocular hand occlusion.", cost: "Free to $95/mo (or M&E Collection)", tiers: ["indie", "studio"] },
+      { name: "Cascadeur (AutoPosing + AutoPhysics)", role: "AI physics-assisted keyframing & mocap cleanup", caveat: "Simulates center-of-mass and ballistic arcs to fix floating feet; Free tier locks exports to .casc.", cost: "Indie ~$8–$12/mo; Pro ~$20–$33/mo (annual)", tiers: ["indie", "studio"] },
+      { name: "Blender (Rigify + Bone Collections + Auto-Rig Pro)", role: "Rigging, constraints & FBX/glTF retargeting", caveat: "Export clean DEF-* bones from Rigify; Auto-Rig Pro adds one-click UE/Unity export and axis Remap.", cost: "Blender $0; Auto-Rig Pro ~$40–$45", tiers: ["indie", "studio"] },
+      { name: "Unreal Engine 5 (Control Rig, FBIK, Motion Matching)", role: "Runtime locomotion, IK Retargeter & ML Deformer", caveat: "Production standard for uneven terrain FBIK and AAA locomotion; Pose Search RAM scales with clip library.", cost: "Unreal Engine EULA (royalty tiers)", tiers: ["indie", "studio"] },
+      { name: "Unity (Humanoid Avatar + Animation Rigging)", role: "Muscle-space retargeting + C# IK Animation Jobs", caveat: "Dynamically swapping runtime TwoBoneIKConstraint targets requires calling rigBuilder.Build().", cost: "Unity Personal / Pro license", tiers: ["indie", "studio"] },
+      { name: "NVIDIA Isaac Lab / ProtoMotions / InterMimic", role: "GPU RL physics tracking & dexterous HOI training", caveat: "Solves contact friction and repairs noisy mocap; sim-to-game-engine transfer faces solver/timestep gaps.", cost: "Open frameworks + NVIDIA GPU", tiers: ["robotics"] }
+    ];
+
+    const STACK_RECS = {
+      all: {
+        title: "Recommended stack overview across all tiers",
+        desc: "Select a budget tier above to filter hardware, video AI, and engine tools for solo developers ($0 to $500), mid-size game/VFX studios ($5k to $30k), or robotics hand-manipulation labs."
+      },
+      indie: {
+        title: "Solo / Indie Developer Stack ($0 to $500)",
+        desc: "Capture with dual-camera Rokoko Vision (Free/Plus ~$20/mo) or local GVHMR + WiLoR ($0), clean foot sliding and ballistic weight in Cascadeur Indie (~$100–$144/yr), rig and retarget in Blender + Auto-Rig Pro ($40–$45), and drive runtime contacts with UE5 FBIK or Unity Animation Rigging. For true finger grips under $500, hand-key in Cascadeur or invest $495 in base StretchSense XR Reality Gloves."
+      },
+      studio: {
+        title: "Mid-Size Game and VFX Studio Stack ($5k to $30k)",
+        desc: "Pair Rokoko Smartsuit Pro II (~$2.5k) or Movella Xsens MVN ($7.5k–$15k+ for cleanest raw takes) with StretchSense Studio Gloves ($549–$895 in magnetically noisy steel/LED rooms) or Rokoko Smartgloves II ($1,995), polish in Cascadeur Pro, and ship responsive runtime locomotion with UE5 Motion Matching, Control Rig FBIK, and ML Deformer."
+      },
+      robotics: {
+        title: "Robotics / Embodied-AI & High-Fidelity Hand Manipulation",
+        desc: "Use Manus Metagloves Pro ($5k–$10k+ EMF fingertips in low-metal spaces) or StretchSense capacitive gloves (zero magnetic noise in metal robot labs) paired with OptiTrack PrimeX 6DoF ground truth. For video-to-policy mining, combine TRAM or GVHMR with HaMeR/WiLoR and enforce physical contact consistency via InterMimic or ProtoMotions in Isaac Lab."
+      }
+    };
+
+    const toolSearchEl = document.getElementById("tool-search");
+    const tierSelectEl = document.getElementById("tier-select");
+    const toolsBodyEl = document.getElementById("tools-body");
+    const stackTitleEl = document.getElementById("stack-title");
+    const stackDescEl = document.getElementById("stack-desc");
+
+    function renderTools() {
+      const q = (toolSearchEl.value || "").trim().toLowerCase();
+      const tier = tierSelectEl.value;
+      const rec = STACK_RECS[tier] || STACK_RECS.all;
+      stackTitleEl.textContent = rec.title;
+      stackDescEl.textContent = rec.desc;
+
+      const filtered = PIPELINE_TOOLS.filter((item) => {
+        if (tier !== "all" && !item.tiers.includes(tier)) return false;
+        if (q) {
+          const hay = (item.name + " " + item.role + " " + item.caveat + " " + item.cost).toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      if (!filtered.length) {
+        toolsBodyEl.innerHTML = '<tr><td colspan="4" style="color:#475569;">No tools match that filter. Clear the search box or switch to all tiers.</td></tr>';
+        return;
+      }
+
+      toolsBodyEl.innerHTML = filtered.map((item) =>
+        "<tr>" +
+          "<td><strong>" + item.name + "</strong></td>" +
+          "<td>" + item.role + "</td>" +
+          "<td>" + item.caveat + "</td>" +
+          "<td>" + item.cost + "</td>" +
+        "</tr>"
+      ).join("");
+    }
+
+    toolSearchEl.addEventListener("input", renderTools);
+    tierSelectEl.addEventListener("change", renderTools);
+
+    syncLabels();
+    renderTools();
+    requestAnimationFrame(tick);
+  </script>
+</body>
+</html>

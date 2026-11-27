@@ -2,6 +2,26 @@
 // Add a new object here whenever you publish a new research project.
 window.RESEARCH_GUIDES = [
   {
+    id: "3d-model-motion-lab",
+    number: "Guide 20",
+    flagship: true,
+    status: "published",
+    date: "November 2026",
+    category: "3D Graphics, Animation & Robotics",
+    title: "3D Model Motion: Skeleton Rigging, Character Physics, and Handgrip Mechanics (2022–2026)",
+    summary:
+      "Multi-agent technical synthesis paired with a live zero-dependency 3D Skeleton, Handgrip IK, and Skinning Twist Lab: comparing SMPL-X vs. Meta's Apache-2.0 MHR rig, 2025 neural auto-riggers (UniRig, MagicArticulate, Make-It-Animatable), UE5 Motion Matching vs. DART/CLoSD/HY-Motion 1.0, 21-keypoint MANO handgrips (GigaHands, InterMimic), and 2026 mocap hardware/video-AI stacks.",
+    highlights: [
+      "Interactive 3D Lab: drag-to-orbit 24-joint body IK + foot-locking, 21-keypoint Feix handgrip failure simulator, and LBS candy-wrapper vs. DQS twist mesh",
+      "Full benchmark tables across skeletons (SMPL-X, MHR, VRM 1.0), HOI datasets (GRAB, ARCTIC, OakInk2, HIMO, GigaHands), and physics RL",
+      "Searchable 16-tool mocap, glove, video-AI, and engine directory with Solo ($0–$500), Studio ($5k–$30k), and Robotics stack picks"
+    ],
+    guideUrl: "./guides/3d-model-motion/",
+    toolUrl: "./guides/3d-model-motion/#lab",
+    toolLabel: "Open 3D Motion Lab",
+    sourcesCount: "SIGGRAPH, CVPR, ICLR, OpenUSD, Epic & Blender"
+  },
+  {
     id: "home-insurance-crisis-2026",
     number: "Guide 19",
     flagship: true,

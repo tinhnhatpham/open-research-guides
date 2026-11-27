@@ -71,6 +71,11 @@
     <priority>0.95</priority>
   </url>
   <url>
+    <loc>https://open-research-guides.vercel.app/guides/3d-model-motion/</loc>
+    <lastmod>2026-11-27</lastmod>
+    <priority>0.95</priority>
+  </url>
+  <url>
     <loc>https://open-research-guides.vercel.app/guides/microplastics/</loc>
     <lastmod>2026-11-26</lastmod>
     <priority>0.8</priority>
