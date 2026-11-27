@@ -647,8 +647,9 @@
         <label class="field-label" for="sample-select">Or inspect a built-in test asset:</label>
         <select id="sample-select">
           <option value="broken-bvh" selected>Sample 1: Broken AI / mocap walk (.bvh with foot skate and gimbal flip)</option>
-          <option value="clean-glb">Sample 2: Clean production character (.glb with twist bones and 5-finger hands)</option>
-          <option value="broken-glb">Sample 3: Broken game rig (.glb with 8-weight skinning, bad norm, 4-finger hands)</option>
+          <option value="prod-glb">Sample 2: Real exported production rig (58-joint .glb with Feix hands and twist bones)</option>
+          <option value="clean-glb">Sample 3: Minimal clean character (.glb, 28 joints, max 3 weights)</option>
+          <option value="broken-glb">Sample 4: Broken game rig (.glb with 6-weight bloat, bad norm, 4-finger hands)</option>
         </select>
       </div>
     </section>
@@ -2083,11 +2084,16 @@
       renderUI();
     }
 
-    function loadSample(key) {
+    async function loadSample(key) {
       try {
         if (key === "broken-bvh") {
           const text = buildSampleBrokenBVH();
           loadAsset(parseBVH(text, "sample_broken_mocap.bvh"), text, "sample_broken_mocap.bvh", "text/plain");
+        } else if (key === "prod-glb") {
+          const resp = await fetch("../../data/3d-model-motion/production_humanoid_feix_handgrip.glb");
+          if (!resp.ok) throw new Error("Could not fetch production_humanoid_feix_handgrip.glb (HTTP " + resp.status + ")");
+          const buf = await resp.arrayBuffer();
+          loadAsset(parseGLTFOrGLB(buf, "production_humanoid_feix_handgrip.glb"), buf, "production_humanoid_feix_handgrip.glb", "model/gltf-binary");
         } else if (key === "clean-glb") {
           const buf = buildRealBinaryGLB("clean");
           loadAsset(parseGLTFOrGLB(buf, "sample_clean_character.glb"), buf, "sample_clean_character.glb", "model/gltf-binary");

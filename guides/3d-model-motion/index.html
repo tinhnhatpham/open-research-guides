@@ -1085,10 +1085,16 @@
         </table>
       </div>
       <div class="stack-recommendation" style="margin-top:28px;">
-        <h3>Audit Your Own .glb, .vrm, .gltf, or .bvh File in the Browser</h3>
+        <h3>Open Production Kit: Browser QA Linter, Blender Rig, Real .glb, and Video-to-3D Pipeline</h3>
         <p style="max-width:65ch;">
-          Ready to test your own character rig or mocap export? Open our free client-side <strong>3D Rig and Motion QA Linter</strong> to detect foot skating, Euler gimbal flips, missing forearm twist bones, 4-finger retarget gaps, and &gt;4-weight skinning bloat locally with zero uploads.
+          Test your own character rig or download our open MIT-licensed production assets built directly from this research:
         </p>
+        <ul>
+          <li><strong>Browser 3D Rig and Motion QA Linter:</strong> Drop any local .glb, .vrm, .gltf, or .bvh file to audit foot skating, Euler gimbal flips, forearm twist bones, 4-finger retarget gaps, and &gt;4-weight skinning bloat (zero server uploads).</li>
+          <li><strong>Verified Production Humanoid + 21-Joint Feix Handgrip Rig (.glb):</strong> <a href="../../data/3d-model-motion/production_humanoid_feix_handgrip.glb" download>Download production_humanoid_feix_handgrip.glb</a> (58 deform joints, 5 spine bones, forearm twist bones, 5-finger articulated hands, quaternion Feix grasp animation, scores 100/100 in our linter).</li>
+          <li><strong>Blender 4.x+ Rig Builder Script (.py):</strong> <a href="../../data/3d-model-motion/build_blender_humanoid_handgrip_rig.py" download>Download build_blender_humanoid_handgrip_rig.py</a> (creates DEF/TWIST/HANDS/IK Bone Collections, 50% forearm twist COPY_ROTATION constraints, anatomical finger hinge limits, and 5 baked Feix grasp actions).</li>
+          <li><strong>Local Video-to-3D + Foot-Lock Cleaner (.py):</strong> <a href="../../data/3d-model-motion/video_to_3d_mocap_pipeline.py" download>Download video_to_3d_mocap_pipeline.py</a> plus <a href="../../data/3d-model-motion/demo_cleaned_mocap.bvh" download>demo_cleaned_mocap.bvh</a> (Savitzky-Golay denoising, ground-plane stance foot locking, 2-bone leg IK, 50% twist distribution, and continuous Euler unwrapping).</li>
+        </ul>
         <p style="margin-bottom:0;">
           <a href="../../tools/rig-motion-linter/" style="display:inline-block; padding:10px 18px; background:#1d4ed8; color:#ffffff; text-decoration:none; border-radius:6px; font-size:0.875rem; font-weight:600;">Open 3D Rig and Motion QA Linter</a>
         </p>

@@ -272,3 +272,4 @@
 > Includes full reference tables (SMPL-X vs. Meta's Apache-2.0 MHR, UniRig/MagicArticulate/Make-It-Animatable, DART/CLoSD/HY-Motion 1.0, GigaHands/OakInk2/HIMO), a budget-tiered 2026 mocap/glove/video-AI directory, and a **100% browser-side `.glb`/`.vrm`/`.gltf`/`.bvh` Rig & Motion QA Linter** (zero uploads, detects foot skating, >4-weight bloat, missing twist bones, Euler flips, and exports cleaned `.bvh` + JSON QA reports):
 > - Interactive 3D Lab & Research: https://open-research-guides.vercel.app/guides/3d-model-motion/
 > - Browser GLB / BVH QA Linter: https://open-research-guides.vercel.app/tools/rig-motion-linter/
+> - Open MIT Production Kit (Blender 4.x Feix Handgrip Rig Script, Verified 58-Joint `.glb`, Local Video-to-3D Foot-Lock Python Pipeline): https://github.com/tinhnhatpham/open-research-guides/tree/main/data/3d-model-motion
