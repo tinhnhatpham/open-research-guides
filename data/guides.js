@@ -12,13 +12,13 @@ window.RESEARCH_GUIDES = [
     summary:
       "Multi-agent technical synthesis paired with a live zero-dependency 3D Skeleton, Handgrip IK, and Skinning Twist Lab: comparing SMPL-X vs. Meta's Apache-2.0 MHR rig, 2025 neural auto-riggers (UniRig, MagicArticulate, Make-It-Animatable), UE5 Motion Matching vs. DART/CLoSD/HY-Motion 1.0, 21-keypoint MANO handgrips (GigaHands, InterMimic), and 2026 mocap hardware/video-AI stacks.",
     highlights: [
+      "Companion 3D Rig & Motion QA Linter: drop any local .glb, .vrm, .gltf, or .bvh to detect foot skating, >4-weight bloat, missing twist bones, and Euler flips",
       "Interactive 3D Lab: drag-to-orbit 24-joint body IK + foot-locking, 21-keypoint Feix handgrip failure simulator, and LBS candy-wrapper vs. DQS twist mesh",
-      "Full benchmark tables across skeletons (SMPL-X, MHR, VRM 1.0), HOI datasets (GRAB, ARCTIC, OakInk2, HIMO, GigaHands), and physics RL",
       "Searchable 16-tool mocap, glove, video-AI, and engine directory with Solo ($0–$500), Studio ($5k–$30k), and Robotics stack picks"
     ],
     guideUrl: "./guides/3d-model-motion/",
-    toolUrl: "./guides/3d-model-motion/#lab",
-    toolLabel: "Open 3D Motion Lab",
+    toolUrl: "./tools/rig-motion-linter/",
+    toolLabel: "Open GLB / BVH QA Linter",
     sourcesCount: "SIGGRAPH, CVPR, ICLR, OpenUSD, Epic & Blender"
   },
   {

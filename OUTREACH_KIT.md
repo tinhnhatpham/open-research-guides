@@ -269,4 +269,6 @@
 > - **21-Keypoint Handgrip mode:** Switch Feix GRASP presets (Power Cylinder, Precision Pinch, Tripod Tool, Lateral Key), twist forearm pronation/supination, and simulate mesh interpenetration, floating air-gaps, and 4-finger stylized retarget loss.
 > - **Skinning Twist mode:** Twist a 3D forearm up to 180° to compare single-bone LBS candy-wrapper collapse vs. Dual Quaternion Skinning vs. UE5-style twist bones.
 >
-> Includes full reference tables (SMPL-X vs. Meta's Apache-2.0 MHR, UniRig/MagicArticulate/Make-It-Animatable, DART/CLoSD/HY-Motion 1.0, GigaHands/OakInk2/HIMO) and a budget-tiered 2026 mocap/glove/video-AI directory (zero ads/affiliates, CC BY 4.0 / MIT): https://open-research-guides.vercel.app/guides/3d-model-motion/
+> Includes full reference tables (SMPL-X vs. Meta's Apache-2.0 MHR, UniRig/MagicArticulate/Make-It-Animatable, DART/CLoSD/HY-Motion 1.0, GigaHands/OakInk2/HIMO), a budget-tiered 2026 mocap/glove/video-AI directory, and a **100% browser-side `.glb`/`.vrm`/`.gltf`/`.bvh` Rig & Motion QA Linter** (zero uploads, detects foot skating, >4-weight bloat, missing twist bones, Euler flips, and exports cleaned `.bvh` + JSON QA reports):
+> - Interactive 3D Lab & Research: https://open-research-guides.vercel.app/guides/3d-model-motion/
+> - Browser GLB / BVH QA Linter: https://open-research-guides.vercel.app/tools/rig-motion-linter/
