@@ -11,7 +11,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 
 ---
 
-## Published Guides & Interactive Tools (18)
+## Published Guides & Interactive Tools (19)
 
 1. **Guide #01 — Microplastics in Drinking Water:** [`guides/microplastics/`](./guides/microplastics/) + [Interactive Decision Calculator](./microplastics-calculator/) + [Markdown Guide](./microplastics-drinking-water-guide.md) + [1-Min Shareable Summary](./microplastics-shareable-summary.md)
 2. **Guide #02 — Global Traffic Safety (158 Countries):** [`guides/traffic-safety/`](./guides/traffic-safety/) + [Python WHO Analysis](./data/traffic-safety/analyze_who_road_deaths.py)
@@ -31,6 +31,7 @@ A public-interest, zero-affiliate collection of citation-backed guides, reproduc
 16. **Guide #16 (Flagship #10) — Follow the School Dollar (All 13,251 U.S. Public School Districts, Census F-33 FY2019–FY2024):** [`guides/school-finances/`](./guides/school-finances/) + [Python F-33 Pipeline](./data/school-finances/analyze_school_finances.py) + [Linked Dataset (.csv.gz)](./data/school-finances/census-school-districts-2019-2024.csv.gz) *(auto-refreshed monthly)*
 17. **Guide #17 (Flagship #11) — America's Aging High-Hazard Dams (All 14,266 Life-Safety Dams, USACE NID Nov 2026):** [`guides/dams/`](./guides/dams/) + [Python NID Pipeline](./data/dams/analyze_nid_dams.py) + [Linked Dataset (.csv.gz)](./data/dams/usace-high-hazard-dams-2026.csv.gz) *(auto-refreshed monthly)*
 18. **Guide #18 (Flagship #12) — The Credit Union Reality Check (All 4,363 U.S. Credit Unions vs. Big Banks, NCUA 2021–2025):** [`guides/credit-unions/`](./guides/credit-unions/) + [Python NCUA Pipeline](./data/credit-unions/analyze_ncua_credit_unions.py) + [Linked Dataset (.csv.gz)](./data/credit-unions/ncua-credit-unions-2021-2025.csv.gz) *(auto-refreshed monthly)*
+19. **Guide #19 (Deep-Research Flagship) — The 2026 U.S. Home Insurance Crisis & Home-Hardening Reality:** [`guides/home-insurance/`](./guides/home-insurance/) + Interactive Claim & Roof ACV Shock Calculator + 18-State Hardening Grants & Discounts Directory (Treasury FIO, NAIC, S&P GMI, Swiss Re, FHFA, IBHS, State DOIs)
 
 ---
 

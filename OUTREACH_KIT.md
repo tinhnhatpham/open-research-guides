@@ -242,3 +242,18 @@
 > - **Fee watch:** CUs collected `$10.14B` in member fees (`$69.50/member` avg), ranging from `$18.40/member` at BECU and `$20.70` at State Employees' CU (NC) up to `$89.60` avg at mid-size CUs.
 >
 > Search all 4,363 credit unions + open `.csv.gz`: https://open-research-guides.vercel.app/guides/credit-unions/
+
+### J. The 2026 U.S. Home Insurance Crisis & Home-Hardening Reality (`r/homeowners`, `r/RealEstate`, `r/personalfinance`)
+
+**Title:**
+`[OC] Why home insurance still hurts after 2026 rate hikes cooled (+1.8%): Roof ACV schedules (new March 2026 FHFA rule), 2%–5% wind/hail deductibles, and a free "Should I File This Claim?" calculator`
+
+**Body:**
+> Headlines note that U.S. homeowners insurers just posted their best underwriting year in over a decade (`87.9` combined ratio in 2025) and approved rate hikes cooled to `+1.8%` through July 2026. Yet homeowners are quietly absorbing far more out-of-pocket risk than five years ago.
+>
+> Key verified takeaways from primary Treasury FIO, NAIC, S&P GMI, Swiss Re, FHFA, IBHS, and State DOI data:
+> - **The Double Trap:** On March 18, 2026, FHFA allowed Fannie Mae and Freddie Mac mortgages to accept **Actual Cash Value (ACV)** roof policies. Pair a typical 15-year-old roof schedule (`30%` payout) with a `2%` Coverage A wind/hail deductible (`$9,000` on a `$450,000` policy), and a `$20,000` or even `$30,000` hail-destroyed roof yields a **$0 insurer payout** while logging a closed claim on LexisNexis C.L.U.E. for 7 years.
+> - **FAIR Plan Divergence:** California's FAIR Plan reached `$773B` exposure across ~700,000 policies (with 50% of its `$1B` assessment recoupable statewide, upheld June 30, 2026), while Florida Citizens shrank ~80% (`1.41M` → `~254k–278k`) after 2022–2023 tort reforms.
+> - **Hardening Science & Honest Limits:** IBHS FORTIFIED Roof cut Hurricane Sally claim frequency `66%–73%` across 40,000+ Alabama homes, and states like AL, FL, LA, SC, NC, and OK offer up to `$10,000` grants—yet windows close in minutes or run lotteries, discounts apply only to the wind/wildfire slice, and no statute blocks non-renewal.
+>
+> Free interactive Claim & Roof ACV Shock Calculator + 18-state grants & credit-ban directory (zero ads/affiliates): https://open-research-guides.vercel.app/guides/home-insurance/

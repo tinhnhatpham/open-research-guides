@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The 2026 U.S. Home Insurance Crisis and Home-Hardening Reality</title>
+  <meta name="description" content="Primary-source investigation of U.S. homeowners insurance in 2026: roof ACV depreciation, 2% to 5% wind/hail deductibles, CLUE surcharge math, state FAIR plans, and IBHS hardening grants." />
+  <meta property="og:title" content="The 2026 U.S. Home Insurance Crisis and Home-Hardening Reality" />
+  <meta property="og:description" content="Interactive Claim & Roof ACV Shock Calculator plus verified 2026 data from Treasury FIO, NAIC, Swiss Re, FHFA, IBHS, and state insurance regulators." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://open-research-guides.vercel.app/guides/home-insurance/" />
+  <link rel="canonical" href="https://open-research-guides.vercel.app/guides/home-insurance/" />
+  <link rel="icon" type="image/svg+xml" href="../../favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #f7f8fa;
+      --surface: #ffffff;
+      --surface-subtle: #eff3f6;
+      --ink: #0f172a;
+      --ink-muted: #475569;
+      --border: #d8e0e8;
+      --border-strong: #94a3b8;
+      --accent: #164e63;
+      --accent-hover: #0e3a4b;
+      --accent-soft: #e6f2f5;
+      --safe-ink: #166534;
+      --safe-bg: #ecfdf3;
+      --warn-ink: #9a3412;
+      --warn-bg: #fff7ed;
+      --danger-ink: #991b1b;
+      --danger-bg: #fef2f2;
+      --font-display: "Newsreader", Georgia, serif;
+      --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --text-h2: 1.5rem;
+      --text-body: 1rem;
+      --text-sm: 0.875rem;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+      font-variant-numeric: tabular-nums;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: color 180ms var(--ease-out);
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Single-line sticky navigation */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(247, 248, 250, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .nav-links a {
+      color: var(--ink-muted);
+      text-decoration: none;
+    }
+
+    .nav-links a:hover {
+      color: var(--accent);
+    }
+
+    /* Editorial layout container */
+    .page-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Opening editorial masthead (no marketing hero box, no eyebrow) */
+    .article-header {
+      padding-bottom: 32px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 40px;
+    }
+
+    .article-header h1 {
+      margin: 0 0 16px;
+      font-family: var(--font-display);
+      font-size: clamp(2.15rem, 4.4vw, 3.35rem);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      max-width: 22ch;
+    }
+
+    .article-summary {
+      margin: 0 0 20px;
+      font-size: var(--text-body);
+      color: var(--ink-muted);
+      max-width: 65ch;
+    }
+
+    .article-byline {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+    }
+
+    /* Key figures ledger strip (clean architectural hairline grid) */
+    .ledger-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+      background: var(--surface);
+    }
+
+    .ledger-cell {
+      padding: 20px 20px;
+      border-right: 1px solid var(--border);
+    }
+
+    .ledger-cell:last-child {
+      border-right: none;
+    }
+
+    .ledger-value {
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1.15;
+      margin: 0 0 6px;
+    }
+
+    .ledger-label {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+      line-height: 1.45;
+    }
+
+    /* Sections */
+    .report-section {
+      padding: 44px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .report-section:first-of-type {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      max-width: 38ch;
+    }
+
+    h3 {
+      margin: 28px 0 8px;
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      font-weight: 700;
+      color: var(--ink);
+      max-width: 65ch;
+    }
+
+    p {
+      margin: 0 0 16px;
+      max-width: 65ch;
+      font-size: var(--text-body);
+      color: var(--ink);
+    }
+
+    p.muted {
+      color: var(--ink-muted);
+    }
+
+    ul, ol {
+      margin: 0 0 20px;
+      padding-left: 22px;
+      max-width: 65ch;
+      font-size: var(--text-body);
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    /* Interactive Claim & Roof ACV Shock Calculator */
+    .workbench {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin-top: 24px;
+    }
+
+    .workbench-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: 36px;
+      align-items: start;
+    }
+
+    .field-group {
+      margin-bottom: 20px;
+    }
+
+    .field-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .field-label {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .field-readout {
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    select, input[type="search"], input[type="number"] {
+      width: 100%;
+      padding: 10px 12px;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+    }
+
+    select:focus, input[type="search"]:focus, input[type="number"]:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      background: var(--surface);
+    }
+
+    /* Connected segmented control (non-button-wall control) */
+    .segmented {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segmented label {
+      display: block;
+      text-align: center;
+      padding: 9px 10px;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-muted);
+      cursor: pointer;
+      border-right: 1px solid var(--border);
+      transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out);
+    }
+
+    .segmented label:last-of-type {
+      border-right: none;
+    }
+
+    .segmented input:checked + label {
+      background: var(--accent);
+      color: #ffffff;
+    }
+
+    .segmented input:focus-visible + label {
+      outline: 2px solid var(--ink);
+      outline-offset: -2px;
+    }
+
+    .preset-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+    }
+
+    .preset-select {
+      width: auto;
+      min-width: 280px;
+    }
+
+    /* Results panel (surface tint, no nested card border cage) */
+    .results-panel {
+      background: var(--surface-subtle);
+      padding: 24px;
+      border-top: 3px solid var(--accent);
+    }
+
+    .verdict-banner {
+      padding: 16px 18px;
+      margin-bottom: 20px;
+      border-left: 4px solid var(--accent);
+      background: var(--surface);
+    }
+
+    .verdict-banner.verdict-danger {
+      border-left-color: var(--danger-ink);
+      background: var(--danger-bg);
+    }
+
+    .verdict-banner.verdict-warn {
+      border-left-color: var(--warn-ink);
+      background: var(--warn-bg);
+    }
+
+    .verdict-banner.verdict-safe {
+      border-left-color: var(--safe-ink);
+      background: var(--safe-bg);
+    }
+
+    .verdict-title {
+      margin: 0 0 6px;
+      font-weight: 700;
+      font-size: var(--text-body);
+      color: var(--ink);
+    }
+
+    .verdict-banner.verdict-danger .verdict-title { color: var(--danger-ink); }
+    .verdict-banner.verdict-warn .verdict-title { color: var(--warn-ink); }
+    .verdict-banner.verdict-safe .verdict-title { color: var(--safe-ink); }
+
+    .verdict-detail {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink);
+      max-width: none;
+    }
+
+    .calc-breakdown {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: var(--text-sm);
+    }
+
+    .calc-breakdown tr {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .calc-breakdown th {
+      text-align: left;
+      font-weight: 500;
+      color: var(--ink-muted);
+      padding: 10px 0;
+    }
+
+    .calc-breakdown td {
+      text-align: right;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 10px 0;
+      white-space: nowrap;
+    }
+
+    .calc-breakdown tr.total-row th,
+    .calc-breakdown tr.total-row td {
+      border-top: 2px solid var(--ink);
+      border-bottom: none;
+      color: var(--ink);
+      font-weight: 700;
+      padding-top: 12px;
+    }
+
+    .calc-note {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+      max-width: none;
+    }
+
+    /* Editorial two-column split for prose + visual ledger */
+    .editorial-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 0.85fr);
+      gap: 40px;
+      align-items: start;
+    }
+
+    .aside-ledger {
+      background: var(--surface);
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 22px;
+    }
+
+    .aside-ledger h3 {
+      margin-top: 0;
+    }
+
+    /* Responsive data tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin-top: 20px;
+      background: var(--surface);
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--border);
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--text-sm);
+      min-width: 680px;
+    }
+
+    table.data-table thead th {
+      text-align: left;
+      font-weight: 700;
+      color: var(--ink);
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border-strong);
+      background: var(--surface-subtle);
+    }
+
+    table.data-table tbody td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      color: var(--ink);
+    }
+
+    table.data-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Semantic table status text (strictly reserved for table cells) */
+    .status-mandatory {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      background: var(--safe-bg);
+      color: var(--safe-ink);
+    }
+
+    .status-limited {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+      background: var(--warn-bg);
+      color: var(--warn-ink);
+    }
+
+    /* State directory toolbar */
+    .directory-controls {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+      gap: 14px;
+      margin: 20px 0 12px;
+    }
+
+    /* Visual SVG chart container */
+    .chart-figure {
+      margin: 24px 0 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 24px;
+    }
+
+    .chart-caption {
+      margin: 12px 0 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+      max-width: none;
+    }
+
+    /* Action button (single primary CTA where appropriate) */
+    .cta-row {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 11px 20px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 180ms var(--ease-out);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .cross-link-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+    }
+
+    .cross-link-item h3 {
+      margin-top: 0;
+    }
+
+    footer {
+      margin-top: 56px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+    }
+
+    @media (max-width: 900px) {
+      .ledger-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .ledger-cell:nth-child(2) {
+        border-right: none;
+      }
+      .ledger-cell:nth-child(1),
+      .ledger-cell:nth-child(2) {
+        border-bottom: 1px solid var(--border);
+      }
+      .workbench-grid,
+      .editorial-split,
+      .cross-link-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .split-selects {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px;
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner {
+        padding: 12px 16px;
+        gap: 6px 12px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-size: 1.1rem;
+        white-space: normal;
+      }
+      .nav-links {
+        gap: 8px 14px;
+        flex-wrap: wrap;
+        white-space: normal;
+        width: 100%;
+      }
+      .page-shell {
+        padding: 28px 16px 64px;
+      }
+      .ledger-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .ledger-cell {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+      }
+      .ledger-cell:last-child {
+        border-bottom: none;
+      }
+      .workbench {
+        padding: 20px 16px;
+      }
+      .split-selects,
+      .directory-controls {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .preset-select {
+        min-width: 0;
+        max-width: 100%;
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="../../">Open Plain-Language Research</a>
+      <nav class="nav-links" aria-label="Guide sections">
+        <a href="#calculator">Claim Calculator</a>
+        <a href="#states">State Grants</a>
+        <a href="#fair-plans">FAIR Plans</a>
+        <a href="#playbook">Playbook</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-shell">
+    <header class="article-header">
+      <h1>Why Your Home Insurance Still Hurts After Rate Hikes Cooled</h1>
+      <p class="article-summary">
+        U.S. homeowners insurers posted their strongest underwriting profit in over a decade in 2025, and approved rate increases slowed to +1.8% through July 2026. Yet millions of households face steeper out-of-pocket exposure as carriers shift roof losses onto Actual Cash Value schedules, 2% to 5% wind/hail deductibles, and automated aerial-imagery non-renewals.
+      </p>
+      <p class="article-byline">
+        <span>Guide 19</span>
+        <span>Housing and Insurance Risk</span>
+        <span>Published November 2026</span>
+        <span>Primary sources: Treasury FIO, NAIC, FHFA, Swiss Re, IBHS, State DOIs</span>
+      </p>
+    </header>
+
+    <section class="ledger-grid" aria-label="Key verified 2026 metrics">
+      <div class="ledger-cell">
+        <p class="ledger-value">87.9 vs. 110.5</p>
+        <p class="ledger-label">Homeowners combined ratio rebounded from 2023 losses to a 10-year profit peak in 2025 (Triple-I).</p>
+      </div>
+      <div class="ledger-cell">
+        <p class="ledger-value">$0 Payout</p>
+        <p class="ledger-label">Typical payout on a $20k to $30k hail roof loss under a 30% roof schedule plus a 2% ($9,000) deductible.</p>
+      </div>
+      <div class="ledger-cell">
+        <p class="ledger-value">$773 Billion</p>
+        <p class="ledger-label">California FAIR Plan exposure across ~700,000 policies by FY 2026, while FL Citizens shrank ~80%.</p>
+      </div>
+      <div class="ledger-cell">
+        <p class="ledger-value">66% to 73%</p>
+        <p class="ledger-label">Measured reduction in hurricane claim frequency for IBHS FORTIFIED roofs across 40,000+ AL homes.</p>
+      </div>
+    </section>
+
+    <section class="report-section" id="calculator">
+      <h2>Check Whether Filing a Claim Actually Leaves You Ahead</h2>
+      <p>
+        Before calling your insurer's claims hotline, test the real math. On March 18, 2026, federal housing regulators allowed Fannie Mae and Freddie Mac mortgages to carry Actual Cash Value (ACV) roof policies, accelerating the spread of age-depreciated roof schedules alongside 2% to 5% Coverage A deductibles. Even a $0 closed claim inquiry can stay on your LexisNexis C.L.U.E. report for 7 years.
+      </p>
+
+      <div class="workbench">
+        <div class="preset-row">
+          <label for="preset-scenario" class="field-label">Load a real-world scenario:</label>
+          <select id="preset-scenario" class="preset-select">
+            <option value="double-trap">Inland hail double trap ($450k home, 15-yr ACV roof, 2% deductible)</option>
+            <option value="rcv-small">Small water leak ($6,500 pipe repair, $1,000 flat deductible, 1 prior claim)</option>
+            <option value="catastrophic">Major storm loss ($38,000 damage, RCV roof, 2% deductible, 0 prior claims)</option>
+            <option value="fl-wind">Coastal wind loss ($24,000 damage, 12-yr roof, 5% deductible)</option>
+          </select>
+        </div>
+
+        <div class="workbench-grid">
+          <div>
+            <div class="field-group">
+              <div class="field-label-row">
+                <label class="field-label" for="coverage-a">Coverage A dwelling limit</label>
+                <span class="field-readout" id="coverage-a-val">$450,000</span>
+              </div>
+              <input type="range" id="coverage-a" min="150000" max="1200000" step="25000" value="450000" />
+            </div>
+
+            <div class="field-group">
+              <div class="field-label-row">
+                <label class="field-label" for="damage-cost">Estimated repair or roof replacement cost</label>
+                <span class="field-readout" id="damage-cost-val">$20,000</span>
+              </div>
+              <input type="range" id="damage-cost" min="2000" max="60000" step="500" value="20000" />
+            </div>
+
+            <div class="field-group">
+              <span class="field-label" style="display:block; margin-bottom:8px;">Deductible structure for this peril</span>
+              <div class="segmented" role="radiogroup" aria-label="Deductible structure">
+                <input type="radio" name="ded-type" id="ded-pct" value="pct" checked />
+                <label for="ded-pct">Percentage of Coverage A</label>
+                <input type="radio" name="ded-type" id="ded-flat" value="flat" />
+                <label for="ded-flat">Flat dollar deductible</label>
+              </div>
+            </div>
+
+            <div class="field-group" id="pct-ded-group">
+              <div class="field-label-row">
+                <label class="field-label" for="ded-pct-val">Wind/hail percentage deductible</label>
+                <span class="field-readout" id="ded-pct-readout">2% ($9,000)</span>
+              </div>
+              <select id="ded-pct-val">
+                <option value="1">1% of Coverage A</option>
+                <option value="2" selected>2% of Coverage A (common TX/CO/OK baseline)</option>
+                <option value="3">3% of Coverage A</option>
+                <option value="5">5% of Coverage A (coastal / high-risk tier)</option>
+              </select>
+            </div>
+
+            <div class="field-group" id="flat-ded-group" style="display:none;">
+              <div class="field-label-row">
+                <label class="field-label" for="ded-flat-val">Flat all-peril deductible</label>
+                <span class="field-readout" id="ded-flat-readout">$1,000</span>
+              </div>
+              <select id="ded-flat-val">
+                <option value="500">$500</option>
+                <option value="1000" selected>$1,000</option>
+                <option value="2500">$2,500</option>
+                <option value="5000">$5,000</option>
+              </select>
+            </div>
+
+            <div class="field-group">
+              <span class="field-label" style="display:block; margin-bottom:8px;">Roof loss settlement clause</span>
+              <div class="segmented" role="radiogroup" aria-label="Roof settlement clause">
+                <input type="radio" name="roof-type" id="roof-acv" value="acv" checked />
+                <label for="roof-acv">Roof Schedule / ACV</label>
+                <input type="radio" name="roof-type" id="roof-rcv" value="rcv" />
+                <label for="roof-rcv">Full Replacement (RCV)</label>
+              </div>
+            </div>
+
+            <div class="field-group" id="roof-age-group">
+              <div class="field-label-row">
+                <label class="field-label" for="roof-age">Current roof age (years)</label>
+                <span class="field-readout" id="roof-age-val">15 years (30% scheduled payout)</span>
+              </div>
+              <input type="range" id="roof-age" min="1" max="25" step="1" value="15" />
+            </div>
+
+            <div class="field-group">
+              <div class="field-label-row">
+                <label class="field-label" for="annual-premium">Current annual home premium</label>
+                <span class="field-readout" id="annual-premium-val">$2,800 / yr</span>
+              </div>
+              <input type="range" id="annual-premium" min="900" max="12000" step="100" value="2800" />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="peril-type" style="display:block; margin-bottom:8px;">Claim peril and prior 3-to-5-year C.L.U.E. history</label>
+              <div class="split-selects">
+                <select id="peril-type" aria-label="Claim peril type">
+                  <option value="weather" selected>Wind / hail (~15% surcharge)</option>
+                  <option value="water">Water / pipe (~25% surcharge)</option>
+                  <option value="fire">Fire / other (~20% surcharge)</option>
+                </select>
+                <select id="prior-claims" aria-label="Prior claims count">
+                  <option value="0" selected>0 prior claims (3–5 yrs)</option>
+                  <option value="1">1 prior claim (2nd cliff)</option>
+                  <option value="2">2+ prior claims (high risk)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="results-panel" aria-live="polite">
+            <div id="verdict-banner" class="verdict-banner verdict-danger">
+              <p class="verdict-title" id="verdict-title">Do not file: $0 insurer payout after depreciation and deductible</p>
+              <p class="verdict-detail" id="verdict-detail">
+                Under a 30% scheduled roof valuation and a $9,000 deductible, your insurer pays $0 while logging a closed claim on your C.L.U.E. report for up to 7 years.
+              </p>
+            </div>
+
+            <table class="calc-breakdown">
+              <tbody>
+                <tr>
+                  <th>Estimated gross repair cost</th>
+                  <td id="res-gross">$20,000</td>
+                </tr>
+                <tr>
+                  <th>Covered valuation after ACV / schedule</th>
+                  <td id="res-valued">$6,000 (30%)</td>
+                </tr>
+                <tr>
+                  <th>Less your policy deductible</th>
+                  <td id="res-deductible">-$9,000</td>
+                </tr>
+                <tr>
+                  <th>Estimated insurer check</th>
+                  <td id="res-payout">$0</td>
+                </tr>
+                <tr>
+                  <th>Your direct out-of-pocket cost</th>
+                  <td id="res-oop">$20,000</td>
+                </tr>
+                <tr>
+                  <th>Estimated 4-year C.L.U.E. surcharge impact</th>
+                  <td id="res-surcharge">-$1,680</td>
+                </tr>
+                <tr class="total-row">
+                  <th>Net financial benefit of filing</th>
+                  <td id="res-net">-$1,680</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="calc-note" id="calc-caveat">
+              Model uses typical carrier Roof Payment Schedule depreciation (100% new, ~80% at 5 yrs, ~55% at 10 yrs, ~30% at 15 yrs, 25% at 18+ yrs) and a conservative 4-year surcharge window (national single-claim surcharges average 10% to 30% for 3 to 5 years; 2nd claims jump 40% to 50%+ and risk non-renewal). Always check your Declarations Page for exact schedule terms.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-section" id="drivers">
+      <h2>How Hail Storms and Reinsurance Reshaped U.S. Home Policies</h2>
+      <div class="editorial-split">
+        <div>
+          <p>
+            Public debate often frames home insurance as purely a Florida hurricane or California wildfire problem. Primary actuarial data shows a wider shift: inland severe convective storms (hail, straight-line wind, and tornadoes) have become the insurance industry's most relentless earnings drain.
+          </p>
+          <p>
+            Between 2018 and 2022, the U.S. Treasury Federal Insurance Office tracked more than 330 insurers and 246 million policies, finding that premiums grew 8.7% faster than inflation nationwide and 14.7% faster in the highest-risk 20% of ZIP codes ($2,321 vs. $1,277 in the lowest-risk quintile). Non-renewals in top-risk ZIP codes more than doubled from 1.10% in 2018 to 2.37% in 2022.
+          </p>
+          <p>
+            In 2023, the market hit a wall: U.S. homeowners insurers posted a 110.5% to 110.9% combined ratio (roughly $15 billion in underwriting losses), and U.S. property catastrophe reinsurance prices spiked +31.3% on January 1, 2023. Crucially, reinsurers raised their attachment points, cutting their share of catastrophe losses from roughly 20% toward 12% and forcing primary insurers to absorb frequent hail losses directly.
+          </p>
+          <p>
+            By 2025, compounding rate hikes (+12.7% in 2023 and +10.4% in 2024, led by Nebraska at +22.7% alongside Montana, Iowa, Minnesota, Utah, and Washington) combined with zero major U.S. hurricane landfalls pushed the homeowners combined ratio down to 87.9, the best result in over a decade despite $40 billion in January 2025 Los Angeles wildfire losses. Even as reinsurance prices fell -12% on January 1, 2026 and approved rate hikes cooled to +1.8% through July 2026, U.S. severe convective storm losses still crossed $43 billion in the first nine months of 2026 (the fourth straight year above $40 billion), and residential rebuild costs remain 35% to 50% above 2020 levels.
+          </p>
+        </div>
+
+        <aside class="aside-ledger">
+          <h3>Why 2026 Feels Expensive Even as Rate Filings Cool</h3>
+          <ul>
+            <li><strong>Inflation guard creep:</strong> Automatic annual Coverage A increases silently enlarge 2% to 5% percentage deductibles every renewal.</li>
+            <li><strong>Sticky reinsurance retentions:</strong> Reinsurance rates dropped -12% in Jan 2026, but attachment points stayed pinned near 2023 highs.</li>
+            <li><strong>FHFA ACV roof rule (March 18, 2026):</strong> Fannie Mae and Freddie Mac now accept Actual Cash Value roof policies on federally backed loans, shifting depreciation onto owners.</li>
+            <li><strong>Underinsurance gap:</strong> CoreLogic estimates 60% to 64% of U.S. homes are underinsured by 20% to 27% below actual rebuild cost.</li>
+          </ul>
+        </aside>
+      </div>
+
+      <figure class="chart-figure">
+        <svg viewBox="0 0 820 270" width="100%" role="img" aria-label="Bar chart showing U.S. homeowners insurance approved rate increases from 2023 through July 2026 alongside severe convective storm insured losses">
+          <title>U.S. Homeowners Rate Hikes vs. Severe Convective Storm Losses (2023 to 2026 YTD)</title>
+          <rect x="0" y="0" width="820" height="270" fill="#ffffff" />
+          <text x="16" y="24" font-family="Plus Jakarta Sans, sans-serif" font-size="14" font-weight="700" fill="#0f172a">Rate Filings Cooled in 2026, While U.S. Hail and Wind Losses Stayed Above $40B/Yr</text>
+
+          <!-- Left Chart: Approved Rate Increases (S&P GMI) -->
+          <text x="16" y="54" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="600" fill="#475569">Weighted Approved Homeowners Rate Hike (S&amp;P GMI)</text>
+          <line x1="16" y1="216" x2="380" y2="216" stroke="#94a3b8" stroke-width="1" />
+          <!-- 2023: 12.7% -->
+          <rect x="34" y="84" width="60" height="132" fill="#164e63" rx="3" />
+          <text x="64" y="76" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">+12.7%</text>
+          <text x="64" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2023</text>
+          <!-- 2024: 10.4% -->
+          <rect x="122" y="108" width="60" height="108" fill="#164e63" rx="3" />
+          <text x="152" y="100" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">+10.4%</text>
+          <text x="152" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2024</text>
+          <!-- 2025: 6.3% -->
+          <rect x="210" y="150" width="60" height="66" fill="#2c7a96" rx="3" />
+          <text x="240" y="142" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">+6.3%</text>
+          <text x="240" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2025</text>
+          <!-- 2026 YTD Jul: 1.8% -->
+          <rect x="298" y="197" width="60" height="19" fill="#64748b" rx="3" />
+          <text x="328" y="189" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">+1.8%</text>
+          <text x="328" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2026 Jul*</text>
+
+          <!-- Divider -->
+          <line x1="410" y1="48" x2="410" y2="245" stroke="#d8e0e8" stroke-width="1" />
+
+          <!-- Right Chart: U.S. SCS Insured Losses (Swiss Re / Gallagher Re) -->
+          <text x="438" y="54" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="600" fill="#475569">U.S. Severe Convective Storm Insured Losses ($B)</text>
+          <line x1="438" y1="216" x2="804" y2="216" stroke="#94a3b8" stroke-width="1" />
+          <!-- 2023: $60B+ -->
+          <rect x="456" y="84" width="60" height="132" fill="#9a3412" rx="3" />
+          <text x="486" y="76" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">$60B+</text>
+          <text x="486" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2023</text>
+          <!-- 2024: $50B+ -->
+          <rect x="544" y="106" width="60" height="110" fill="#9a3412" rx="3" />
+          <text x="574" y="98" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">$50B+</text>
+          <text x="574" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2024</text>
+          <!-- 2025: $51B -->
+          <rect x="632" y="104" width="60" height="112" fill="#9a3412" rx="3" />
+          <text x="662" y="96" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">$51B</text>
+          <text x="662" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2025</text>
+          <!-- 2026 9M: $43B+ -->
+          <rect x="720" y="121" width="60" height="95" fill="#c2410c" rx="3" />
+          <text x="750" y="113" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" font-weight="700" fill="#0f172a">$43B+</text>
+          <text x="750" y="236" text-anchor="middle" font-family="Plus Jakarta Sans, sans-serif" font-size="13" fill="#475569">2026 9M*</text>
+        </svg>
+        <figcaption class="chart-caption">
+          Sources: S&amp;P Global Market Intelligence RateWatch (*2026 through July; note a separate RateWatch summary cites ~13.6% for restated 2024 filings); Swiss Re sigma No. 1/2026 and Gallagher Re / Aon (*2026 covers Jan through Sept).
+        </figcaption>
+      </figure>
+    </section>
+
+    <section class="report-section" id="fair-plans">
+      <h2>State Last-Resort Plans Split Between Bailouts and Depopulation</h2>
+      <p>
+        When private carriers withdraw, homeowners fall into state-chartered residual markets (FAIR Plans and coastal wind pools). Nationally, these plans surpassed 2.6 million policies and $1.1 trillion in exposure during 2023 and 2024. By 2026, the two largest markets moved in opposite directions.
+      </p>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>State residual market</th>
+              <th>2025 to 2026 scale</th>
+              <th>Financial shock or reform</th>
+              <th>Hidden coverage gap for homeowners</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>California FAIR Plan</strong></td>
+              <td>~$773B exposure across nearly 700,000 policies (up from $50B in 2018 and $458B in Sept 2024).</td>
+              <td>Estimated ~$4B losses from Jan 2025 Palisades and Eaton fires triggered a $1B insurer assessment; up to 50% recoupable statewide from all CA policyholders (upheld June 30, 2026).</td>
+              <td>Named-peril fire only ($3M residential cap). Excludes liability, theft, and sudden pipe bursts; requires a separate DIC wrap-around policy adding 25% to 60% in cost.</td>
+            </tr>
+            <tr>
+              <td><strong>Florida Citizens</strong></td>
+              <td>Dropped ~80% from 1,407,805 policies (Sept 2023) to ~254,000 to 278,000 by mid-2026 (~2% market share).</td>
+              <td>2022–2023 tort reforms (SB 2-A, HB 837) ended one-way attorney fees and AOB; ~20 private carriers entered or expanded and dozens filed rate cuts up to &gt;12%.</td>
+              <td>Mandatory 20% takeout rule shifts policyholders to private carriers if a quote is within 20% of Citizens, even when the private policy carries tighter exclusions.</td>
+            </tr>
+            <tr>
+              <td><strong>Texas TWIA</strong></td>
+              <td>286,251 policies and $127.1B total insured value as of Q1 2026.</td>
+              <td>Hurricane Beryl and 2024 storms drained the Catastrophe Reserve Trust Fund ($413.5M deficit entering 2025); HB 3689 added state Rainy Day financing for a $4.3B 2026 tower.</td>
+              <td>Wind and hail only for 14 coastal counties plus parts of Harris County; homeowners still buy separate fire/liability and NFIP flood policies.</td>
+            </tr>
+            <tr>
+              <td><strong>North Carolina NCIUA</strong></td>
+              <td>18 coastal counties; held &gt;$2B surplus in late 2026 (Carteret County alone holds $17.3B).</td>
+              <td>Offers $6,000 to $10,000 coastal FORTIFIED roof grants to Beach Plan members.</td>
+              <td>$1M residential building cap; coastal owners typically juggle three separate policies (ex-wind HO-3, NCIUA wind/hail, and flood).</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="report-section" id="states">
+      <h2>Home-Hardening Science, State Grants, and Verified Discounts</h2>
+      <p>
+        Not all mitigation upgrades carry equal evidence. The strongest real-world proof comes from the University of Alabama Center for Risk and Insurance Research and the Alabama Department of Insurance, which tracked more than 40,000 homes (including 7,417+ IBHS FORTIFIED properties) struck by Hurricane Sally.
+      </p>
+      <ul>
+        <li><strong>IBHS FORTIFIED Roof (+10% to 20% incremental cost during reroof):</strong> Sealed roof deck, ring-shank nails, and locked roof edges cut claim frequency by <strong>66% to 73%</strong>, claim severity by <strong>~18%</strong>, and insurer loss ratios by <strong>51% to 72%</strong> even after mandatory discounts.</li>
+        <li><strong>IBHS Wildfire Prepared Home:</strong> Focuses on wind-driven embers via Zone 0 (0 to 5 feet 100% noncombustible gravel or pavers, zero mulch or shrubs), a Class A roof, 1/8-inch metal vent mesh, and enclosed noncombustible eaves. Zone 0 and mesh retrofits cost a few hundred to ~$2,000; structural upgrades cost thousands to tens of thousands.</li>
+        <li><strong>UL 2218 Class 4 impact-resistant shingles (+20% to 25% / $2,000 to $4,000+ extra):</strong> Reduce functional splitting, but IBHS warns natural hail still causes bruising and granule loss, and Midwest carriers frequently pair Class 4 discounts with cosmetic damage exclusions.</li>
+      </ul>
+
+      <h3>Four Honest Caveats Before You Spend on Hardening</h3>
+      <ol>
+        <li><strong>Discounts cut only one slice of your bill:</strong> A 30% wind discount applies strictly to the wind or wildfire peril component, not liability, fire, water, or policy fees.</li>
+        <li><strong>Hardening does not legally stop non-renewal:</strong> No state statute bars a private insurer from dropping a hardened home due to portfolio concentration limits or ZIP-code exits.</li>
+        <li><strong>State grants are tightly rationed:</strong> Alabama windows close in minutes, Louisiana runs a random lottery, and Florida faces recurring portal closures and priority waitlists.</li>
+        <li><strong>Out-of-pocket walls remain steep:</strong> A $10,000 grant rarely covers a full FORTIFIED reroof (Louisiana auditors found median owners still pay thousands out-of-pocket), and Florida's moderate-income tier requires a 2:1 match ($5,000 cash for $10,000 grant).</li>
+      </ol>
+
+      <div class="directory-controls">
+        <input type="search" id="state-search" placeholder="Filter by state, program, statute, or peril (e.g. Alabama, wildfire, hail, credit)..." aria-label="Search state grant and discount directory" />
+        <select id="state-filter" aria-label="Filter by state rule type">
+          <option value="all">All tracked states (18)</option>
+          <option value="grant">States with active $4k to $10k roof grants</option>
+          <option value="mandatory">Mandatory statutory mitigation discounts</option>
+          <option value="credit-ban">States banning or restricting credit scores</option>
+        </select>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>State</th>
+              <th>Hardening grant program</th>
+              <th>Discount rule and range</th>
+              <th>Key consumer rule or bottleneck</th>
+            </tr>
+          </thead>
+          <tbody id="state-directory-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="report-section" id="playbook">
+      <h2>Five Concrete Steps to Protect Your Policy in 2026</h2>
+      <div class="editorial-split">
+        <div>
+          <h3>1. Audit your Declarations Page for three silent traps</h3>
+          <p>
+            Look for "Roof Surface Payment Schedule," "Actual Cash Value Loss Settlement for Roofs," "Cosmetic Damage Exclusion," and percentage wind/hail deductibles. Verify that your Coverage A limit reflects local rebuild cost (not land value) and ask about Extended Replacement Cost (+25%) plus Ordinance or Law coverage for modern building codes.
+          </p>
+
+          <h3>2. Never call a claims line for a hypothetical question</h3>
+          <p>
+            Get an independent contractor repair estimate before notifying your insurer. Calling the claims hotline to ask whether damage is covered often generates a closed $0-paid claim on LexisNexis C.L.U.E. for 7 years. Pull your free annual report under FCRA (15 U.S.C. § 1681a(x)) at <a href="https://consumer.risk.lexisnexis.com" target="_blank" rel="noopener">LexisNexis Consumer Center</a> and dispute inaccurate or inquiry-only entries within 30 days.
+          </p>
+
+          <h3>3. Challenge faulty AI aerial-imagery non-renewals in writing</h3>
+          <p>
+            Roughly 70% of insurers test or deploy aerial roof analytics that routinely mistake tree shadows, skylights, solar panels, or harmless algae streaks for missing shingles. Following guidance such as Pennsylvania Insurance Department Notice 2024-06 and Connecticut DOI bulletins: demand the date-stamped photos in writing, hire a licensed local roofer for a signed physical inspection with ground photos, and file a State DOI complaint if the insurer refuses to review it.
+          </p>
+
+          <h3>4. Shop through an independent broker, not just one captive agent</h3>
+          <p>
+            Captive agents quote one carrier's roof-age cutoff, deductible floor, and credit-score weighting. Independent brokers quote across dozens of carriers whose underwriting cutoffs differ sharply. Compare bundled home-plus-auto quotes (typically 10% to 25% off) against unbundled alternatives, and price raising your flat all-other-perils deductible from $1,000 to $2,500.
+          </p>
+
+          <h3>5. Time your reroof with state grants and IBHS standards</h3>
+          <p>
+            If your roof is approaching 12 to 15 years in a wind or hail state, ask roofers for a line-item quote upgrading to IBHS FORTIFIED Roof (+10% to 20% during replacement) and check state grant calendars early. In California, request your mandatory wildfire risk score disclosure (required 45 days before renewal or 75 days before non-renewal under 10 CCR § 2644.9) before spending money on upgrades.
+          </p>
+        </div>
+
+        <aside class="aside-ledger">
+          <h3>Unresolved Data Gaps (Honest Caveats)</h3>
+          <ul>
+            <li><strong>Interim 2026 numbers:</strong> S&amp;P GMI's +1.8% approved rate hike runs through July 2026; severe storm losses ($43B+) cover Jan through Sept 2026. Final 2026 statutory results publish in Q1 2027.</li>
+            <li><strong>No national ACV roof share tally:</strong> NAIC has not published an exact percentage of active U.S. HO-3 policies carrying ACV/RPS roof schedules in 2026.</li>
+            <li><strong>Wildfire empirical lag:</strong> Unlike Alabama's 40,000-home Hurricane Sally study for FORTIFIED roofs, equivalent peer-reviewed claim-frequency studies for Wildfire Prepared Home after the 2025 LA fires are not yet published.</li>
+            <li><strong>Attribution debate:</strong> Treasury FIO emphasizes climate-driven expected annual losses, while insurer groups (APCIA, NAMIC) emphasize hazard-zone building growth, rebuild inflation, litigation, and reinsurance retentions.</li>
+          </ul>
+        </aside>
+      </div>
+
+      <div class="cross-link-grid">
+        <div class="cross-link-item">
+          <h3>Check Your County's Observed Storm History</h3>
+          <p class="muted">
+            Look up 687,227 observed NOAA storm events across all 3,259 U.S. counties (2016 to Nov 2026) to see whether hail, flood, tornado, or wildfire drives local property damage.
+          </p>
+          <div class="cta-row">
+            <a class="btn-primary" href="../weather-risk/#lookup">Open County Hazard Map</a>
+          </div>
+        </div>
+        <div class="cross-link-item">
+          <h3>Check Your Flood Coverage Gap</h3>
+          <p class="muted">
+            Standard homeowners policies exclude flood completely. Our live OpenFEMA audit shows 28.7% of paid flood claims happen outside mapped high-risk zones, and 73.7% receive $0 for contents.
+          </p>
+          <div class="cta-row">
+            <a class="btn-primary" href="../flood-claims/#gap-checker">Open Flood Gap Checker</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="report-section" id="sources">
+      <h2>Primary Sources and Regulatory Portals</h2>
+      <ul>
+        <li><a href="https://home.treasury.gov/system/files/311/Analyses_of_US_Homeowners_Insurance_Markets_2018-2022_Climate-Related_Risks_and_Other_Factors_0.pdf" target="_blank" rel="noopener">U.S. Treasury Federal Insurance Office (Jan 2025)</a>: Analyses of U.S. Homeowners Insurance Markets, 2018–2022 (<a href="https://consumerfed.org/news/blogs/download-analyses-of-us-homeowners-insurance-markets-2018-2022-climate-related-risks-and-other-factors-report-and-data-from-federal-insurance-office-fio/" target="_blank" rel="noopener">Consumer Federation of America archive</a>).</li>
+        <li><a href="https://www.iii.org/blog/homeowners-insurance-posts-best-underwriting-result-in-over-a-decade" target="_blank" rel="noopener">Insurance Information Institute (Triple-I)</a> and <a href="https://www.spglobal.com/market-intelligence/en/news-insights/articles/2025/1/us-homeowners-rates-rise-by-double-digits-for-2nd-straight-year-in-2024-87061085" target="_blank" rel="noopener">S&amp;P Global Market Intelligence</a>: Statutory combined ratios (2023–2025) and RateWatch effective approved rate hikes through July 2026.</li>
+        <li><a href="https://www.swissre.com/institute/research/topics-and-risk-dialogues/climate-and-natural-catastrophe-risk/natural-catastrophes-shaping-risk-landscapes/natural-catastrophes-north-america-2025.html" target="_blank" rel="noopener">Swiss Re Institute</a>, <a href="https://www.guycarp.com/content/dam/guycarp-rebrand/pdf/2026InsightsPDFs/January_1_2026_Reinsurance_Renewal_Report.PDF" target="_blank" rel="noopener">Guy Carpenter (Jan 1, 2026 Reinsurance Report)</a>, and <a href="https://www.verisk.com/49e9ff/siteassets/media/underwriting-v/resources/360value-quarterly/360value-quarterly-reconstruction-cost-analysis-q1-2026.pdf" target="_blank" rel="noopener">Verisk 360Value (2026)</a>: Severe convective storm losses, reinsurance ROL and attachment points, and reconstruction cost inflation.</li>
+        <li><a href="https://www.fhfa.gov" target="_blank" rel="noopener">FHFA (March 18, 2026 ACV Roof Acceptance)</a>, <a href="https://content.naic.org" target="_blank" rel="noopener">NAIC</a>, <a href="https://www.consumerfinance.gov" target="_blank" rel="noopener">CFPB (FCRA C.L.U.E. Rights)</a>, and <a href="https://uphelp.org" target="_blank" rel="noopener">United Policyholders</a>: Roof depreciation, percentage deductibles, aerial-imagery non-renewals, and underinsurance.</li>
+        <li><a href="https://www.cfpnet.com" target="_blank" rel="noopener">California FAIR Plan</a>, <a href="https://www.insurance.ca.gov" target="_blank" rel="noopener">California Dept. of Insurance</a>, <a href="https://www.citizensfla.com" target="_blank" rel="noopener">Florida Citizens</a>, <a href="https://www.floir.com" target="_blank" rel="noopener">FLOIR</a>, <a href="https://www.twia.org" target="_blank" rel="noopener">Texas TWIA</a>, and <a href="https://www.ncjua-nciua.org" target="_blank" rel="noopener">North Carolina NCIUA</a>.</li>
+        <li><a href="https://fortifiedhome.org" target="_blank" rel="noopener">IBHS FORTIFIED Home</a>, <a href="https://wildfireprepared.org" target="_blank" rel="noopener">IBHS Wildfire Prepared Home</a>, <a href="https://www.strengthenalabamahomes.com" target="_blank" rel="noopener">Strengthen Alabama Homes</a>, <a href="https://mysafeflhome.com" target="_blank" rel="noopener">My Safe Florida Home</a>, and <a href="https://ldi.la.gov/fortifyhomes" target="_blank" rel="noopener">Louisiana Fortify Homes Program</a>.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <span>Open Plain-Language Research. Zero ads, zero affiliates, zero user tracking.</span>
+      <span>CC BY 4.0 (Guide) and MIT (Interactive Calculator)</span>
+    </footer>
+  </main>
+
+  <script>
+    const STATE_DIRECTORY = [
+      {
+        state: "Alabama",
+        grant: "Strengthen Alabama Homes: up to $10,000 (industry-funded; 50,000+ FORTIFIED homes; expanded to inland counties).",
+        discountType: "mandatory",
+        discountLabel: "Mandatory",
+        discountText: "25% to 55% off wind portion (Ala. Code § 27-31D).",
+        note: "Quarterly first-come grant windows close in minutes; owner pays evaluator fee and costs above $10,000.",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "California",
+        grant: "No universal $10,000 state roof grant; local/utility pilots vary.",
+        discountType: "mandatory",
+        discountLabel: "Mandatory filing",
+        discountText: "Private carriers vary from a few % to 40%–50%+ (10 CCR § 2644.9); CA FAIR Plan capped at ~16.4% of wildfire share.",
+        note: "Full ban on credit-based insurance scores (Prop 103). Mandatory 45/75-day wildfire risk score disclosure and appeal right; 50% of $1B FAIR Plan assessment recoupable statewide.",
+        hasGrant: false,
+        creditBan: true
+      },
+      {
+        state: "Colorado",
+        grant: "No confirmed statewide roof grant program.",
+        discountType: "limited",
+        discountLabel: "Discretionary",
+        discountText: "Voluntary Class 4 / FORTIFIED credits; SB 26-155 mandates carrier reporting of resilient roof credits.",
+        note: "Front Range hail corridor carries widespread 1% to 3%+ wind/hail deductibles; hail drives 25% to 50%+ of many premiums.",
+        hasGrant: false,
+        creditBan: false
+      },
+      {
+        state: "Connecticut",
+        grant: "No statewide FORTIFIED roof grant.",
+        discountType: "limited",
+        discountLabel: "Carrier-specific",
+        discountText: "Standard mitigation credits vary by carrier.",
+        note: "CT Insurance Dept. warned carriers that cosmetic streaks or unverified satellite/drone roof photos cannot be the sole basis for non-renewal.",
+        hasGrant: false,
+        creditBan: false
+      },
+      {
+        state: "Florida",
+        grant: "My Safe Florida Home: free inspection + up to $10,000 (2:1 match moderate-income; no match low-income; $370M+ redirected 2025–2026).",
+        discountType: "mandatory",
+        discountLabel: "Mandatory",
+        discountText: "Actuarially required wind mitigation credits verified via Form OIR-B1-1802 (Fla. Stat. § 627.0629).",
+        note: "Heavy demand creates waitlists and portal closures. Citizens shrank ~80% after 2022–2023 tort reforms; mandatory 20% private takeout rule applies.",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "Illinois",
+        grant: "No statewide roof hardening grant.",
+        discountType: "limited",
+        discountLabel: "Discretionary",
+        discountText: "Carrier-specific Class 4 hail roof credits.",
+        note: "Top-tier national state for wind/hail claim volume; mix of $1,000 to $2,500 flat and 1% to 2% percentage deductibles.",
+        hasGrant: false,
+        creditBan: false
+      },
+      {
+        state: "Kansas",
+        grant: "No statewide roof hardening grant.",
+        discountType: "limited",
+        discountLabel: "Discretionary",
+        discountText: "Carrier-specific Class 4 impact-resistant shingle discounts.",
+        note: "Standard HO-3 policies commonly carry 1% to 3% wind/hail deductibles, scaling to 5% in high-risk hail tiers.",
+        hasGrant: false,
+        creditBan: false
+      },
+      {
+        state: "Louisiana",
+        grant: "LA Fortify Homes Program: up to $10,000, state income-tax exempt (SB 52); >6,062 grants (~$60.3M) by late 2026 plus permanent $5M/yr funding (Act 79).",
+        discountType: "mandatory",
+        discountLabel: "Mandatory",
+        discountText: "~16% to 50%+ off wind portion (La. R.S. § 22:1483 and Reg 136).",
+        note: "Uses a random registration lottery; Legislative Auditor noted $10,000 rarely covers full reroof cost.",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "Maryland",
+        grant: "No statewide FORTIFIED roof grant.",
+        discountType: "limited",
+        discountLabel: "Carrier-specific",
+        discountText: "Standard mitigation credits vary by carrier.",
+        note: "Full statutory ban on using credit-based insurance scores in homeowners underwriting and pricing.",
+        hasGrant: false,
+        creditBan: true
+      },
+      {
+        state: "Massachusetts",
+        grant: "No statewide FORTIFIED roof grant.",
+        discountType: "limited",
+        discountLabel: "Carrier-specific",
+        discountText: "Coastal mitigation credits vary by carrier.",
+        note: "Full ban on credit-based insurance scores for personal home and auto lines; state Division of Insurance scrutinizing aerial-imagery non-renewals.",
+        hasGrant: false,
+        creditBan: true
+      },
+      {
+        state: "Michigan",
+        grant: "No statewide FORTIFIED roof grant.",
+        discountType: "limited",
+        discountLabel: "Carrier-specific",
+        discountText: "Standard carrier credits.",
+        note: "Enforces strict statutory and regulatory limitations on how insurers use credit information for tier placement and pricing.",
+        hasGrant: false,
+        creditBan: true
+      },
+      {
+        state: "Minnesota",
+        grant: "Strengthen Minnesota Homes: 4-county pilot in late 2026 (Hennepin, Crow Wing, Morrison, Todd); broader statewide rollout expected early 2027.",
+        discountType: "limited",
+        discountLabel: "Discretionary",
+        discountText: "5% to 25% off wind/hail portion for UL 2218 Class 4 shingles.",
+        note: "Class 4 discounts are frequently paired with cosmetic damage exclusions; rapid shift to 1% to 2% hail deductibles.",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "Mississippi",
+        grant: "Strengthen Mississippi Homes framework active alongside coastal wind pool credits.",
+        discountType: "mandatory",
+        discountLabel: "Mandatory",
+        discountText: "Mandatory wind-portion credits for IBHS FORTIFIED Bronze/Silver/Gold (Miss. Code § 83-75-1).",
+        note: "Covers private insurers and the Mississippi Windstorm Underwriting Association (MWUA).",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "North Carolina",
+        grant: "NCIUA Strengthen Your Roof: up to $10,000 (beach/Outer Banks) or $6,000 (18 coastal counties) for Beach Plan policyholders.",
+        discountType: "mandatory",
+        discountLabel: "Coastal credits",
+        discountText: "FORTIFIED wind credits available through NCIUA and participating carriers.",
+        note: "Grants restricted to active NCIUA members; coastal owners often carry separate ex-wind HO-3, NCIUA wind ($1M cap), and flood policies.",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "Oklahoma",
+        grant: "Strengthen Oklahoma Homes: up to $10,000 for FORTIFIED Roof with Hail Supplement (industry-funded; made permanent by HB 3796).",
+        discountType: "limited",
+        discountLabel: "Market-driven",
+        discountText: "Commonly 15% to 30% off wind/hail portion for Class 4 or FORTIFIED roofs.",
+        note: "Average wind/hail deductible ~$6,044 (2% to 5% common); state law prohibits roofers from advertising deductible waivers.",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "Pennsylvania",
+        grant: "No statewide FORTIFIED roof grant.",
+        discountType: "limited",
+        discountLabel: "Carrier-specific",
+        discountText: "Standard mitigation credits vary by carrier.",
+        note: "PA Insurance Dept. Notice 2024-06 explicitly warned insurers against relying solely on low-resolution aerial photos or cosmetic roof streaking for non-renewals.",
+        hasGrant: false,
+        creditBan: false
+      },
+      {
+        state: "South Carolina",
+        grant: "SC Safe Home: $4,000 to $7,500 income-tiered grants (coastal owner-occupied primary homes; July 2026 cycle).",
+        discountType: "mandatory",
+        discountLabel: "Mitigation credits",
+        discountText: "Partners with IBHS for dual SC Safe Home and FORTIFIED Roof designation credits.",
+        note: "Grant ceiling covers only a portion of a full coastal roof replacement.",
+        hasGrant: true,
+        creditBan: false
+      },
+      {
+        state: "Texas",
+        grant: "No statewide roof-grant equivalent verified.",
+        discountType: "mandatory",
+        discountLabel: "Mandatory framework",
+        discountText: "4% to 35% off wind/hail portion for UL 2218 Class 4 roofs (TDI Bulletin B-0024-98, Form PC068).",
+        note: "Average wind/hail deductible ~$7,761 (2% common inland). Tex. Ins. Code § 2301.056 requires dollar disclosure; HB 2102 makes contractor deductible waivers illegal.",
+        hasGrant: false,
+        creditBan: false
+      }
+    ];
+
+    function fmtMoney(n) {
+      const sign = n < 0 ? "-" : "";
+      return sign + "$" + Math.round(Math.abs(n)).toLocaleString("en-US");
+    }
+
+    function getRpsPercent(age) {
+      if (age <= 1) return 1.0;
+      if (age <= 5) return Math.max(0.8, 1.0 - (age - 1) * 0.05);
+      if (age <= 15) return Math.max(0.3, 0.8 - (age - 5) * 0.05);
+      if (age <= 20) return Math.max(0.25, 0.3 - (age - 15) * 0.01);
+      return 0.25;
+    }
+
+    const els = {
+      preset: document.getElementById("preset-scenario"),
+      covA: document.getElementById("coverage-a"),
+      covAVal: document.getElementById("coverage-a-val"),
+      damage: document.getElementById("damage-cost"),
+      damageVal: document.getElementById("damage-cost-val"),
+      dedPctRadio: document.getElementById("ded-pct"),
+      dedFlatRadio: document.getElementById("ded-flat"),
+      pctGroup: document.getElementById("pct-ded-group"),
+      flatGroup: document.getElementById("flat-ded-group"),
+      dedPctSel: document.getElementById("ded-pct-val"),
+      dedPctReadout: document.getElementById("ded-pct-readout"),
+      dedFlatSel: document.getElementById("ded-flat-val"),
+      dedFlatReadout: document.getElementById("ded-flat-readout"),
+      roofAcvRadio: document.getElementById("roof-acv"),
+      roofRcvRadio: document.getElementById("roof-rcv"),
+      roofAgeGroup: document.getElementById("roof-age-group"),
+      roofAge: document.getElementById("roof-age"),
+      roofAgeVal: document.getElementById("roof-age-val"),
+      premium: document.getElementById("annual-premium"),
+      premiumVal: document.getElementById("annual-premium-val"),
+      peril: document.getElementById("peril-type"),
+      prior: document.getElementById("prior-claims"),
+      verdictBanner: document.getElementById("verdict-banner"),
+      verdictTitle: document.getElementById("verdict-title"),
+      verdictDetail: document.getElementById("verdict-detail"),
+      resGross: document.getElementById("res-gross"),
+      resValued: document.getElementById("res-valued"),
+      resDed: document.getElementById("res-deductible"),
+      resPayout: document.getElementById("res-payout"),
+      resOop: document.getElementById("res-oop"),
+      resSurcharge: document.getElementById("res-surcharge"),
+      resNet: document.getElementById("res-net")
+    };
+
+    function updateCalculator() {
+      const covA = Number(els.covA.value);
+      const damage = Number(els.damage.value);
+      const isPct = els.dedPctRadio.checked;
+      const isAcv = els.roofAcvRadio.checked;
+      const roofAge = Number(els.roofAge.value);
+      const premium = Number(els.premium.value);
+      const peril = els.peril.value;
+      const prior = Number(els.prior.value);
+
+      els.pctGroup.style.display = isPct ? "block" : "none";
+      els.flatGroup.style.display = isPct ? "none" : "block";
+      els.roofAgeGroup.style.display = isAcv ? "block" : "none";
+
+      const dedPctNum = Number(els.dedPctSel.value);
+      const deductible = isPct ? Math.round(covA * (dedPctNum / 100)) : Number(els.dedFlatSel.value);
+      const rpsPct = isAcv ? getRpsPercent(roofAge) : 1.0;
+      const coveredValuation = Math.round(damage * rpsPct);
+      const payout = Math.max(0, coveredValuation - deductible);
+      const oop = damage - payout;
+
+      // Surcharge rate based on verified ranges (10-16% weather, 25%+ water, 40-50%+ on 2nd claim)
+      let surchargeRate = peril === "water" ? 0.25 : peril === "fire" ? 0.20 : 0.15;
+      if (prior >= 1) surchargeRate = Math.min(0.45, surchargeRate + 0.22);
+      const surchargeYears = 4;
+      const estSurcharge = Math.round(premium * surchargeRate * surchargeYears);
+      const netBenefit = payout - estSurcharge;
+
+      els.covAVal.textContent = fmtMoney(covA);
+      els.damageVal.textContent = fmtMoney(damage);
+      els.dedPctReadout.textContent = dedPctNum + "% (" + fmtMoney(deductible) + ")";
+      els.dedFlatReadout.textContent = fmtMoney(Number(els.dedFlatSel.value));
+      els.roofAgeVal.textContent = roofAge + " years (" + Math.round(rpsPct * 100) + "% scheduled payout)";
+      els.premiumVal.textContent = fmtMoney(premium) + " / yr";
+
+      els.resGross.textContent = fmtMoney(damage);
+      els.resValued.textContent = fmtMoney(coveredValuation) + " (" + Math.round(rpsPct * 100) + "%)";
+      els.resDed.textContent = "-" + fmtMoney(deductible);
+      els.resPayout.textContent = fmtMoney(payout);
+      els.resOop.textContent = fmtMoney(oop);
+      els.resSurcharge.textContent = "-" + fmtMoney(estSurcharge) + " (" + Math.round(surchargeRate * 100) + "% x " + surchargeYears + " yrs)";
+      els.resNet.textContent = fmtMoney(netBenefit);
+
+      els.verdictBanner.classList.remove("verdict-danger", "verdict-warn", "verdict-safe");
+      if (payout === 0) {
+        els.verdictBanner.classList.add("verdict-danger");
+        els.verdictTitle.textContent = "Do not file: $0 insurer payout after depreciation and deductible";
+        els.verdictDetail.textContent = "Your covered valuation (" + fmtMoney(coveredValuation) + ") does not exceed your " + fmtMoney(deductible) + " deductible. Calling the claims line risks logging a $0 closed claim on C.L.U.E. for 7 years with zero financial gain.";
+      } else if (prior >= 1 && netBenefit < 8000) {
+        els.verdictBanner.classList.add("verdict-danger");
+        els.verdictTitle.textContent = "High non-renewal risk: 2nd claim cliff outweighs modest payout";
+        els.verdictDetail.textContent = "With " + prior + " prior claim(s) on file, filing for " + fmtMoney(payout) + " risks 40% to 50% surcharges or non-renewal into a state FAIR plan or surplus-lines carrier.";
+      } else if (netBenefit <= 1500) {
+        els.verdictBanner.classList.add("verdict-warn");
+        els.verdictTitle.textContent = "Borderline claim: likely better to self-insure if cash reserves allow";
+        els.verdictDetail.textContent = "Your " + fmtMoney(payout) + " check is largely offset by an estimated " + fmtMoney(estSurcharge) + " in multi-year C.L.U.E. surcharges, while using up your claim-free buffer.";
+      } else {
+        els.verdictBanner.classList.add("verdict-safe");
+        els.verdictTitle.textContent = "Filing makes financial sense: meaningful net protection (" + fmtMoney(netBenefit) + ")";
+        els.verdictDetail.textContent = "Even after a " + fmtMoney(deductible) + " deductible and estimated 4-year surcharge (" + fmtMoney(estSurcharge) + "), the " + fmtMoney(payout) + " payout justifies using catastrophic coverage.";
+      }
+    }
+
+    function applyPreset(key) {
+      if (key === "double-trap") {
+        els.covA.value = 450000;
+        els.damage.value = 20000;
+        els.dedPctRadio.checked = true;
+        els.dedPctSel.value = "2";
+        els.roofAcvRadio.checked = true;
+        els.roofAge.value = 15;
+        els.premium.value = 2800;
+        els.peril.value = "weather";
+        els.prior.value = "0";
+      } else if (key === "rcv-small") {
+        els.covA.value = 400000;
+        els.damage.value = 6500;
+        els.dedFlatRadio.checked = true;
+        els.dedFlatSel.value = "1000";
+        els.roofRcvRadio.checked = true;
+        els.premium.value = 2600;
+        els.peril.value = "water";
+        els.prior.value = "1";
+      } else if (key === "catastrophic") {
+        els.covA.value = 450000;
+        els.damage.value = 38000;
+        els.dedPctRadio.checked = true;
+        els.dedPctSel.value = "2";
+        els.roofRcvRadio.checked = true;
+        els.premium.value = 2800;
+        els.peril.value = "weather";
+        els.prior.value = "0";
+      } else if (key === "fl-wind") {
+        els.covA.value = 500000;
+        els.damage.value = 24000;
+        els.dedPctRadio.checked = true;
+        els.dedPctSel.value = "5";
+        els.roofAcvRadio.checked = true;
+        els.roofAge.value = 12;
+        els.premium.value = 5400;
+        els.peril.value = "weather";
+        els.prior.value = "0";
+      }
+      updateCalculator();
+    }
+
+    els.preset.addEventListener("change", () => applyPreset(els.preset.value));
+    [
+      els.covA, els.damage, els.dedPctRadio, els.dedFlatRadio,
+      els.dedPctSel, els.dedFlatSel, els.roofAcvRadio, els.roofRcvRadio,
+      els.roofAge, els.premium, els.peril, els.prior
+    ].forEach((el) => {
+      el.addEventListener("input", updateCalculator);
+      el.addEventListener("change", updateCalculator);
+    });
+
+    const stateSearchEl = document.getElementById("state-search");
+    const stateFilterEl = document.getElementById("state-filter");
+    const stateBodyEl = document.getElementById("state-directory-body");
+
+    function renderStates() {
+      const q = (stateSearchEl.value || "").trim().toLowerCase();
+      const mode = stateFilterEl.value;
+      const rows = STATE_DIRECTORY.filter((s) => {
+        if (mode === "grant" && !s.hasGrant) return false;
+        if (mode === "mandatory" && s.discountType !== "mandatory") return false;
+        if (mode === "credit-ban" && !s.creditBan) return false;
+        if (q) {
+          const hay = (s.state + " " + s.grant + " " + s.discountText + " " + s.note).toLowerCase();
+          if (!hay.includes(q)) return false;
+        }
+        return true;
+      });
+
+      if (!rows.length) {
+        stateBodyEl.innerHTML = '<tr><td colspan="4" style="color:#475569;">No tracked states match that filter. Try clearing the search box.</td></tr>';
+        return;
+      }
+
+      stateBodyEl.innerHTML = rows.map((s) => {
+        const cls = s.discountType === "mandatory" ? "status-mandatory" : "status-limited";
+        return (
+          "<tr>" +
+          "<td><strong>" + s.state + "</strong></td>" +
+          "<td>" + s.grant + "</td>" +
+          '<td><span class="' + cls + '">' + s.discountLabel + "</span><div style=\"margin-top:6px;\">" + s.discountText + "</div></td>" +
+          "<td>" + s.note + "</td>" +
+          "</tr>"
+        );
+      }).join("");
+    }
+
+    stateSearchEl.addEventListener("input", renderStates);
+    stateFilterEl.addEventListener("change", renderStates);
+
+    updateCalculator();
+    renderStates();
+  </script>
+</body>
+</html>

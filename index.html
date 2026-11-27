@@ -4,449 +4,710 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="google-site-verification" content="vWtTpfCn8HtM5EIxPBIWzCDOqDe3-DrNE8TiV4Dwi1A" />
-  <title>Open Plain-Language Research — Evidence-Backed Guides &amp; Tools</title>
-  <meta name="description" content="Calm, citation-backed guides and free interactive tools turning peer-reviewed science and live public government datasets into practical everyday decisions." />
-  <meta property="og:title" content="Open Plain-Language Research — Evidence-Backed Guides & Tools" />
-  <meta property="og:description" content="Zero-affiliate, reproducible public-data investigations and interactive decision tools covering elder care, food recalls, flood risk, airlines, consumer finance, drinking water, and traffic safety." />
+  <title>Open Plain-Language Research: Evidence-Backed Guides and Public Data Tools</title>
+  <meta name="description" content="Citation-backed public-interest guides and free interactive tools turning peer-reviewed science and live federal datasets into practical everyday decisions." />
+  <meta property="og:title" content="Open Plain-Language Research: Evidence-Backed Guides and Public Data Tools" />
+  <meta property="og:description" content="Zero-affiliate, reproducible public-data investigations and interactive decision tools covering home insurance, banking, utilities, schools, colleges, auto safety, workplace injuries, dams, and healthcare." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://open-research-guides.vercel.app/" />
   <meta name="twitter:card" content="summary" />
   <link rel="canonical" href="https://open-research-guides.vercel.app/" />
   <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #f6f7f5;
+      --bg: #f8f9fa;
       --surface: #ffffff;
-      --surface-alt: #f0f4f3;
-      --ink: #17212b;
-      --ink-muted: #52606d;
-      --border: #d9e2e0;
-      --accent: #0f6b6e;
-      --accent-dark: #0a4f52;
-      --accent-soft: #e6f4f4;
-      --good-bg: #ecfdf5;
-      --good-ink: #065f46;
-      --upcoming-bg: #f3f4f6;
-      --upcoming-ink: #4b5563;
-      --radius: 14px;
-      --shadow: 0 2px 14px rgba(23, 33, 43, 0.05);
+      --surface-subtle: #eef3f5;
+      --ink: #0f172a;
+      --ink-muted: #475569;
+      --border: #d6dfe6;
+      --border-strong: #94a3b8;
+      --accent: #0f5c63;
+      --accent-hover: #0a4147;
+      --accent-soft: #e6f2f3;
+      --font-display: "Newsreader", Georgia, serif;
+      --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --text-h2: 1.4375rem;
+      --text-body: 1rem;
+      --text-sm: 0.875rem;
+      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
       background: var(--bg);
       color: var(--ink);
+      font-family: var(--font-body);
+      font-size: var(--text-body);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      font-variant-numeric: tabular-nums;
     }
 
+    a {
+      color: var(--accent);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      transition: color 180ms var(--ease-out);
+    }
+
+    a:hover {
+      color: var(--accent-hover);
+    }
+
+    /* Single-line sticky navigation */
     .topbar {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      z-index: 10;
+      z-index: 20;
+      background: rgba(248, 249, 250, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
     }
 
     .topbar-inner {
-      max-width: 1040px;
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 14px 20px;
+      padding: 14px 24px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 16px;
-      flex-wrap: wrap;
+      gap: 20px;
     }
 
     .brand {
-      font-weight: 800;
-      font-size: 1rem;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.25rem;
       color: var(--ink);
       text-decoration: none;
-      letter-spacing: -0.01em;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
     }
 
-    .brand-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: var(--accent);
-      display: inline-block;
-    }
-
-    nav {
+    .nav-links {
       display: flex;
-      gap: 18px;
-      font-size: 0.9rem;
+      align-items: center;
+      gap: 24px;
+      font-size: var(--text-sm);
+      font-weight: 500;
+      white-space: nowrap;
     }
 
-    nav a {
+    .nav-links a {
       color: var(--ink-muted);
       text-decoration: none;
-      font-weight: 550;
     }
 
-    nav a:hover { color: var(--accent); }
+    .nav-links a:hover {
+      color: var(--accent);
+    }
 
     .container {
-      max-width: 1040px;
+      max-width: 1160px;
       margin: 0 auto;
-      padding: 36px 20px 72px;
+      padding: 36px 24px 80px;
     }
 
-    .hero {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 34px 30px;
-      box-shadow: var(--shadow);
-      margin-bottom: 28px;
-    }
-
-    .eyebrow {
-      display: inline-block;
-      font-size: 0.76rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--accent);
-      background: var(--accent-soft);
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 12px;
-    }
-
-    h1 {
-      margin: 0 0 10px;
-      font-size: clamp(1.75rem, 3.6vw, 2.5rem);
-      line-height: 1.18;
-      letter-spacing: -0.025em;
-      max-width: 760px;
-    }
-
-    .hero p {
-      margin: 0 0 20px;
-      color: var(--ink-muted);
-      font-size: 1.03rem;
-      max-width: 720px;
-    }
-
-    .pillars {
+    /* Editorial front-page masthead (opens straight into live content, no marketing hero box) */
+    .masthead {
+      padding-bottom: 28px;
+      border-bottom: 2px solid var(--ink);
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin-top: 20px;
-      padding-top: 20px;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.95fr);
+      gap: 32px;
+      align-items: end;
+    }
+
+    .masthead h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(2.1rem, 4.2vw, 3.2rem);
+      font-weight: 600;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      max-width: 19ch;
+    }
+
+    .masthead-deck {
+      margin: 0;
+      font-size: var(--text-body);
+      color: var(--ink-muted);
+      max-width: 52ch;
+    }
+
+    /* Featured lead investigation band (asymmetric editorial front page) */
+    .featured-band {
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(0, 0.95fr);
+      gap: 36px;
+      padding: 28px 0 32px;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+    }
+
+    .featured-meta {
+      margin: 0 0 12px;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .featured-story h2 {
+      margin: 0 0 6px;
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 600;
+      line-height: 1.22;
+      letter-spacing: -0.02em;
+      max-width: 34ch;
+    }
+
+    .featured-story h2 a {
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .featured-story h2 a:hover {
+      color: var(--accent);
+    }
+
+    .featured-story p {
+      margin: 0 0 18px;
+      color: var(--ink-muted);
+      max-width: 62ch;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      padding: 10px 18px;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 180ms var(--ease-out);
+    }
+
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      color: #ffffff;
+    }
+
+    .featured-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 18px;
+      font-size: var(--text-sm);
+      font-weight: 600;
+    }
+
+    .ledger-sidebar {
+      padding-left: 28px;
+      border-left: 1px solid var(--border);
+    }
+
+    .ledger-sidebar h2 {
+      margin: 0 0 10px;
+      font-family: var(--font-body);
+      font-size: var(--text-body);
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .ledger-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .ledger-list li {
+      padding: 10px 0;
       border-top: 1px solid var(--border);
-    }
-
-    @media (max-width: 720px) {
-      .pillars { grid-template-columns: 1fr; }
-      .hero { padding: 24px 20px; }
-    }
-
-    .pillar {
-      background: var(--surface-alt);
-      border-radius: 10px;
-      padding: 13px 14px;
-      font-size: 0.87rem;
+      font-size: var(--text-sm);
       color: var(--ink-muted);
     }
 
-    .pillar strong {
-      display: block;
-      color: var(--ink);
-      margin-bottom: 2px;
-      font-size: 0.92rem;
+    .ledger-list li:first-child {
+      border-top: none;
+      padding-top: 0;
     }
 
-    .section-head {
+    .ledger-list strong {
+      color: var(--ink);
+    }
+
+    /* Live Index Toolbar (non-button-wall controls: search + segmented scope + select topic) */
+    .index-section {
+      padding-top: 32px;
+    }
+
+    .index-header {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
+      flex-wrap: wrap;
       gap: 12px;
-      flex-wrap: wrap;
-      margin: 30px 0 16px;
+      margin-bottom: 18px;
     }
 
-    .section-head h2 {
+    .index-header h2 {
       margin: 0;
-      font-size: 1.3rem;
-      letter-spacing: -0.015em;
-    }
-
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--ink-muted);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.83rem;
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
       font-weight: 600;
-      cursor: pointer;
+      letter-spacing: -0.02em;
     }
 
-    .filter-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #fff;
+    .result-count {
+      margin: 0;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
     }
 
-    .grid {
+    .toolbar {
       display: grid;
-      gap: 18px;
-    }
-
-    .guide-card {
+      grid-template-columns: minmax(0, 1.5fr) auto minmax(220px, 0.9fr);
+      gap: 12px;
+      align-items: center;
+      padding: 16px;
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow);
-      transition: border-color 0.15s ease;
+      margin-bottom: 8px;
     }
 
-    .guide-card:hover { border-color: #b5cecc; }
-    .guide-card.flagship-card {
-      border: 2px solid var(--accent);
-      background: linear-gradient(180deg, #f8fcfc 0%, #ffffff 38%);
+    .toolbar input[type="search"],
+    .toolbar select {
+      width: 100%;
+      padding: 10px 12px;
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      color: var(--ink);
+      background: var(--bg);
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
     }
-    .badge-flagship {
+
+    .toolbar input[type="search"]:focus,
+    .toolbar select:focus {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+      background: var(--surface);
+    }
+
+    .segmented {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      border: 1px solid var(--border-strong);
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+
+    .segmented input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .segmented label {
+      display: block;
+      padding: 9px 14px;
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--ink-muted);
+      cursor: pointer;
+      white-space: nowrap;
+      text-align: center;
+      border-right: 1px solid var(--border);
+      transition: background-color 180ms var(--ease-out), color 180ms var(--ease-out);
+    }
+
+    .segmented label:last-of-type {
+      border-right: none;
+    }
+
+    .segmented input:checked + label {
       background: var(--accent);
       color: #ffffff;
     }
 
-    .guide-meta {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 10px;
-      font-size: 0.8rem;
+    .segmented input:focus-visible + label {
+      outline: 2px solid var(--ink);
+      outline-offset: -2px;
     }
 
-    .badge {
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-weight: 700;
-      letter-spacing: 0.03em;
+    /* Architectural editorial index rows (no nested card cages, no decorative badges) */
+    .guide-list {
+      background: var(--surface);
+      border-top: 2px solid var(--ink);
+      border-bottom: 1px solid var(--border);
     }
 
-    .badge-live { background: var(--good-bg); color: var(--good-ink); }
-    .badge-upcoming { background: var(--upcoming-bg); color: var(--upcoming-ink); }
-    .badge-cat { background: var(--accent-soft); color: var(--accent-dark); }
+    .guide-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.75fr) minmax(220px, 0.75fr);
+      gap: 28px;
+      padding: 24px 22px;
+      border-bottom: 1px solid var(--border);
+      align-items: start;
+      transition: background-color 180ms var(--ease-out);
+    }
 
-    .guide-date { color: var(--ink-muted); }
+    .guide-row:last-child {
+      border-bottom: none;
+    }
 
-    .guide-card h3 {
-      margin: 0 0 8px;
-      font-size: 1.32rem;
-      line-height: 1.28;
+    .guide-row:hover {
+      background: #fafcfd;
+    }
+
+    .guide-row-meta {
+      margin: 0 0 10px;
+      font-size: var(--text-sm);
+      color: var(--ink-muted);
+    }
+
+    .guide-row-meta strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .guide-row h3 {
+      margin: 0 0 6px;
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 600;
+      line-height: 1.24;
       letter-spacing: -0.015em;
     }
 
-    .guide-card p {
-      margin: 0 0 14px;
-      color: var(--ink-muted);
-      font-size: 0.96rem;
+    .guide-row h3 a {
+      color: var(--ink);
+      text-decoration: none;
     }
 
-    .highlights {
-      margin: 0 0 18px;
-      padding-left: 19px;
-      font-size: 0.9rem;
+    .guide-row h3 a:hover {
+      color: var(--accent);
+    }
+
+    .guide-row-summary {
+      margin: 0 0 12px;
+      color: var(--ink-muted);
+      font-size: var(--text-body);
+      max-width: 65ch;
+    }
+
+    .guide-highlights {
+      margin: 0;
+      padding-left: 18px;
+      font-size: var(--text-body);
+      color: var(--ink);
+      max-width: 65ch;
+    }
+
+    .guide-highlights li {
+      margin-bottom: 4px;
+    }
+
+    .guide-row-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding-left: 22px;
+      border-left: 1px solid var(--border);
+      font-size: var(--text-sm);
+    }
+
+    .guide-link-primary {
+      font-weight: 700;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .guide-link-primary:hover {
+      text-decoration: underline;
+    }
+
+    .guide-link-tool {
+      font-weight: 600;
+      color: var(--ink);
+      text-decoration: underline;
+      text-decoration-color: var(--border-strong);
+    }
+
+    .guide-link-tool:hover {
+      color: var(--accent);
+      text-decoration-color: var(--accent);
+    }
+
+    .guide-source {
+      margin: 4px 0 0;
+      color: var(--ink-muted);
+      font-size: var(--text-sm);
+      line-height: 1.45;
+    }
+
+    /* Methodology section */
+    .methodology {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 36px;
+      align-items: start;
+    }
+
+    .methodology h2 {
+      margin: 0 0 12px;
+      font-family: var(--font-display);
+      font-size: var(--text-h2);
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
+
+    .methodology p {
+      margin: 0 0 14px;
+      color: var(--ink-muted);
+      max-width: 65ch;
+    }
+
+    .methodology-note {
+      background: var(--surface-subtle);
+      padding: 22px 24px;
+      border-top: 2px solid var(--accent);
+    }
+
+    .methodology-note h3 {
+      margin: 0 0 10px;
+      font-size: var(--text-body);
+      font-weight: 700;
       color: var(--ink);
     }
 
-    .highlights li { margin-bottom: 4px; }
-
-    .card-actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
+    .methodology-note ul {
+      margin: 0;
+      padding-left: 18px;
+      font-size: var(--text-body);
+      color: var(--ink);
     }
 
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      text-decoration: none;
-      font-weight: 650;
-      font-size: 0.9rem;
-      padding: 10px 16px;
-      border-radius: 9px;
-      transition: background 0.15s ease, border-color 0.15s ease;
+    .methodology-note li {
+      margin-bottom: 6px;
     }
 
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      border: 1px solid var(--accent);
-    }
-
-    .btn-primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
-
-    .btn-secondary {
-      background: var(--surface);
-      color: var(--accent-dark);
-      border: 1.5px solid var(--accent);
-    }
-
-    .btn-secondary:hover { background: var(--accent-soft); }
-
-    .source-note {
-      font-size: 0.82rem;
+    .empty-state {
+      padding: 36px 24px;
+      text-align: center;
       color: var(--ink-muted);
-      margin-left: auto;
+      font-size: var(--text-body);
     }
-
-    .about-card {
-      margin-top: 32px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 24px;
-    }
-
-    .about-card h2 {
-      margin: 0 0 10px;
-      font-size: 1.18rem;
-    }
-
-    .about-card p {
-      margin: 0 0 10px;
-      color: var(--ink-muted);
-      font-size: 0.94rem;
-    }
-
-    .about-card p:last-child { margin-bottom: 0; }
 
     footer {
-      margin-top: 40px;
-      padding-top: 18px;
+      margin-top: 56px;
+      padding-top: 20px;
       border-top: 1px solid var(--border);
-      font-size: 0.83rem;
+      font-size: var(--text-sm);
       color: var(--ink-muted);
       display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
-      gap: 10px;
+      gap: 12px;
+    }
+
+    @media (max-width: 900px) {
+      .masthead,
+      .featured-band,
+      .methodology {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 20px;
+      }
+      .ledger-sidebar {
+        padding-left: 0;
+        padding-top: 20px;
+        border-left: none;
+        border-top: 1px solid var(--border);
+      }
+      .toolbar {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .guide-row {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+      }
+      .guide-row-aside {
+        padding-left: 0;
+        padding-top: 14px;
+        border-left: none;
+        border-top: 1px solid var(--border);
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 20px;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar-inner {
+        padding: 12px 16px;
+        gap: 6px 12px;
+        flex-wrap: wrap;
+      }
+      .brand {
+        font-size: 1.1rem;
+        white-space: normal;
+      }
+      .nav-links {
+        gap: 10px 16px;
+        flex-wrap: wrap;
+        white-space: normal;
+        width: 100%;
+      }
+      .container {
+        padding: 24px 16px 64px;
+      }
+      .guide-row {
+        padding: 20px 16px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
     }
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="brand" href="./">
-        <span class="brand-dot" aria-hidden="true"></span>
-        Open Plain-Language Research
-      </a>
-      <nav aria-label="Primary navigation">
-        <a href="#guides">All 18 Guides</a>
-        <a href="#methodology">How We Research</a>
-        <a href="https://github.com/tinhnhatpham/open-research-guides/issues" target="_blank" rel="noopener">Suggest a Topic / Report Error</a>
+      <a class="brand" href="./">Open Plain-Language Research</a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#guides">All 19 Guides</a>
+        <a href="#methodology">Methodology</a>
+        <a href="https://github.com/tinhnhatpham/open-research-guides/issues" target="_blank" rel="noopener">Suggest a Topic</a>
       </nav>
     </div>
   </header>
 
   <main class="container">
-    <section class="hero">
-      <span class="eyebrow">Public-Interest Science &amp; Data</span>
-      <h1>Clear, citation-backed answers to everyday real-world problems.</h1>
-      <p>
-        An open collection of plain-language guides and free interactive tools built by checking primary peer-reviewed studies and public datasets—without fearmongering, ads, or affiliate links.
+    <section class="masthead">
+      <h1>Clear, citation-backed answers for everyday decisions.</h1>
+      <p class="masthead-deck">
+        Nineteen open public-interest investigations and free interactive calculators built from primary peer-reviewed studies and live federal datasets, with zero ads, zero affiliate links, and honest caveats on every page.
       </p>
-
-      <div class="pillars">
-        <div class="pillar">
-          <strong>12 Automated Federal Flagships</strong>
-          Covering 500,000+ U.S. banks, credit unions, utilities, workplaces, schools, colleges, dams, cars &amp; hospitals—refreshed monthly via GitHub Actions.
-        </div>
-        <div class="pillar">
-          <strong>Data Forensics &amp; Honest Caveats</strong>
-          We catch duplicate filings, accounting traps, and agency quirks—explicitly documenting limits so you can trust every number.
-        </div>
-        <div class="pillar">
-          <strong>Zero Ads, Zero Affiliates, Open CSV</strong>
-          Every platform includes free interactive calculators, reproducible Python scripts, and downloadable bulk <code>.csv.gz</code> datasets.
-        </div>
-      </div>
     </section>
 
-    <section id="guides">
-      <div class="section-head">
-        <h2>Research Guides &amp; Interactive Tools (18)</h2>
-        <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; width:100%;">
-          <input type="search" id="hub-search" placeholder="Search all 18 guides &amp; tools (e.g. bank, electric, school, car, dam, college, hospital)..." aria-label="Search research guides" style="flex:1; min-width:240px; border:1.5px solid var(--border); border-radius:999px; padding:8px 14px; font-size:0.88rem; background:var(--surface); color:var(--ink);" />
+    <section class="featured-band" aria-label="Latest release and data coverage">
+      <div class="featured-story">
+        <h2><a href="./guides/home-insurance/">Why Your Home Insurance Still Hurts After Rate Hikes Cooled</a></h2>
+        <p class="featured-meta">Guide 19 · Deep-research flagship · November 2026</p>
+        <p>
+          Insurers posted an 87.9 combined ratio in 2025 and rate filings slowed to +1.8% through July 2026, yet household risk grew through the March 2026 FHFA roof ACV shift, 2% to 5% wind/hail deductibles, and automated aerial-imagery non-renewals.
+        </p>
+        <div class="featured-actions">
+          <a class="btn-primary" href="./guides/home-insurance/#calculator">Open Claim and Roof ACV Calculator</a>
         </div>
-        <div class="filter-bar" id="filter-bar" aria-label="Filter guides by category"></div>
       </div>
 
-      <div class="grid" id="guides-grid"></div>
+      <aside class="ledger-sidebar">
+        <h2>What makes this archive different</h2>
+        <ul class="ledger-list">
+          <li><strong>500,000+ U.S. institutions audited:</strong> Banks, credit unions, electric utilities, workplaces, school districts, colleges, high-hazard dams, vehicles, counties, hospitals, clinics, and nursing homes.</li>
+          <li><strong>Monthly federal refreshes:</strong> Twelve flagship Python pipelines pull directly from FDIC, NCUA, EIA, OSHA, NHTSA, Dept. of Ed, NOAA, Census F-33, USACE, and CMS via GitHub Actions.</li>
+          <li><strong>Open code and bulk data:</strong> Every data flagship ships downloadable .csv.gz files and documents duplicate filings, accounting traps, and agency quirks.</li>
+        </ul>
+      </aside>
     </section>
 
-    <section class="about-card" id="methodology">
-      <h2>How Each Guide Is Built</h2>
-      <p>
-        Every project starts with a practical question ordinary people face, then checks primary scientific papers, regulatory guidance, or open datasets to separate solid evidence from internet noise.
-      </p>
-      <p>
-        All content is freely accessible and released under <strong>CC BY 4.0</strong> (guides) and <strong>MIT</strong> (interactive tools), with zero user tracking or sponsored recommendations.
-      </p>
+    <section class="index-section" id="guides">
+      <div class="index-header">
+        <h2>Explore All Research Guides and Calculators</h2>
+        <p class="result-count" id="result-count">Showing 19 of 19 investigations</p>
+      </div>
+
+      <div class="toolbar" role="search" aria-label="Filter research guides">
+        <input type="search" id="hub-search" placeholder="Search 19 guides and tools (e.g. insurance, bank, school, car, dam, hospital)..." aria-label="Search research guides" />
+
+        <div class="segmented" role="radiogroup" aria-label="Scope filter">
+          <input type="radio" name="scope" id="scope-all" value="all" checked />
+          <label for="scope-all">All 19</label>
+          <input type="radio" name="scope" id="scope-flagships" value="flagships" />
+          <label for="scope-flagships">Flagships (13)</label>
+        </div>
+
+        <select id="topic-select" aria-label="Filter by topic"></select>
+      </div>
+
+      <div class="guide-list" id="guides-grid"></div>
+    </section>
+
+    <section class="methodology" id="methodology">
+      <div>
+        <h2>How Each Investigation Is Built</h2>
+        <p>
+          Every project starts with a practical decision ordinary households face, then checks what free tools already exist so we target real gaps where people otherwise hit clunky agency portals, paywalls, or affiliate SEO copy.
+        </p>
+        <p>
+          We verify claims against primary federal bulk filings, regulatory dockets, and peer-reviewed studies, then publish both the interactive tool and the underlying cleaning scripts openly on <a href="https://github.com/tinhnhatpham/open-research-guides" target="_blank" rel="noopener">GitHub</a>.
+        </p>
+      </div>
+
+      <div class="methodology-note">
+        <h3>Open licensing and independence</h3>
+        <ul>
+          <li>Guides released under <strong>CC BY 4.0</strong>; tools and Python pipelines under <strong>MIT</strong>.</li>
+          <li>Zero sponsorship, zero referral links, zero tracking scripts.</li>
+          <li>Every guide includes an explicit caveats section documenting missing or conflicting primary data.</li>
+        </ul>
+      </div>
     </section>
 
     <footer>
-      <span>Open Plain-Language Research — Built for public access.</span>
-      <span>CC BY 4.0 (Guides) &bull; MIT (Tools)</span>
+      <span>Open Plain-Language Research. Built for public access.</span>
+      <span>CC BY 4.0 (Guides) and MIT (Interactive Tools &amp; Pipelines)</span>
     </footer>
   </main>
 
   <script src="./data/guides.js"></script>
   <script>
     const guides = window.RESEARCH_GUIDES || [];
-    let activeCategory = "All";
-
-    const categories = ["All", "Flagships Only", ...new Set(guides.map((g) => g.category))];
-    const filterBar = document.getElementById("filter-bar");
-    const grid = document.getElementById("guides-grid");
     const searchEl = document.getElementById("hub-search");
+    const topicSelect = document.getElementById("topic-select");
+    const scopeRadios = document.querySelectorAll('input[name="scope"]');
+    const grid = document.getElementById("guides-grid");
+    const countEl = document.getElementById("result-count");
 
-    function renderFilters() {
-      filterBar.innerHTML = categories
-        .map(
-          (cat) =>
-            `<button type="button" class="filter-btn ${cat === activeCategory ? "active" : ""}" data-cat="${cat}">${cat}</button>`
-        )
-        .join("");
+    const topics = ["All topics", ...new Set(guides.map((g) => g.category))];
+    topicSelect.innerHTML = topics
+      .map((t) => '<option value="' + t + '">' + t + "</option>")
+      .join("");
 
-      filterBar.querySelectorAll(".filter-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          activeCategory = btn.dataset.cat;
-          renderFilters();
-          renderGuides();
-        });
-      });
+    function getScope() {
+      const checked = document.querySelector('input[name="scope"]:checked');
+      return checked ? checked.value : "all";
     }
 
     function renderGuides() {
-      const q = (searchEl && searchEl.value || "").trim().toLowerCase();
+      const q = (searchEl.value || "").trim().toLowerCase();
+      const scope = getScope();
+      const topic = topicSelect.value;
+
       const visible = guides.filter((g) => {
-        if (activeCategory === "Flagships Only" && !g.flagship) return false;
-        if (activeCategory !== "All" && activeCategory !== "Flagships Only" && g.category !== activeCategory) return false;
+        if (scope === "flagships" && !g.flagship) return false;
+        if (topic !== "All topics" && g.category !== topic) return false;
         if (q) {
           const hay = (g.title + " " + g.summary + " " + g.category + " " + g.highlights.join(" ")).toLowerCase();
           if (!hay.includes(q)) return false;
@@ -454,46 +715,41 @@
         return true;
       });
 
+      countEl.textContent = "Showing " + visible.length + " of " + guides.length + " investigations";
+
+      if (!visible.length) {
+        grid.innerHTML = '<div class="empty-state">No guides match your current search and filter. Clear the search box or select All topics.</div>';
+        return;
+      }
+
       grid.innerHTML = visible
         .map((g) => {
-          const isLive = g.status === "published";
-          const statusBadge = isLive
-            ? `<span class="badge badge-live">${g.number} &bull; Published</span>`
-            : `<span class="badge badge-upcoming">${g.number} &bull; Coming Next</span>`;
-          const flagshipBadge = g.flagship
-            ? `<span class="badge badge-flagship">Flagship Investigation</span>`
-            : "";
-
-          const actions = isLive
-            ? `
-              <a class="btn btn-primary" href="${g.guideUrl}">${g.flagship ? "Open Flagship Platform" : "Read Full Guide"}</a>
-              ${g.toolUrl ? `<a class="btn btn-secondary" href="${g.toolUrl}">${g.toolLabel || "Open Interactive Tool"}</a>` : ""}
-              <span class="source-note">${g.sourcesCount}</span>
-            `
-            : `<span class="source-note" style="margin-left:0;">Currently researching &amp; analyzing public datasets.</span>`;
-
-          return `
-            <article class="guide-card ${g.flagship ? "flagship-card" : ""}">
-              <div class="guide-meta">
-                ${flagshipBadge}
-                ${statusBadge}
-                <span class="badge badge-cat">${g.category}</span>
-                <span class="guide-date">${g.date}</span>
-              </div>
-              <h3>${g.title}</h3>
-              <p>${g.summary}</p>
-              <ul class="highlights">
-                ${g.highlights.map((h) => `<li>${h}</li>`).join("")}
-              </ul>
-              <div class="card-actions">${actions}</div>
-            </article>
-          `;
+          const roleLabel = g.flagship ? "Flagship investigation" : "Plain-language guide";
+          return (
+            '<article class="guide-row">' +
+              '<div>' +
+                '<h3><a href="' + g.guideUrl + '">' + g.title + "</a></h3>" +
+                '<p class="guide-row-meta"><strong>' + g.number + "</strong> · " + roleLabel + " · " + g.category + " · " + g.date + "</p>" +
+                '<p class="guide-row-summary">' + g.summary + "</p>" +
+                '<ul class="guide-highlights">' +
+                  g.highlights.map((h) => "<li>" + h + "</li>").join("") +
+                "</ul>" +
+              "</div>" +
+              '<div class="guide-row-aside">' +
+                '<a class="guide-link-primary" href="' + g.guideUrl + '">' + (g.flagship ? "Open investigation" : "Read guide") + " &rarr;</a>" +
+                (g.toolUrl ? '<a class="guide-link-tool" href="' + g.toolUrl + '">' + (g.toolLabel || "Open tool") + "</a>" : "") +
+                '<p class="guide-source">' + g.sourcesCount + "</p>" +
+              "</div>" +
+            "</article>"
+          );
         })
         .join("");
     }
 
-    if (searchEl) searchEl.addEventListener("input", renderGuides);
-    renderFilters();
+    searchEl.addEventListener("input", renderGuides);
+    topicSelect.addEventListener("change", renderGuides);
+    scopeRadios.forEach((r) => r.addEventListener("change", renderGuides));
+
     renderGuides();
   </script>
 </body>
